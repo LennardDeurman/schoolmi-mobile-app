@@ -1,0 +1,34 @@
+class AssetPaths {
+  static const String buildings = "assets/buildings_bg.svg";
+  static const String add = "assets/add.svg";
+  static const String addImage = "assets/add_image.svg";
+  static const String logo = "assets/logo.svg";
+  static const String home = "assets/home.svg";
+  static const String search = "assets/search.svg";
+  static const String notification = "assets/notification.svg";
+  static const String profile = "assets/profile.svg";
+  static const String arrowRight = "assets/arrow_right.svg";
+  static const String users = "assets/users.svg";
+  static const String logout = "assets/logout.svg";
+  static const String graduationCap = "assets/graduation_cap.svg";
+  static const String done = "assets/tick.svg";
+  static const String leave = "assets/leave.svg";
+  static const String tag = "assets/tags.svg";
+  static const String facebook = "assets/fb.svg";
+  static const String google = "assets/google.svg";
+  static const String twitter = "assets/tw.svg";
+  static const String apple = "assets/apple.svg";
+  static const String noQuestions = "assets/no_questions.svg";
+  static const String edit = "assets/edit.svg";
+  static const String warning = "assets/warning.svg";
+  static const String user1 = "assets/user1.svg";
+  static const String user2 = "assets/user2.svg";
+  static const String user3 = "assets/user3.svg";
+  static const String user4 = "assets/user4.svg";
+  static const String user5 = "assets/user5.svg";
+  static const String user6 = "assets/user6.svg";
+  static const String bell = "assets/bell.svg";
+  static const String classRoom = "assets/classroom.svg";
+  static const String paperPlane = "assets/paper-plane.svg";
+  static const String document = "assets/document.svg";
+}

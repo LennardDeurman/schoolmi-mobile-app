@@ -1,0 +1,45 @@
+
+import 'package:schoolmi/network/network_parser.dart';
+import 'package:schoolmi/network/urls.dart';
+import 'package:schoolmi/network/cache_manager.dart';
+import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/models/data/profile.dart';
+import 'package:schoolmi/constants/keys.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class ProfileParser extends NetworkParser {
+
+  ProfileParser () : super();
+
+  @override
+  String get downloadUrl {
+    return Urls.profile;
+  }
+
+  @override
+  String get uploadUrl {
+    return Urls.profile;
+  }
+
+  @override
+  List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
+    return super.objectsFromResponse(response);
+  }
+
+
+  Future<ParsingResult> loadCachedData() async {
+    return CacheManager.loadCache(CacheManager.myProfile);
+  }
+
+  @override
+  List<BaseObject> objectsFromResponse(http.Response response) {
+    final body = json.decode(response.body)[Keys.object];
+    final profileDict = body[Keys.profile];
+    List<Profile> objects = [Profile(profileDict)];
+    CacheManager.save(CacheManager.myProfile, objects);
+    return objects;
+  }
+
+}
