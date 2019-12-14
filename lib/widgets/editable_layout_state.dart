@@ -19,7 +19,7 @@ abstract class EditableLayoutState<T extends StatefulWidget> extends State<T> {
   }
 
   String get title {
-    return Localization().getValue(Localization().myProfile);
+    return "";
   }
 
   Widget buildAppBar(BuildContext context) {
@@ -64,6 +64,16 @@ abstract class EditableLayoutState<T extends StatefulWidget> extends State<T> {
     } else {
       return buildReadOnlyBody(context);
     }
+  }
+
+  Widget buildFabLoadingIndicator() {
+    return SizedBox(
+      width: 23.0,
+      height: 23.0,
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      ),
+    );
   }
 
   void onClickFinishEditing();

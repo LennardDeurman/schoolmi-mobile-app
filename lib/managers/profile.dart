@@ -3,14 +3,7 @@ import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/upload.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/models/data/profile.dart';
-
-abstract class UploadInterface<T> {
-
-  T uploadObject;
-
-  Future<T> save();
-
-}
+import 'package:schoolmi/managers/upload_interface.dart';
 
 class ProfileManager extends ChildManager with UploadInterface<Profile> {
 
@@ -30,7 +23,7 @@ class ProfileManager extends ChildManager with UploadInterface<Profile> {
 
   @override
   Future<Profile> save() async {
-    return executeAsync(future);
+    return executeAsync(UserService().profileParser.uploadObject(uploadObject));
   }
 
 

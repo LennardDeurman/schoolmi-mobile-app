@@ -7,4 +7,5 @@ abstract class ChannelBaseNetworkParser extends NetworkParser {
 
   ChannelBaseNetworkParser (this.channel) : super();
 
+
 }

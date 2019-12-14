@@ -20,6 +20,10 @@ abstract class NetworkParser {
 
   String get uploadUrl;
 
+  bool get isLoading {
+    return downloadStatusInfo.downloadStatus == DownloadStatus.downloading;
+  }
+
   BaseObject updateObjectWithResponse(BaseObject uploadedObject, http.Response response) {
     Map rootObject = json.decode(response.body)[Keys.object];
     int newId = rootObject[Keys.lastRowId];

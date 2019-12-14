@@ -14,9 +14,9 @@ class BaseManager extends Model {
     notifyListeners();
   }
 
-  Future<void> executeAsync(Future future) async {
+  Future executeAsync(Future future) async {
     isLoading = true;
-    await future.whenComplete(() {
+    return await future.whenComplete(() {
       isLoading = false;
     });
   }

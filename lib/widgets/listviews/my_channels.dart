@@ -30,6 +30,11 @@ class MyChannelsListViewState extends ParserListViewState<MyChannelsListView> {
   }
 
   @override
+  Future performRefresh() {
+    return UserService().refreshData(forceRefresh: true);
+  }
+
+  @override
   bool get canLoadMore {
     return false;
   }

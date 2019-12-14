@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<QuestionsListViewState> _questionsListState = GlobalKey<QuestionsListViewState>();
   PageController _pageController = PageController();
   ValueNotifier _currentPageNotifier = ValueNotifier<int>(0);
-  ActiveChannelLayout _activeChannelLayout;
+  ActiveChannelLayout _activeChannelLayout = new ActiveChannelLayout();
   HomeAppBarLayout _homeAppBarLayout;
 
 
@@ -61,7 +61,6 @@ class _HomePageState extends State<HomePage> {
         }
     );
 
-    _activeChannelLayout = new ActiveChannelLayout(_homeManager);
     _homeManager.initialize().then((InitializationResult initializationResult) {
       if (initializationResult == InitializationResult.serverConnectionError) {
         //show connection error dialog
@@ -133,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             );
-          }),
+          }, stream: UserService().loginStream),
         ),
         body: _activeChannelLayout.build(builder: (Channel activeChannel) {
           QuestionsParser parser = new QuestionsParser(activeChannel);
@@ -149,7 +148,7 @@ class _HomePageState extends State<HomePage> {
             ),
             onPressed: _onFabPressed,
           ), visible: UserService().hasActiveChannel);
-        }, stream: _homeManager.loginRefreshManager.downloadStatusInfo.downloadStatusStream)
+        }, stream: UserService().loginStream)
       ),
     );
   }

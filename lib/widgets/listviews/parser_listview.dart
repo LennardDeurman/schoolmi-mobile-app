@@ -7,9 +7,8 @@ import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/button.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/constants/asset_paths.dart';
-import 'package:schoolmi/constants/brand_colors.dart';
-import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/widgets/message_container.dart';
+import 'package:schoolmi/widgets/parsing_result_bar.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/listviews/advanced_listview.dart';
 import 'package:schoolmi/models/base_object.dart';
@@ -124,23 +123,7 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
   }
 
   Widget buildStatusBar() {
-    return Container(child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Visibility(child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(
-          strokeWidth: 2,
-        )), visible: isLoading),
-        Visibility(child: SizedBox(
-          width: 10,
-        ), visible: isLoading),
-        Visibility(child: Text(
-          Localization().buildWithParams(Localization().resultsRetrievedAt, [Dates.format(_parsingResult.dateTime, format: Dates.dateTimeFormat)]),
-          style: TextStyle(
-              fontSize: 12
-          ),
-        ), visible: _parsingResult != null)
-      ],
-    ), padding: EdgeInsets.symmetric(vertical: 8), color: BrandColors.blueGrey);
+    return ParsingResultBar(this.parsingResult, isLoading: isLoading);
   }
 
   Widget buildListItem(BaseObject object);

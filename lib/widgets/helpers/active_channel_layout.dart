@@ -16,9 +16,7 @@ otherwise returns a loader with the corresponding information
 
 class ActiveChannelLayout {
 
-  final HomeManager homeManager;
-
-  ActiveChannelLayout (this.homeManager);
+  ActiveChannelLayout ();
 
 
   Widget build({@required Widget Function(Channel channel) builder}) {
@@ -43,7 +41,7 @@ class ActiveChannelLayout {
         );
 
       },
-      stream: homeManager.loginRefreshManager.downloadStatusInfo.downloadStatusStream, //Based on home manager downloadStatus and ScopedModelDescendant of the childManager
+      stream: UserService().loginStream, //Based on home manager downloadStatus and ScopedModelDescendant of the childManager
     );
   }
 

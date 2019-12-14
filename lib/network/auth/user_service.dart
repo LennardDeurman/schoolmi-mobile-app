@@ -3,7 +3,6 @@ import 'package:schoolmi/network/auth/login_result.dart';
 import 'package:schoolmi/network/parsers/profile.dart';
 import 'package:schoolmi/network/parsers/channels.dart';
 import 'package:schoolmi/network/cache_manager.dart';
-import 'package:schoolmi/network/auth/login_refresh_manager.dart';
 import 'package:schoolmi/models/parsing_result.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'dart:async';
@@ -42,6 +41,8 @@ class UserService {
     _loginStreamController.onCancel = () {
       _loginStreamController.close();
     };
+
+
   }
 
 
@@ -60,15 +61,15 @@ class UserService {
     return false;
   }
 
-  Future<LoginResult> loadData(FirebaseUser firebaseUser) async {
+  Future<LoginResult> loadData(FirebaseUser firebaseUser, { bool forceRefresh = false }) async {
 
     ParsingResult profileResult = await profileParser.loadCachedData();
-    if (profileResult == null) {
+    if (profileResult == null || forceRefresh) {
       profileResult = ParsingResult([await createProfile()]);
     }
 
     ParsingResult myChannelsResult = await myChannelsParser.loadCachedData();
-    if (myChannelsResult != null) {
+    if (myChannelsResult != null || forceRefresh) {
       myChannelsResult = await myChannelsParser.download();
     }
 
@@ -106,14 +107,8 @@ class UserService {
     await FirebaseAuth.instance.signOut();
   }
 
-  Future refreshProfile() async {
-    ParsingResult parsingResult = await profileParser.download();
-    _loginResult.profileResult = parsingResult;
-  }
-
-  Future refreshMyChannels() async {
-    ParsingResult parsingResult = await myChannelsParser.download();
-    _loginResult.myChannelsResult = parsingResult;
+  Future refreshData({ bool forceRefresh = false }) {
+    return loadData(_loginResult.firebaseUser, forceRefresh: forceRefresh);
   }
 
   Future refreshStreamState(FirebaseUser firebaseUser) async {
@@ -121,7 +116,7 @@ class UserService {
   }
 
   LoginResult _sendLoginResult(LoginResult loginResult) {
-    loginResult = loginResult;
+    _loginResult = loginResult;
     _loginStreamController.sink.add(loginResult);
     return _loginResult;
   }
