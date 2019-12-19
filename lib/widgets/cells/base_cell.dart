@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schoolmi/constants/brand_colors.dart';
 
 class BaseCell extends StatelessWidget {
 
@@ -8,7 +9,16 @@ class BaseCell extends StatelessWidget {
   final Border border;
   final Function onPressed;
 
-  BaseCell ({ @required this.leading, @required this.columnWidgets, @required this.border, @required this.onPressed,
+  Border get defaultBorder {
+    return Border(
+        bottom: BorderSide(
+            width: 1,
+            color: BrandColors.blueGrey
+        )
+    );
+  }
+
+  BaseCell ({ this.leading, @required this.columnWidgets, this.border, this.onPressed,
     this.trailing
   });
 
@@ -37,10 +47,13 @@ class BaseCell extends StatelessWidget {
           ],
         ),
         decoration: BoxDecoration(
-            border: this.border,
+            border: this.border ?? defaultBorder,
         ),
       ),
-      onTap: this.onPressed,
+      onTap: () {
+        if (this.onPressed != null)
+          this.onPressed();
+      },
     )));
   }
 

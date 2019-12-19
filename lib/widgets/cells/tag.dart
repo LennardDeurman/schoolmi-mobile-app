@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
+import 'package:schoolmi/models/data/tag.dart';
 
 class TagCell extends StatelessWidget {
   final String title;
@@ -23,6 +24,44 @@ class TagCell extends StatelessWidget {
       ),
     );
   }
+}
+
+class TagListItemCell extends StatelessWidget {
+
+  final Tag tag;
+  final Function(Tag tag) onTagPressed;
+
+  TagListItemCell (this.tag, { this.onTagPressed });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (onTagPressed != null)
+          onTagPressed(this.tag);
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            SizedBox(width: 20.0),
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Align(
+                    child: TagCellWithIcon(color: BrandColors.grey, title: tag.name),
+                    alignment: Alignment.centerLeft,
+                  )
+                ],
+              ),
+            ),
+          ]),
+          Divider()
+        ],
+      ),
+    );
+  }
+
 }
 
 class TagCellWithIcon extends StatelessWidget {

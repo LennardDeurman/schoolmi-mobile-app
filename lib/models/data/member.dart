@@ -3,6 +3,7 @@ import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/network/auth/user_service.dart';
 
 
 class Member extends BaseObject with ObjectWithAvatar  {
@@ -11,6 +12,16 @@ class Member extends BaseObject with ObjectWithAvatar  {
   bool isAdmin;
 
   Member (Map<String, dynamic> dictionary) : super(dictionary);
+
+  bool get isCurrentUser {
+    var result = UserService().loginResult;
+    if (result.firebaseUser != null) {
+      if (result.firebaseUser.email == email) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @override
   String get firstLetter {
