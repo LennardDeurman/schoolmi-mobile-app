@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schoolmi/widgets/presenter.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
@@ -37,12 +38,14 @@ class _HomePageState extends State<HomePage> {
   ValueNotifier _currentPageNotifier = ValueNotifier<int>(0);
   ActiveChannelLayout _activeChannelLayout = new ActiveChannelLayout();
   HomeAppBarLayout _homeAppBarLayout;
+  Presenter _presenter;
 
 
   @override
   void initState() {
     super.initState();
 
+    _presenter = new Presenter(context);
     _homeAppBarLayout = new HomeAppBarLayout(
         onDrawerButtonPressed: () {
           _scaffoldKey.currentState.openDrawer();
@@ -52,7 +55,7 @@ class _HomePageState extends State<HomePage> {
             _homeAppBarLayout.isSearch = true;
           });
         },
-        onMyProfilePressed: _onMyProfilePressed,
+        onMyProfilePressed: _presenter.showMyProfile,
         onPerformSearchPressed: _onPerformSearchPressed,
         onCancelSearchPressed: () {
           setState(() {
@@ -78,13 +81,18 @@ class _HomePageState extends State<HomePage> {
     await _questionsListState.currentState.performRefresh();
   }
 
-  void _onMyProfilePressed() {
-
-  }
-
   void _onFabPressed() {
 
   }
+
+  void _onLeaveChannelPressed() {
+    _homeManager.leaveChannel();
+  }
+
+  void _switchToChannel(Channel channel) {
+    _homeManager.switchToChannel(channel);
+  }
+
 
 
   @override
@@ -105,16 +113,26 @@ class _HomePageState extends State<HomePage> {
                       if (UserService().hasActiveChannel) {
                         children.add(
                             ChannelDetailsWidget(UserService().loginResult.activeChannel,
-                              onEditChannelPressed: _onEditChannelPressed,
-                              onInvitePressed: _onInvitePressed,
-                              onMembersPressed: _onMembersPressed,
-                              onNotificationSettingsPressed: _onNotificationSettingsPressed,
-                              onTagsPressed: _onTagsPressed,
+                              onEditChannelPressed: () {
+                                _presenter.showChannelEdit(channel: UserService().loginResult.activeChannel);
+                              },
+                              onInvitePressed: () {
+                                _presenter.showInvite(UserService().loginResult.activeChannel);
+                              },
+                              onMembersPressed: () {
+                                _presenter.showMembers(UserService().loginResult.activeChannel);
+                              },
+                              onNotificationSettingsPressed: _presenter.showNotifications,
+                              onTagsPressed: () {
+                                _presenter.showTags(UserService().loginResult.activeChannel);
+                              },
                               onLeaveChannelPressed: _onLeaveChannelPressed,
                             )
                         );
                       }
-                      children.add(MyChannelsListView(UserService().myChannelsParser, onAddChannelPressed: _onAddChannelPressed, onChannelPressed: _onChannelPressed));
+                      children.add(MyChannelsListView(UserService().myChannelsParser,
+                          onAddChannelPressed: _presenter.showChannelEdit,
+                          onChannelPressed: _switchToChannel));
                       return children;
                     }(),
                     onPageChanged: (int index) {
@@ -135,8 +153,8 @@ class _HomePageState extends State<HomePage> {
           }, stream: UserService().loginStream),
         ),
         body: _activeChannelLayout.build(builder: (Channel activeChannel) {
-          QuestionsParser parser = new QuestionsParser(activeChannel);
-          return QuestionsListView(parser, onQuestionPressed: _onQuestionPressed);
+          _homeManager.questionsParser = new QuestionsParser(activeChannel);
+          return QuestionsListView(_homeManager.questionsParser, onQuestionPressed: _presenter.showQuestion);
         }),
         floatingActionButton: StreamBuilder<DownloadStatus>(builder: (BuildContext context, AsyncSnapshot<DownloadStatus> loginStatusSnapshot) {
           return Visibility(child: FloatingActionButton(

@@ -85,7 +85,7 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
   @override
   Widget buildEditableBody(BuildContext context) {
     return Form(
-      key: _refreshKey,
+      key: _profileFormKey,
       child: ListView(
         children: <Widget>[
           ListItem.withTextField(
@@ -212,7 +212,7 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
   void onClickFinishEditing() {
     if (_profileFormKey.currentState.validate()) {
       _profileFormKey.currentState.save();
-      widget.profileManager.save().then((_) {
+      widget.profileManager.saveUploadObjects().then((_) {
         isEditing = false;
       }).catchError((e) {
         if (e is Exception) {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
 import 'package:schoolmi/widgets/listviews/add_members.dart';
 import 'package:schoolmi/widgets/add_members_form.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class AddMembersPage extends StatefulWidget {
 
-  final MembersManager manager;
+  final AddMembersManager manager;
 
   AddMembersPage (this.manager);
 
@@ -26,60 +26,53 @@ class _AddMembersPageState extends State<AddMembersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<MembersManager>(
-      model: widget.manager,
-      child: Scaffold(
-        key: _scaffoldKey,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.done, color: Colors.white),
-          onPressed: () {
-            widget.manager.saveUploadObjects().catchError((e) {
-              //show snackbar;
-            });
-          },
+    return Scaffold(
+      key: _scaffoldKey,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.done, color: Colors.white),
+        onPressed: () {
+          widget.manager.saveUploadObjects().then((_) {
+            Navigator.pop(context);
+          }).catchError((e) {
+            showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+          });
+        },
+      ),
+      appBar: AppBar(
+        title: TitleLabel(
+          title: Localization().getValue(Localization().addMember),
+          color: Colors.white,
         ),
-        appBar: AppBar(
-          title: TitleLabel(
-            title: Localization().getValue(Localization().addMember),
-            color: Colors.white,
-          ),
-          actions: <Widget>[
-            Visibility(child: FlatButton(
-                child: RegularLabel(
-                  title: Localization().getValue(Localization().cancel),
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _addMembersFormKey.currentState.focusNode.unfocus();
-                }
-            ), visible: _addMembersFormKey.currentState.focusNode.hasFocus)
-          ],
-        ),
-        body:  Center(
-          child: ScopedModelDescendant(
-              builder: (BuildContext context, Widget widget, MembersManager manager) {
-                return AddMembersListView(
-                  channel: manager.channel,
-                  emails: manager.uploadObjects,
-                  formBuilder: () {
-                    return AddMembersForm(
-                      key: _addMembersFormKey,
-                      onEditingComplete: (String email) {
-                        setState(() {
-                          manager.uploadObjects.add(email);
-                        });
-                      }
-                    );
-                  },
-                  onRemovePressed: (String email) {
-                    setState(() {
-                      manager.uploadObjects.remove(email);
-                    });
-                  }
-                );
+        actions: <Widget>[
+          Visibility(child: FlatButton(
+              child: RegularLabel(
+                title: Localization().getValue(Localization().cancel),
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _addMembersFormKey.currentState.focusNode.unfocus();
               }
-          ),
-        ),
+          ), visible: _addMembersFormKey.currentState.focusNode.hasFocus)
+        ],
+      ),
+      body:  AddMembersListView(
+          channel: widget.manager.membersManager.channel,
+          emails: widget.manager.emails,
+          formBuilder: () {
+            return AddMembersForm(
+                key: _addMembersFormKey,
+                onEditingComplete: (String email) {
+                  setState(() {
+                    widget.manager.add(email);
+                  });
+                }
+            );
+          },
+          onRemovePressed: (String email) {
+            setState(() {
+              widget.manager.remove(email);
+            });
+          }
       ),
     );
   }

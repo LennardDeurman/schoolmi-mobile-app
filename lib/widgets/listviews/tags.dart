@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:schoolmi/managers/tags.dart';
+import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/announcer.dart';
 import 'package:schoolmi/network/parsers/tags.dart';
@@ -9,19 +12,77 @@ import 'package:schoolmi/widgets/cells/tag.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/models/data/tag.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class TagsListView extends ParserListView {
 
-  TagsListView (TagsParser parser) : super(parser);
+  final TagsManager manager;
+
+  final SelectionManager<Tag> selectionManager;
+
+  TagsListView (this.manager, { this.selectionManager }) : super(manager.parser);
 
   @override
   State<StatefulWidget> createState() {
-    return _TagsListViewState();
+    return selectionManager != null ? _TagsPickerState() : _TagsListState();
   }
 
 }
 
-class _TagsListViewState extends ParserListViewState<TagsListView> {
+
+class _TagsPickerState extends _TagsListState {
+
+  @override
+  bool shouldShowCreate(Tag newTag) {
+    if (widget.manager.channel.canAddTags && widget.manager.isQueryValid()) {
+      if (parsingResult != null) {
+        List<Tag> tags = parsingResult.objects;
+        return !(tags.where((Tag object) {
+          return object.name.trim().toLowerCase() == newTag.name.trim().toLowerCase();
+        }).length > 0);
+      }
+    }
+    return false;
+  }
+
+  @override
+  Widget buildListItem(BaseObject object) {
+    Tag tag = object;
+    return TagListItemCell(tag, onTagPressed: (Tag tag) {
+      widget.selectionManager.toggle(tag);
+    });
+  }
+
+  @override
+  Widget buildTagsSelectionBox() {
+    return ScopedModelDescendant<SelectionManager<Tag>>(
+      builder: (BuildContext context, Widget widget, SelectionManager<Tag> manager) {
+        return Wrap(children: manager.objects.map((value) {
+          return Container(
+            padding: EdgeInsets.only(right: 5.0),
+            child: TagCellWithIcon(
+                color: Colors.blueAccent,
+                title: value.name,
+                onDeleted: () {
+                  manager.toggle(value);
+                }),
+          );
+        }).toList());
+      }
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return ScopedModel(
+      model: widget.selectionManager,
+      child: super.build(context)
+    );
+  }
+
+}
+
+class _TagsListState extends ParserListViewState<TagsListView> {
 
   final FocusNode _searchTextFieldFocusNode = FocusNode();
 
@@ -30,14 +91,13 @@ class _TagsListViewState extends ParserListViewState<TagsListView> {
     return false;
   }
 
-  bool shouldShowSearch(Tag newTag) {
-    return false;
+  bool shouldShowCreate(Tag newTag) {
+    return widget.manager.channel.canAddTags;
   }
 
   void onNewTagPressed(Tag tag) {
-    tagsManager.saveUploadObject(tag).then(() {
-      setState(() { });
-    });
+    widget.manager.uploadObject = tag;
+    widget.manager.saveUploadObjects();
   }
 
   Widget buildTagsSelectionBox() {
@@ -56,11 +116,11 @@ class _TagsListViewState extends ParserListViewState<TagsListView> {
     TagsParser parser = widget.parser;
     String search = parser.queryInfo.search;
     if (search != null) {
-      Tag tag = Tag.fromSearch(search);
-      if (shouldShowSearch(tag)) {
+      Tag tag = Tag.create(name: search);
+      if (shouldShowCreate(tag)) {
         return TagListItemCell(
             tag,
-            leading: tagsManager.pendingObjects.contains(tag) ? CircularProgressIndicator(strokeWidth: 2) : Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey),
+            leading: widget.manager.pendingObjects.contains(tag) ? CircularProgressIndicator(strokeWidth: 2) : Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey),
             onTagPressed: onNewTagPressed
         );
       }

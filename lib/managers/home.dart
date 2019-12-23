@@ -1,7 +1,10 @@
 import 'package:schoolmi/managers/base_manager.dart';
+import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/managers/profile.dart';
 import 'dart:async';
+
+import 'package:schoolmi/network/parsers/questions.dart';
 
 enum InitializationResult {
   idle,
@@ -13,6 +16,8 @@ enum InitializationResult {
 class HomeManager extends BaseManager {
 
   ProfileManager _profileManager;
+
+  QuestionsParser questionsParser; //To be set by layout
 
   HomeManager () {
     _profileManager = new ProfileManager(this);
@@ -47,6 +52,14 @@ class HomeManager extends BaseManager {
     return completer.future.whenComplete(() {
       notifyListeners();
     });
+  }
+
+  Future switchToChannel(Channel channel) {
+
+  }
+
+  Future leaveChannel() {
+    
   }
 
 

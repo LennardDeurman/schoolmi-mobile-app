@@ -129,7 +129,10 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
   Widget buildListItem(BaseObject object);
 
   Widget buildHeader(int section) {
-    return buildStatusBar();
+    if (section == 0) {
+      return buildStatusBar();
+    }
+    return Container();
   }
 
   Widget buildFooter(int section) {

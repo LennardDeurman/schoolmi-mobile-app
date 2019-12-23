@@ -29,9 +29,10 @@ class TagCell extends StatelessWidget {
 class TagListItemCell extends StatelessWidget {
 
   final Tag tag;
+  final Widget leading;
   final Function(Tag tag) onTagPressed;
 
-  TagListItemCell (this.tag, { this.onTagPressed });
+  TagListItemCell (this.tag, { this.leading, this.onTagPressed });
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +46,7 @@ class TagListItemCell extends StatelessWidget {
         children: [
           Row(children: [
             SizedBox(width: 20.0),
+            this.leading ?? Container(),
             Expanded(
               child: Stack(
                 children: <Widget>[

@@ -13,6 +13,8 @@ class Member extends BaseObject with ObjectWithAvatar  {
 
   Member (Map<String, dynamic> dictionary) : super(dictionary);
 
+  Member.create({ this.email, this.channelId, this.isAdmin = false }) : super(null);
+
   bool get isCurrentUser {
     var result = UserService().loginResult;
     if (result.firebaseUser != null) {
@@ -37,6 +39,7 @@ class Member extends BaseObject with ObjectWithAvatar  {
   int get avatarColorIndex {
     return null;
   }
+
 
   @override
   void parse(Map<String, dynamic> dictionary) {

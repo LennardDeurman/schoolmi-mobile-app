@@ -8,6 +8,8 @@ class Tag extends BaseObject with ObjectWithColorIndex {
 
   Tag (Map<String, dynamic> dictionary) : super(dictionary);
 
+  Tag.create({ this.name }) : super(null);
+
   @override
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);

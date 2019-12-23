@@ -98,7 +98,7 @@ class Api {
     return completer.future;
   }
 
-  static Future<void> joinChannel({@required String token, @required int channelId}) {
+  static Future<void> joinChannel({@required int channelId}) {
     Completer completer = new Completer();
     _executeJsonRequest(Urls.joinChannel(channelId: channelId), completer, (http.Response response) {
       completer.complete();
@@ -106,7 +106,7 @@ class Api {
     return completer.future;
   }
 
-  static Future<void> leaveChannel({@required String token, @required int channelId}) {
+  static Future<void> leaveChannel({@required int channelId}) {
     Completer completer = new Completer();
     _executeJsonRequest(Urls.leaveChannel(channelId: channelId), completer, (http.Response response) {
       final body = json.decode(response.body)[Keys.object];

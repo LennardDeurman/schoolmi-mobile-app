@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/managers/tags.dart';
+import 'package:schoolmi/models/data/tag.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
-import 'package:schoolmi/widgets/listviews/members.dart';
+import 'package:schoolmi/widgets/listviews/tags.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/localization/localization.dart';
 
@@ -9,7 +11,9 @@ class TagsPage extends StatefulWidget {
 
   final TagsManager tagsManager;
 
-  TagsPage (this.tagsManager);
+  final SelectionManager<Tag> selectionManager;
+
+  TagsPage (this.tagsManager, { this.selectionManager });
 
 
   @override
@@ -40,20 +44,17 @@ class _TagsPageState extends State<TagsPage> {
   Widget build(BuildContext context) {
     return ScopedModel(
         model: widget.tagsManager,
-        child: ScopedModelDescendant<TagsManager>(builder: (BuildContext context, Widget widget, TagsManager manager) {
-          return Scaffold(
-              key: _scaffoldKey,
-              appBar: AppBar(
-                title: TitleLabel(
-                  title: Localization().getValue(Localization().tags, usePluralForm: true),
-                  color: Colors.white,
-                ),
+        child: Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              title: TitleLabel(
+                title: Localization().getValue(Localization().tags, usePluralForm: true),
+                color: Colors.white,
               ),
-              floatingActionButton: buildFloatingActionButton(),
-              body:
-          );
-        })
-    );
+            ),
+            floatingActionButton: buildFloatingActionButton(),
+            body: TagsListView(widget.tagsManager, selectionManager: widget.selectionManager)
+        ));
   }
 
 

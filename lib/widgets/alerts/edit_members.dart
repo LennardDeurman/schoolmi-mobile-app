@@ -2,6 +2,7 @@ import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/cells/base_cell.dart';
 import 'package:rounded_modal/rounded_modal.dart';
@@ -15,6 +16,22 @@ class MembersEditingDialog {
 
   MembersEditingDialog ({ this.member, this.manager });
 
+  Future _executeAction(BuildContext context, { Function onPreExecute, Function onFailed }) {
+
+    if (onPreExecute != null) {
+      onPreExecute();
+    }
+
+    manager.uploadObject = member;
+    return manager.saveUploadObjects().catchError((e) {
+      if (onFailed != null) {
+        onFailed();
+      }
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    }).whenComplete((){
+      Navigator.pop(context);
+    });
+  }
 
   Widget _buildAdminStatusActionWidget(BuildContext context) {
     return BaseCell(
@@ -25,12 +42,12 @@ class MembersEditingDialog {
         )
       ],
       onPressed: () {
+        bool currentAdminState = member.isAdmin;
         bool newAdminState = !member.isAdmin;
-        member.isAdmin = newAdminState;
-        manager.executeAsync(manager.updateMember(member)).catchError((e) {
-          member.isAdmin = !newAdminState;
-        }).whenComplete((){
-          Navigator.pop(context);
+        _executeAction(context, onPreExecute: () {
+          member.isAdmin = newAdminState;
+        }, onFailed: () {
+          member.isAdmin = currentAdminState;
         });
       },
 
@@ -46,11 +63,10 @@ class MembersEditingDialog {
         )
       ],
       onPressed: () {
-        member.isDeleted = true;
-        manager.executeAsync(manager.updateMember(member)).catchError((e) {
+        _executeAction(context, onPreExecute: () {
+          member.isDeleted = true;
+        }, onFailed: () {
           member.isDeleted = false;
-        }).whenComplete((){
-          Navigator.pop(context);
         });
       },
     );
