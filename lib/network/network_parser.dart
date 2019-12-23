@@ -38,7 +38,7 @@ abstract class NetworkParser {
 
   List<BaseObject> objectsFromResponse(http.Response response) {
     Map<String, dynamic> dictionary = json.decode(response.body);
-    return ParsableObject.parseObjectsList(dictionary, Keys.object);
+    return ParsableObject.parseObjectsList(dictionary, Keys.object, toObject: toObject);
   }
 
   Map<String, dynamic> makeMultiObjectsDictionary(String key, List<BaseObject> baseObjects) {
@@ -78,6 +78,7 @@ abstract class NetworkParser {
     return Api.uploadObjects(parser: this, uploadObjects: uploadObjects);
   }
 
+  BaseObject toObject (Map dictionary);
 
 }
 

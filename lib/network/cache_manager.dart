@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/extensions/dates.dart';
@@ -21,12 +22,12 @@ class CacheManager {
     sharedPreferences.setString(key, json.encode(cacheObject));
   }
 
-  static Future<ParsingResult> loadCache(String key) async {
+  static Future<ParsingResult> loadCache(String key, { @required ParseObjectCallback toObject}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String jsonStr = sharedPreferences.get(key);
     if (jsonStr != null) {
       Map<String, dynamic> cacheObject = json.decode(jsonStr);
-      return ParsingResult.fromCacheDictionary(cacheObject);
+      return ParsingResult.fromCacheDictionary(cacheObject, toObject: toObject);
     }
     return null;
   }

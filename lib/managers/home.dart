@@ -59,7 +59,7 @@ class HomeManager extends BaseManager {
   }
 
   Future leaveChannel() {
-    
+
   }
 
 

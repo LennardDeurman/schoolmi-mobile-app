@@ -1,3 +1,4 @@
+import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/network/network_parser.dart';
 import 'package:schoolmi/network/urls.dart';
@@ -26,7 +27,9 @@ class ChannelsParser extends NetworkParser with ParserWithQueryInfo {
   @override
   Future<ParsingResult> loadCachedData() async {
     if (!showOpenChannels && isQueryInfoEmpty()) {
-      return CacheManager.loadCache(CacheManager.myChannels);
+      return CacheManager.loadCache(CacheManager.myChannels, toObject: (Map dictionary) {
+        return Channel(dictionary);
+      });
     }
     return super.loadCachedData();
   }
@@ -38,6 +41,11 @@ class ChannelsParser extends NetworkParser with ParserWithQueryInfo {
       CacheManager.save(CacheManager.myChannels, objectsFromServer);
     }
     return objectsFromServer;
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Channel(dictionary);
   }
 
 }

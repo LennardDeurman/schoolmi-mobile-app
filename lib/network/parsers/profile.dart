@@ -30,7 +30,9 @@ class ProfileParser extends NetworkParser {
 
 
   Future<ParsingResult> loadCachedData() async {
-    return CacheManager.loadCache(CacheManager.myProfile);
+    return CacheManager.loadCache(CacheManager.myProfile, toObject: (Map dictionary) {
+      return Profile(dictionary);
+    });
   }
 
   @override
@@ -40,6 +42,11 @@ class ProfileParser extends NetworkParser {
     List<Profile> objects = [Profile(profileDict)];
     CacheManager.save(CacheManager.myProfile, objects);
     return objects;
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Profile(dictionary);
   }
 
 }

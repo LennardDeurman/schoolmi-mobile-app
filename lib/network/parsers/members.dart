@@ -2,6 +2,7 @@ import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/network/channel_base_parser.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:http/http.dart' as http;
@@ -29,5 +30,10 @@ class MembersParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
   List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
     //Endpoint doesn't return objects nor ids
     return uploadedObjects;
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Member(dictionary);
   }
 }

@@ -3,6 +3,8 @@ import 'package:schoolmi/network/channel_base_parser.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/models/data/comment.dart';
+import 'package:schoolmi/models/base_object.dart';
 
 class CommentsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
@@ -19,6 +21,11 @@ class CommentsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
   @override
   String get uploadUrl {
     return Urls.comments(channelId: channel.id);
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Comment(dictionary);
   }
 
 }

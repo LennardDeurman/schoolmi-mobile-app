@@ -7,7 +7,9 @@ class ObjectWithTags {
   List<Tag> tags;
 
   void parseTags(Map<String, dynamic> dictionary) {
-    tags = ParsableObject.parseObjectsList(dictionary, Keys.tags);
+    tags = ParsableObject.parseObjectsList(dictionary, Keys.tags, toObject: (Map dictionary) {
+      return Tag(dictionary);
+    });
   }
 
   Map<String, dynamic> tagsDictionary() {

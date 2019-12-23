@@ -3,6 +3,8 @@ import 'package:schoolmi/network/query_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/models/data/answer.dart';
+import 'package:schoolmi/models/base_object.dart';
 
 class AnswerParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
@@ -20,6 +22,12 @@ class AnswerParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
   String get uploadUrl {
     return Urls.answers(channelId: this.channel.id);
   }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Answer(dictionary);
+  }
+
 
 
 }

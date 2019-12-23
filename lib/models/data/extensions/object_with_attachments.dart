@@ -7,7 +7,9 @@ class ObjectWithAttachments {
   List<Attachment> attachments;
 
   void parseAttachments(Map<String, dynamic> dictionary) {
-    attachments = ParsableObject.parseObjectsList(dictionary, Keys.attachments);
+    attachments = ParsableObject.parseObjectsList(dictionary, Keys.attachments, toObject: (Map dictionary) {
+      return Attachment(dictionary);
+    });
   }
 
   Map<String, dynamic> attachmentsDictionary() {

@@ -1,14 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:schoolmi/models/base_object.dart';
+
 abstract class ParsableObject {
 
   void parse(Map<String, dynamic> dictionary);
 
-  static List parseObjectsList(Map<String, dynamic> dictionary, String key) {
+  static List parseObjectsList(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
     var dictionaryValuesList = dictionary[key];
     if (dictionaryValuesList != null) {
       List<BaseObject> baseObjects = List<BaseObject>();
       for (Map<String, dynamic> dictionaryValue in dictionaryValuesList) {
-        BaseObject baseObject = BaseObject(dictionaryValue);
+        BaseObject baseObject = toObject(dictionaryValue);
         baseObject.parse(dictionaryValue);
       }
       return baseObjects;

@@ -1,6 +1,8 @@
 import 'package:schoolmi/network/channel_base_parser.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/models/data/duplicate_question.dart';
+import 'package:schoolmi/models/base_object.dart';
 
 class DuplicatesParser extends ChannelBaseNetworkParser {
 
@@ -16,6 +18,11 @@ class DuplicatesParser extends ChannelBaseNetworkParser {
   @override
   String get uploadUrl {
     throw new UnimplementedError("Use dedicated duplicates update call instead");
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return DuplicateQuestion(dictionary);
   }
 
 

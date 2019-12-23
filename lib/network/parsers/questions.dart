@@ -1,8 +1,10 @@
 
+import 'package:schoolmi/models/data/question.dart';
 import 'package:schoolmi/network/channel_base_parser.dart';
 import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/models/base_object.dart';
 
 
 class QuestionsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
@@ -22,5 +24,10 @@ class QuestionsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo 
   @override
   String get uploadUrl {
     return Urls.questions(channelId: channel.id);
+  }
+
+  @override
+  BaseObject toObject(Map dictionary) {
+    return Question(dictionary);
   }
 }

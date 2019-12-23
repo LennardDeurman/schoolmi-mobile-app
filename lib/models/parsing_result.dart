@@ -1,6 +1,7 @@
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/extensions/dates.dart';
+import 'package:flutter/foundation.dart';
 
 class ParsingResult {
 
@@ -12,12 +13,12 @@ class ParsingResult {
 
   ParsingResult (this.objects);
 
-  ParsingResult.fromCacheDictionary(Map<String, dynamic> dictionary) {
+  ParsingResult.fromCacheDictionary(Map<String, dynamic> dictionary, { @required ParseObjectCallback toObject}) {
       var results = dictionary[Keys.results];
       if (results != null) {
         List resultList = results;
         objects = resultList.map((dictionary) {
-          return BaseObject(dictionary);
+          return toObject(dictionary);
         });
       }
       dateTime = Dates.parse(dictionary[Keys.dateModified]);

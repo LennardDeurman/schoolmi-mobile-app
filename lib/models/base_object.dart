@@ -3,7 +3,9 @@ import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/profile.dart';
 
-class BaseObject with ParsableObject  {
+typedef ParseObjectCallback = BaseObject Function(Map dictionary);
+
+abstract class BaseObject with ParsableObject  {
 
   bool isDeleted;
   int id;
