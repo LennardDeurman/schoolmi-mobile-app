@@ -3,6 +3,7 @@ import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/extensions/object_with_colorindex.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
 import 'package:schoolmi/models/parsable_object.dart';
+import 'package:schoolmi/network/auth/login_result.dart';
 
 class Channel extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
 

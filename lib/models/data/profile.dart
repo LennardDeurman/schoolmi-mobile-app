@@ -95,6 +95,7 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
     String jsonStr = json.encode(profile.toDictionary());
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(storageKey, jsonStr);
+
   }
 
   static Future<Profile> cachedProfile() async {
@@ -104,7 +105,7 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
       Map<String, dynamic> jsonMap = json.decode(jsonStr) as Map;
       return Profile(jsonMap);
     }
-    return null;
+    return Profile({});
   }
 
 

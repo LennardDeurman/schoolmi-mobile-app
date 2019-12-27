@@ -15,6 +15,7 @@ class DefaultButton extends StatelessWidget {
   final EdgeInsets padding;
   final ButtonType buttonType;
   final ShapeBorder shape;
+  final Key key;
 
   static EdgeInsets defaultPadding = EdgeInsets.symmetric(vertical: 15.0, horizontal: 40.0);
 
@@ -32,7 +33,8 @@ class DefaultButton extends StatelessWidget {
     );
   }
 
-  DefaultButton ({ this.backgroundColor = BrandColors.blue, this.isLoading = false, this.onPressed, this.padding, this.shape, this.buttonType = ButtonType.flat, @required this.child });
+  DefaultButton ({ this.backgroundColor = BrandColors.blue, this.isLoading = false, this.key, this.onPressed, this.padding, this.shape, this.buttonType = ButtonType.flat, @required this.child }) :
+      super(key: key);
 
   @override
   Widget build(BuildContext context) {

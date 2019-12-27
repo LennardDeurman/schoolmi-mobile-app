@@ -9,7 +9,7 @@ class ParsingResultBar extends StatelessWidget {
   final ParsingResult parsingResult;
   final bool isLoading;
 
-  ParsingResultBar (this.parsingResult, { bool this.isLoading });
+  ParsingResultBar (this.parsingResult, { this.isLoading });
 
   @override
   Widget build(BuildContext context) {

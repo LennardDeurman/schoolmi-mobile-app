@@ -67,7 +67,7 @@ class AuthManager extends BaseManager {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
     if (firebaseUser != null) {
       if (firebaseUser.isEmailVerified) {
-        UserService().refreshStreamState(firebaseUser);
+        UserService().refreshStream(firebaseUser);
         return;
       } else {
         throw new LoginException(LoginError.emailNotVerified, "email was still not verified");

@@ -1,4 +1,3 @@
-import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/constants/keys.dart';
 
 class ObjectWithComments  {

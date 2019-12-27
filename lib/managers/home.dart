@@ -2,6 +2,7 @@ import 'package:schoolmi/managers/base_manager.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/managers/profile.dart';
+import 'package:schoolmi/network/parsers/profile.dart';
 import 'dart:async';
 
 import 'package:schoolmi/network/parsers/questions.dart';
@@ -31,36 +32,45 @@ class HomeManager extends BaseManager {
   Future<InitializationResult> initialize() async {
     Completer<InitializationResult> completer = new Completer();
 
-
-
-    UserService().refreshData(forceRefresh: true).then((_) {
-      if (UserService().hasActiveChannel) {
+    executeAsync(Future.wait([downloadProfile(), downloadChannels()]).then((_) {
+      if (UserService().loginResult.hasActiveChannel) {
         completer.complete(InitializationResult.ready);
       } else {
         completer.complete(InitializationResult.noChannelAvailable);
       }
     }).catchError((e) {
-
-      // An error occured in the server connection (for example user is offline). The app is usable if and only if the active channel is already present.
-
-      if (!UserService().hasActiveChannel) {
+      if (!UserService().loginResult.hasActiveChannel) {
         completer.complete(InitializationResult.serverConnectionError);
       }
+    }));
 
-    });
+    return completer.future;
 
-    return completer.future.whenComplete(() {
-      notifyListeners();
+  }
+
+  Future downloadProfile() {
+    return UserService().profileParser.download().then((result) {
+      UserService().loginResult.profileResult = result;
     });
   }
 
-  Future switchToChannel(Channel channel) {
-
+  Future downloadChannels() {
+    return UserService().myChannelsParser.download().then((result) {
+      UserService().loginResult.myChannelsResult = result;
+    });
   }
 
   Future leaveChannel() {
 
   }
+
+  void switchToChannel(Channel channel) {
+    UserService().loginResult.activeChannel = channel;
+    notifyListeners();
+  }
+
+
+
 
 
 }

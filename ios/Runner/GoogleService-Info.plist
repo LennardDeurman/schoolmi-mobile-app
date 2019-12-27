@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>871081290080-4j7a7nn7rb84p4m0l1245vkbkptmm4i8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.871081290080-4j7a7nn7rb84p4m0l1245vkbkptmm4i8</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC4Ag09F2CE8ZWD50TGCetN6ZPvd8S7DKk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>871081290080</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.deurman.schoolmi</string>
+	<key>PROJECT_ID</key>
+	<string>schoolmi-4c5ac</string>
+	<key>STORAGE_BUCKET</key>
+	<string>schoolmi-4c5ac.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:871081290080:ios:80bf5018b53afda8e1d605</string>
+	<key>DATABASE_URL</key>
+	<string>https://schoolmi-4c5ac.firebaseio.com</string>
+</dict>
+</plist>

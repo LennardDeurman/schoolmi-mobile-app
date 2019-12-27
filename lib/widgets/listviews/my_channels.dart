@@ -1,7 +1,7 @@
+import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/cells/add_channel.dart';
 import 'package:schoolmi/widgets/cells/channel.dart';
-import 'package:schoolmi/network/parsers/channels.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/models/base_object.dart';
@@ -13,7 +13,9 @@ class MyChannelsListView extends ParserListView  {
   final Function(Channel) onChannelPressed;
   final Function onAddChannelPressed;
 
-  MyChannelsListView (ChannelsParser parser, { this.onAddChannelPressed, this.onChannelPressed }) : super(parser);
+  final HomeManager homeManager;
+
+  MyChannelsListView (this.homeManager, { this.onAddChannelPressed, this.onChannelPressed }) : super(UserService().myChannelsParser);
 
   @override
   State<StatefulWidget> createState() {
@@ -31,7 +33,7 @@ class MyChannelsListViewState extends ParserListViewState<MyChannelsListView> {
 
   @override
   Future performRefresh() {
-    return UserService().refreshData(forceRefresh: true);
+    return widget.homeManager.downloadChannels();
   }
 
   @override

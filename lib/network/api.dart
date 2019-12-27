@@ -24,7 +24,16 @@ class Headers {
 
 class Api {
 
+  static String dummyToken;
 
+  static Future<String> getIdToken() async {
+    if (dummyToken != null) {
+      return dummyToken;
+    }
+
+    String firebaseToken = await (await FirebaseAuth.instance.currentUser()).getIdToken();
+    return firebaseToken;
+  }
 
   static void _executeJsonRequest(String url, Completer completer,
       Function(http.Response response) handleSuccessAction, { Map<String, dynamic> postDictionary, HttpMethod httpMethod } ) async {
@@ -35,7 +44,7 @@ class Api {
 
     Map<String, String> headers = {
       Headers.contentType: Headers.mediaTypeJson,
-      Headers.idToken: await (await FirebaseAuth.instance.currentUser()).getIdToken()
+      Headers.idToken: await getIdToken(),
     };
 
     var action;
@@ -65,7 +74,7 @@ class Api {
     parser.downloadStatusInfo.downloadDidStart();
 
     _executeJsonRequest(parser.downloadUrl, completer, (http.Response response) {
-      List<BaseObject> baseObjects = parser.objectsFromResponse(response);
+      var baseObjects = parser.objectsFromResponse(response);
       completer.complete(baseObjects);
     });
 
@@ -151,7 +160,7 @@ class Api {
   }) async { 
     Completer<Upload> completer = Completer();
     Map<String, String> headers = {
-      Headers.idToken: await (await FirebaseAuth.instance.currentUser()).getIdToken(),
+      Headers.idToken: await getIdToken(),
       Headers.contentType: Headers.mediaTypeJson
     };
 

@@ -26,7 +26,7 @@ class ChannelEditManager extends ChildManager with UploadInterface<Channel> {
   Future<List<Channel>> saveUploadObjects() {
     Future<List<Channel>> uploadFuture = parser.uploadObjects(this.uploadObjects);
     uploadFuture.then((List<Channel> channels) {
-      if (channels.first != null) {
+      if (channels.length > 0) {
         this.uploadObject = channels.first;
         this.homeManager.switchToChannel(channels.first);
       }

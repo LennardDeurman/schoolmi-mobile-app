@@ -19,7 +19,7 @@ class ParsingResult {
         List resultList = results;
         objects = resultList.map((dictionary) {
           return toObject(dictionary);
-        });
+        }).toList();
       }
       dateTime = Dates.parse(dictionary[Keys.dateModified]);
       retrievedOnline = false;
@@ -36,6 +36,9 @@ class ParsingResult {
   }
 
   BaseObject get object {
+    if (objects.length == 0) {
+      return null;
+    }
     return objects.first;
   }
 }

@@ -24,23 +24,24 @@ class DefaultTextField extends StatelessWidget {
     final FocusNode focusNode;
     final int maxLines;
     final TextFieldType textFieldType;
+    final Key key;
 
 
     DefaultTextField ({ this.title, this.textFieldType = TextFieldType.regular, this.hint, this.obscureText = false, this.showClearOption = false, this.validator,
       this.onSaved, this.onSubmitted, this.onChanged, this.onEditingComplete, this.textCapitalization, this.textInputType, this.controller,
-      this.focusNode, this.maxLines
-    });
+      this.focusNode, this.maxLines, this.key
+    }) : super(key: key);
 
     InputBorder get errorBorder {
       return OutlineInputBorder(
-        borderSide: BorderSide(color: BrandColors.blueGrey),
+        borderSide: BorderSide(color: BrandColors.red),
         borderRadius: BorderRadius.circular(5.0),
       );
     }
 
     InputBorder get defaultBorder {
       return OutlineInputBorder(
-        borderSide: BorderSide(color: BrandColors.red),
+        borderSide: BorderSide(color: BrandColors.blueGrey),
         borderRadius: BorderRadius.circular(5.0),
       );
     }
@@ -79,6 +80,7 @@ class DefaultTextField extends StatelessWidget {
         textCapitalization: TextCapitalization.sentences,
         textInputAction: TextInputAction.done,
         onEditingComplete: onEditingComplete,
+        obscureText: obscureText,
         decoration: InputDecoration(
           fillColor: BrandColors.blueGrey,
           filled: true,

@@ -1,4 +1,3 @@
-import 'package:schoolmi/managers/base_manager.dart';
 import 'package:schoolmi/managers/child_manager.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/models/data/channel.dart';

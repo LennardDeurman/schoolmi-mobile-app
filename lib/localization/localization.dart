@@ -52,7 +52,7 @@ class Localization with LoginLocalization,  GlobalLocalization, ProfileLocalizat
   }
 
   String buildIndexString(String noun, int index, int maxIndex) {
-    return "${noun} ${index}/${maxIndex}";
+    return "$noun $index/$maxIndex";
   }
 
   String buildUsersString(List<Profile> profiles, { int maxUsersLength = 10} ) {

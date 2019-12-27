@@ -5,7 +5,7 @@ abstract class ParsableObject {
 
   void parse(Map<String, dynamic> dictionary);
 
-  static List parseObjectsList(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
+  static List<BaseObject> parseObjectsList(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
     var dictionaryValuesList = dictionary[key];
     if (dictionaryValuesList != null) {
       List<BaseObject> baseObjects = List<BaseObject>();

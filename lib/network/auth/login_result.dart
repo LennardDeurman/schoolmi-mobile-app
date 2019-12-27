@@ -12,7 +12,9 @@ class LoginResult {
 
 
   LoginResult ({ @required ParsingResult myChannelsResult, @required this.profileResult, @required this.firebaseUser }) {
-    _activeChannel = myChannelsResult.objects.first;
+    if (myChannelsResult.objects.length > 0) {
+      _activeChannel = myChannelsResult.objects.first;
+    }
     _myChannelsResult = myChannelsResult;
   }
 
@@ -24,24 +26,39 @@ class LoginResult {
     return _activeChannel;
   }
 
+  bool get hasActiveChannel {
+    return _activeChannel != null;
+  }
+
   set activeChannel (Channel channel) {
     if (!isAuthorizedChannel(channel)) {
       _myChannelsResult.add(channel);
     }
     _activeChannel = channel;
+
   }
 
   get myChannelsResult {
     return _myChannelsResult;
   }
 
-  set myChannelsResult (ParsingResult parsingResult) {
+  set myChannelsResult (ParsingResult parsingResult) { //A new channels result was parsed in refreshing
+
+    //Possible cases: a channel is no longer valid, no channels exist anymore, or there is a new active channel
+    //If case of a new active channel, first check whether the old one is still valid
+
+    _myChannelsResult = parsingResult;
+
     if (_activeChannel != null) {
       if (isAuthorizedChannel(_activeChannel)) {
         return;
       }
     }
-    _activeChannel = parsingResult.objects.first;
+    if (parsingResult.objects.length > 0) {
+      _activeChannel = parsingResult.objects.first;
+    } else {
+      _activeChannel = null;
+    }
   }
 
 

@@ -15,7 +15,7 @@ class CacheManager {
     Map<String, dynamic> cacheObject = {
       Keys.results: objects.map((BaseObject baseObject) {
         return baseObject.toDictionary();
-      }),
+      }).toList(),
       Keys.dateModified: Dates.format(DateTime.now())
     };
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

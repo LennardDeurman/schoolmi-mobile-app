@@ -3,7 +3,6 @@ import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/upload.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/models/data/profile.dart';
-import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/managers/upload_interface.dart';
 
 class ProfileManager extends ChildManager with UploadInterface<Profile> {

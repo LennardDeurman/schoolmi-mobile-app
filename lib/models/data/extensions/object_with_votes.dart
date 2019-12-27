@@ -39,7 +39,7 @@ class VotesInfo extends ParsableObject {
     }
   }
 
-  void set myVoteState (int value) {
+  set myVoteState (int value) {
     _clearCurrentVoteState();
 
     vote += value;

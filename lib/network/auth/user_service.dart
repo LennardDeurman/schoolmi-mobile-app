@@ -13,7 +13,7 @@ class UserService {
   final ProfileParser profileParser = ProfileParser();
   final ChannelsParser myChannelsParser = ChannelsParser();
 
-  StreamController<LoginResult> _loginStreamController = new StreamController();
+  StreamController<LoginResult> _loginStreamController = StreamController();
 
   LoginResult _loginResult;
 
@@ -27,15 +27,15 @@ class UserService {
     FirebaseAuth.instance.onAuthStateChanged.listen((FirebaseUser firebaseUser) async {
       if (firebaseUser != null) {
         if (firebaseUser.isEmailVerified) {
-          refreshStreamState(firebaseUser);
-        } else {
-          _sendLoginResult(null);
+          _sendLoginResult(await loadData(firebaseUser));
+          return;
         }
       } else {
         if (_loginResult != null) {
           _destroyData(_loginResult);
         }
       }
+      _sendLoginResult(null);
     });
 
     _loginStreamController.onCancel = () {
@@ -45,7 +45,6 @@ class UserService {
 
   }
 
-
   Stream get loginStream {
     return _loginStreamController.stream;
   }
@@ -54,47 +53,42 @@ class UserService {
     return _loginResult;
   }
 
-  bool get hasActiveChannel {
-    if (_loginResult != null) {
-      return _loginResult.activeChannel != null;
-    }
-    return false;
-  }
-
   Future<LoginResult> loadData(FirebaseUser firebaseUser, { bool forceRefresh = false }) async {
 
     ParsingResult profileResult = await profileParser.loadCachedData();
     if (profileResult == null || forceRefresh) {
-      profileResult = ParsingResult([await createProfile()]);
+      profileResult = ParsingResult([await createProfile(firebaseUser)]);
     }
 
     ParsingResult myChannelsResult = await myChannelsParser.loadCachedData();
-    if (myChannelsResult != null || forceRefresh) {
+    if (myChannelsResult == null || forceRefresh) {
       myChannelsResult = await myChannelsParser.download();
     }
 
     return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }
 
-  Future<Profile> createProfile() async {
+  Future<Profile> createProfile(FirebaseUser firebaseUser) async {
     ParsingResult parsingResult = await profileParser.download();
     Profile profile = parsingResult.object;
     if (profile == null) {
-      profile = await profileParser.uploadObject(await Profile.cachedProfile());
+      var cachedProfile = await Profile.cachedProfile();
+      cachedProfile.email = firebaseUser.email;
+      profile = await profileParser.uploadObject(cachedProfile);
     }
     return profile;
   }
 
   Future login({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    ParsingResult profileResult =  ParsingResult([await createProfile()]);
+    ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
     ParsingResult myChannelsResult = await myChannelsParser.download();
     return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }
 
   Future register({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    ParsingResult profileResult =  ParsingResult([await createProfile()]);
+    ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
     ParsingResult myChannelsResult = await myChannelsParser.download();
     return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }
@@ -107,13 +101,10 @@ class UserService {
     await FirebaseAuth.instance.signOut();
   }
 
-  Future refreshData({ bool forceRefresh = false }) {
-    return loadData(_loginResult.firebaseUser, forceRefresh: forceRefresh);
-  }
-
-  Future refreshStreamState(FirebaseUser firebaseUser) async {
+  Future refreshStream(FirebaseUser firebaseUser) async {
     _sendLoginResult(await loadData(firebaseUser));
   }
+
 
   LoginResult _sendLoginResult(LoginResult loginResult) {
     _loginResult = loginResult;

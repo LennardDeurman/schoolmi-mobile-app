@@ -19,6 +19,15 @@ import 'package:schoolmi/localization/localization.dart';
 
 
 class AuthPage extends StatefulWidget {
+
+
+  //Used for testing
+
+  static Key passwordKey = Key("password");
+  static Key emailKey = Key("email");
+  static Key authButtonKey = Key("authButton");
+
+
   AuthPage();
   @override
   State<StatefulWidget> createState() {
@@ -68,6 +77,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   Widget _buildEmailTextField() {
     return  DefaultTextField(
       title: Localization().getValue(Localization().email),
+      key: AuthPage.emailKey,
       hint: Localization().getValue(Localization().emailHint),
       textInputType: TextInputType.emailAddress,
       onSaved: (String value) {
@@ -80,6 +90,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   Widget _buildPasswordTextField() {
     return  DefaultTextField(
       title: Localization().getValue(Localization().password),
+      key: AuthPage.passwordKey,
       hint: Localization().getValue(Localization().passwordHint),
       obscureText: true,
       onSaved: (String value) {
@@ -308,7 +319,8 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
       return Align(
         alignment: Alignment.centerRight,
         child: DefaultButton(
-          child: RegularLabel(title: _getActionTitle()),
+          key: AuthPage.authButtonKey,
+          child: RegularLabel(title: _getActionTitle(), color: Colors.white, fontWeight: FontWeight.bold),
           isLoading: _authManager.isLoading,
           onPressed: _authButtonPressed,
         ),

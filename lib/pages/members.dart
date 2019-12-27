@@ -3,7 +3,6 @@ import 'package:schoolmi/managers/members.dart';
 import 'package:schoolmi/pages/add_members.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
 import 'package:schoolmi/widgets/listviews/members.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/localization/localization.dart';
 
 class MembersPage extends StatefulWidget {

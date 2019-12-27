@@ -1,4 +1,3 @@
-import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:schoolmi/localization/localization.dart';

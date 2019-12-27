@@ -15,6 +15,9 @@ abstract class UploadInterface<T extends BaseObject> {
   }
 
   T get uploadObject {
+    if (uploadObjects.length == 0) {
+      return null;
+    }
     return uploadObjects.first;
   }
 

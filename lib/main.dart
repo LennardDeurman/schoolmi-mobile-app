@@ -6,8 +6,14 @@ import 'package:schoolmi/pages/auth.dart';
 import 'package:schoolmi/pages/home.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/auth/login_result.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() => runApp(MainApp());
+
+void main() {
+  Localization localization = Localization();
+  initializeDateFormatting(localization.locale);
+  runApp(MainApp());
+}
 
 class MainApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -43,7 +49,6 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatelessWidget {
-
 
   @override
   Widget build(BuildContext context) {

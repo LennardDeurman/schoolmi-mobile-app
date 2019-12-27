@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
-import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/profile.dart';
 import 'package:schoolmi/managers/upload.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
@@ -144,7 +143,7 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
       key: _refreshKey,
       onRefresh: () async {
         await _refreshKey.currentState.show();
-        await UserService().refreshData(forceRefresh: true);
+        await widget.profileManager.homeManager.downloadProfile();
       },
       child: ListView(
         children: <Widget>[

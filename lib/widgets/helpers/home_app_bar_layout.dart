@@ -31,7 +31,7 @@ class HomeAppBarLayout {
 
 
   String get title {
-    if (UserService().hasActiveChannel) {
+    if (UserService().loginResult.hasActiveChannel) {
       return UserService().loginResult.activeChannel.name;
     }
 
