@@ -1,5 +1,6 @@
 import 'package:schoolmi/managers/channel_details.dart';
 import 'package:schoolmi/managers/home.dart';
+import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/managers/upload_interface.dart';
 import 'package:schoolmi/models/data/tag.dart';
 import 'package:schoolmi/network/parsers/tags.dart';
@@ -9,8 +10,14 @@ class TagsManager extends ChannelDetailsChildManager with UploadInterface<Tag> {
   TagsManager (HomeManager homeManager) : super(homeManager);
 
   @override
+  void onChannelLoad(Channel channel) {
+    parser = TagsParser(channel);
+    notifyListeners();
+  }
+
+  @override
   Future<List<Tag>> saveUploadObjects() {
-    return executeAsync(performUpload(parser));
+    return executeAsync<List<Tag>>(wrapUpload(performUpload(parser)));
   }
 
   bool isQueryValid() {

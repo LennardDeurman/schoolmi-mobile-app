@@ -18,7 +18,8 @@ class QuestionsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo 
     if (questionId != null) {
       return Urls.questionDetails(channelId: channel.id, questionId: questionId);
     }
-    return Urls.questions(channelId: channel.id, queryInfo: this.queryInfo);
+    String url = Urls.questions(channelId: channel.id, queryInfo: this.queryInfo);
+    return url;
   }
 
   @override

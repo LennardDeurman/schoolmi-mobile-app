@@ -48,18 +48,23 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: buildAppBar(context),
-      floatingActionButton: buildFloatingActionButton(context),
-      body: ScopedModel<ProfileManager>(
-          model: widget.profileManager, 
-          child: ScopedModel<UploadManager>(
-            model: widget.profileManager.profileImageUploadManager,
-            child: buildBody(context),
+    return  ScopedModel<ProfileManager>(
+        model: widget.profileManager,
+        child: ScopedModel<UploadManager>(
+          model: widget.profileManager.profileImageUploadManager,
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: buildAppBar(context),
+            floatingActionButton: buildFloatingActionButton(context),
+            body: ScopedModelDescendant<ProfileManager>(
+              builder: (BuildContext context, Widget widget, ProfileManager manager) {
+                return buildBody(context);
+              }
+            )
           )
-      ),
+        )
     );
+
   }
 
 
@@ -116,7 +121,7 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
           ),
           ListItem(
               trailing: DefaultButton(
-                child: RegularLabel(title: Localization().getValue(Localization().changeProfilePicture)),
+                child: RegularLabel(color: Colors.white, title: Localization().getValue(Localization().changeProfilePicture)),
                 onPressed: () {
 
                   FileSelector fileSelector = FileSelector(onFilesSelected: (List<File> files) {
@@ -142,12 +147,11 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
     return RefreshIndicator(
       key: _refreshKey,
       onRefresh: () async {
-        await _refreshKey.currentState.show();
-        await widget.profileManager.homeManager.downloadProfile();
+        await widget.profileManager.refresh();
       },
       child: ListView(
         children: <Widget>[
-          ParsingResultBar(UserService().loginResult.profileResult, isLoading: UserService().profileParser.isLoading || UserService().myChannelsParser.isLoading),
+          ParsingResultBar(UserService().loginResult.profileResult, isLoading: UserService().profileParser.isLoading),
           ListItem(
             title: TitleLabel(
               title: widget.profileManager.profile.fullName,
@@ -182,7 +186,9 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
                 title:  Localization().getValue(Localization().logout),
               ),
               onPressed: () async {
-                await widget.profileManager.logout();
+                UserService().logout().then((_) {
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                });
               }
           )
         ],
@@ -208,7 +214,19 @@ class _ProfilePageState extends EditableLayoutState<ProfilePage> {
   }
 
   @override
-  void onClickFinishEditing() {
+  void onFabPressed() async {
+    if (isEditing) {
+      bool usernameValid = await widget.profileManager.executeAsync<bool>(widget.profileManager.isUsernameValid(_usernameTextController.text));
+      if (!usernameValid) {
+        showSnackBar(message: Localization().getValue(Localization().errorUsernameExists), isError: true, scaffoldKey: _scaffoldKey);
+        return;
+      }
+    }
+    super.onFabPressed();
+  }
+
+  @override
+  void onClickFinishEditing() async {
     if (_profileFormKey.currentState.validate()) {
       _profileFormKey.currentState.save();
       widget.profileManager.saveUploadObjects().then((_) {

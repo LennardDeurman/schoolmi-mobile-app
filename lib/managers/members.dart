@@ -20,7 +20,7 @@ class AddMembersManager extends BaseManager with UploadInterface<Member> {
 
   @override
   Future<List<Member>> saveUploadObjects() {
-    return executeAsync(performUpload(membersManager.parser));
+    return executeAsync<List<Member>>(wrapUpload(performUpload(membersManager.parser)));
   }
 
   void add(String email) {
@@ -45,7 +45,6 @@ class MembersManager extends ChannelDetailsChildManager with UploadInterface<Mem
 
   MembersManager (HomeManager homeManager) : super(homeManager);
 
-
   @override
   void onChannelLoad(Channel channel) {
     parser = new MembersParser(channel);
@@ -54,12 +53,7 @@ class MembersManager extends ChannelDetailsChildManager with UploadInterface<Mem
 
   @override
   Future<List<Member>> saveUploadObjects() {
-    return executeAsync(performUpload(parser));
+    return executeAsync<List<Member>>(wrapUpload(performUpload(parser)));
   }
-
-
-
-
-
 
 }

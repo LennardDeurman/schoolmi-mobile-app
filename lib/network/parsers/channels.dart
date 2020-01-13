@@ -37,6 +37,7 @@ class ChannelsParser extends NetworkParser with ParserWithQueryInfo {
   @override
   List<BaseObject> objectsFromResponse(http.Response response) {
     List<BaseObject> objectsFromServer = super.objectsFromResponse(response);
+
     if (!showOpenChannels && isQueryInfoEmpty()) {
       CacheManager.save(CacheManager.myChannels, objectsFromServer);
     }

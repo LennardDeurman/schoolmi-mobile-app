@@ -17,7 +17,7 @@ abstract class ParserListView extends StatefulWidget {
 
   final NetworkParser parser;
 
-  ParserListView (this.parser);
+  ParserListView (this.parser, { Key key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState();
@@ -31,13 +31,23 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
 
   ParsingResult _parsingResult;
 
+  ParsingResult _preSearchParsingResult;
+
   Exception _exception;
+
+  bool _isLoading;
 
   int paginationLimit = 20;
 
   set parsingResult (ParsingResult result) {
     setState(() {
       _parsingResult = result;
+    });
+  }
+
+  set exception (Exception exception) {
+    setState(() {
+      _exception = exception;
     });
   }
 
@@ -49,40 +59,57 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
     return 1;
   }
 
+  set isLoading (bool value) {
+    setState(() {
+      _isLoading = value;
+    });
+  }
+
   bool get isLoading {
-    return widget.parser.downloadStatusInfo.downloadStatus == DownloadStatus.downloading;
+    return _isLoading;
   }
 
   bool get canLoadMore {
     if (_parsingResult != null) {
-      return _parsingResult.objects.length % paginationLimit == 0 && _parsingResult.retrievedOnline; //If parsing result not retrieved online, then we cannot load more
+      return parsingResult.objects.length > 0 && _parsingResult.objects.length % paginationLimit == 0 && _parsingResult.retrievedOnline; //If parsing result not retrieved online, then we cannot load more
     }
     return false;
   }
 
+
+  void savePreSearchState() {
+    _preSearchParsingResult = _parsingResult;
+  }
+
+  void recoverPreSearchState() {
+    if (_preSearchParsingResult != null) {
+      parsingResult = _preSearchParsingResult;
+    } else {
+      refreshIndicatorKey.currentState.show();
+    }
+  }
+
   Widget buildLoadMoreWidget() {
-    return StreamBuilder<DownloadStatus>(builder: (BuildContext context, AsyncSnapshot<DownloadStatus> snapshot) {
-      return Visibility(child: Container(
-        padding: EdgeInsets.all(20),
-        child: Center(
-            child: DefaultButton(
-              child: RegularLabel(title: Localization().getValue(Localization().loadMore)),
-              isLoading: isLoading,
-              onPressed: () {
-                if (isLoading) {
-                  return;
-                }
+    return Visibility(child: Container(
+      padding: EdgeInsets.all(20),
+      child: Center(
+          child: DefaultButton(
+            child: RegularLabel(title: Localization().getValue(Localization().loadMore)),
+            isLoading: isLoading,
+            onPressed: () {
+              if (isLoading) {
+                return;
+              }
 
-                setState(() async {
-                  ParsingResult resultToAppend = await widget.parser.download();
-                  _parsingResult.appendResult(resultToAppend);
-                });
+              setState(() async {
+                ParsingResult resultToAppend = await widget.parser.download();
+                _parsingResult.appendResult(resultToAppend);
+              });
 
-              },
-            )
-        ),
-      ), visible: canLoadMore);
-    }, stream: widget.parser.downloadStatusInfo.downloadStatusStream);
+            },
+          )
+      ),
+    ), visible: canLoadMore);
   }
 
   Widget buildNoResultsBackground() {
@@ -150,6 +177,10 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
 
 
   Widget buildListView() {
+    if (_parsingResult == null) {
+      return ListView();
+    }
+
     return AdvancedListView.builder(
       headerBuilder: buildHeader,
       itemBuilder: buildItem,
@@ -175,7 +206,6 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
   }
 
   Future performRefresh() async {
-    refreshIndicatorKey.currentState.show();
     parsingResult = await widget.parser.download().catchError((e) {
       showRefreshError(context);
     });
@@ -187,13 +217,16 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
 
   void performLoad() {
     //First load the cached data if available, data can be not-updated, so don't allow
+    isLoading = true;
     widget.parser.loadCachedData().then((ParsingResult result) {
       parsingResult = result;
-    }).catchError((e) {
-      _exception = e;
     }).whenComplete(() {
       widget.parser.download().then((ParsingResult result) {
         parsingResult = result;
+      }).catchError((e) {
+        exception = e;
+      }).whenComplete(() {
+        isLoading = false;
       });
     });
   }

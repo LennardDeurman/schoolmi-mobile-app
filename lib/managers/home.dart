@@ -1,10 +1,9 @@
 import 'package:schoolmi/managers/base_manager.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/network/api.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/managers/profile.dart';
-import 'package:schoolmi/network/parsers/profile.dart';
 import 'dart:async';
-
 import 'package:schoolmi/network/parsers/questions.dart';
 
 enum InitializationResult {
@@ -61,7 +60,17 @@ class HomeManager extends BaseManager {
   }
 
   Future leaveChannel() {
-
+    var channels = UserService().loginResult.channels.where((Channel channel) {
+      return !UserService().loginResult.isActiveChannel(channel);
+    });
+    Channel newActiveChannel;
+    if (channels.length > 0) {
+      newActiveChannel = channels.first;
+    }
+    UserService().loginResult.myChannelsResult.objects = channels;
+    int currentActiveChannelId = UserService().loginResult.activeChannel.id;
+    switchToChannel(newActiveChannel);
+    return Api.leaveChannel(channelId: currentActiveChannelId);
   }
 
   void switchToChannel(Channel channel) {

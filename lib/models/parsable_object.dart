@@ -12,6 +12,7 @@ abstract class ParsableObject {
       for (Map<String, dynamic> dictionaryValue in dictionaryValuesList) {
         BaseObject baseObject = toObject(dictionaryValue);
         baseObject.parse(dictionaryValue);
+        baseObjects.add(baseObject);
       }
       return baseObjects;
     }

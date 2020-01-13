@@ -86,6 +86,7 @@ abstract class EditableLayoutState<T extends StatefulWidget> extends State<T> {
     } else {
       onClickStartEditing();
     }
+    isEditing = !isEditing;
   }
 
 

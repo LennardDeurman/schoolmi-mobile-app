@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/managers/home.dart';
-import 'package:schoolmi/network/download_info.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/widgets/message_container.dart';

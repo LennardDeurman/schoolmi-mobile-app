@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   HomeManager _homeManager = new HomeManager();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey<QuestionsListViewState> _questionsListState = GlobalKey<QuestionsListViewState>();
+  GlobalKey<QuestionsListViewState> _questionsListKey = GlobalKey<QuestionsListViewState>();
   HomeAppBarLayout _homeAppBarLayout;
   ActiveChannelLayout _activeChannelLayout;
   Presenter _presenter;
@@ -41,17 +41,16 @@ class _HomePageState extends State<HomePage> {
           _scaffoldKey.currentState.openDrawer();
         },
         onShowSearchPressed: () {
+          _questionsListKey.currentState.savePreSearchState();
           setState(() {
             _homeAppBarLayout.isSearch = true;
           });
         },
-        onMyProfilePressed: _presenter.showMyProfile,
+        onMyProfilePressed: () {
+          _presenter.showMyProfile(_homeManager.profileManager);
+        },
         onPerformSearchPressed: _onPerformSearchPressed,
-        onCancelSearchPressed: () {
-          setState(() {
-            _homeAppBarLayout.isSearch = false;
-          });
-        }
+        onCancelSearchPressed: _onSearchCancelled
     );
 
     _homeManager.initialize().then((InitializationResult initializationResult) {
@@ -63,13 +62,19 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _onSearchCancelled() {
+    _questionsListKey.currentState.recoverPreSearchState();
+    setState(() {
+      _homeAppBarLayout.isSearch = false;
+    });
+  }
 
   void _onPerformSearchPressed(String search) async {
-    ParserWithQueryInfo parser = _questionsListState.currentState.widget.parser as ParserWithQueryInfo;
+    ParserWithQueryInfo parser = _questionsListKey.currentState.widget.parser as ParserWithQueryInfo;
     parser.queryInfo = new QueryInfo(
       search: search
     );
-    await _questionsListState.currentState.performRefresh();
+    _questionsListKey.currentState.refreshIndicatorKey.currentState.show();
   }
 
 
@@ -83,7 +88,7 @@ class _HomePageState extends State<HomePage> {
         drawer: Drawer(),
         body: _activeChannelLayout.build(builder: (Channel channel) {
           _homeManager.questionsParser = QuestionsParser(channel);
-          return QuestionsListView(_homeManager.questionsParser, onQuestionPressed: _presenter.showQuestion);
+          return QuestionsListView(_homeManager.questionsParser, key: _questionsListKey, onQuestionPressed: _presenter.showQuestion);
         })
       ),
     );

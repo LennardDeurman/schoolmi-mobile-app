@@ -13,7 +13,7 @@ class QuestionsListView extends ParserListView  {
 
   final Function (Question) onQuestionPressed;
 
-  QuestionsListView (QuestionsParser parser, { @required this.onQuestionPressed  }) : super(parser);
+  QuestionsListView (QuestionsParser parser, { @required this.onQuestionPressed, Key key  }) : super(parser, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,6 +23,9 @@ class QuestionsListView extends ParserListView  {
 }
 
 class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
+
+  int orderIndex = 0;
+  int filterIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +37,10 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
               child: RequestOptionsBar(
                   filterOptionsBox,
                   orderOptionsBox,
-                  onOptionsChanged: () async {
+                  onOptionsChanged: ({int orderIndex, int filterIndex }) async {
+                    this.orderIndex = orderIndex;
+                    this.filterIndex = filterIndex;
                     refreshIndicatorKey.currentState.show();
-                    parsingResult = await widget.parser.download();
                   }
               ),
             ),
@@ -67,6 +71,7 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
       Localization().getValue(Localization().updatedQuestions): 5,
       Localization().getValue(Localization().unansweredQuestions): 4
     });
+    filterOptionsBox.selectedIndex = filterIndex;
     return filterOptionsBox;
   }
 
@@ -77,6 +82,7 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
       Localization().getValue(Localization().orderVotes): 3
     });
     orderOptionsBox.name = Localization().getValue(Localization().order);
+    orderOptionsBox.selectedIndex = orderIndex;
     return orderOptionsBox;
   }
 

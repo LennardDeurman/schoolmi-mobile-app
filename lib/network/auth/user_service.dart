@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/network/auth/login_result.dart';
 import 'package:schoolmi/network/parsers/profile.dart';
 import 'package:schoolmi/network/parsers/channels.dart';
@@ -13,7 +14,7 @@ class UserService {
   final ProfileParser profileParser = ProfileParser();
   final ChannelsParser myChannelsParser = ChannelsParser();
 
-  StreamController<LoginResult> _loginStreamController = StreamController();
+  StreamController<LoginResult> _loginStreamController = StreamController<LoginResult>.broadcast();
 
   LoginResult _loginResult;
 
@@ -55,17 +56,30 @@ class UserService {
 
   Future<LoginResult> loadData(FirebaseUser firebaseUser, { bool forceRefresh = false }) async {
 
-    ParsingResult profileResult = await profileParser.loadCachedData();
-    if (profileResult == null || forceRefresh) {
-      profileResult = ParsingResult([await createProfile(firebaseUser)]);
+    try {
+      ParsingResult profileResult = await  profileParser.loadCachedData();
+      if (profileResult == null || forceRefresh) {
+        Profile profile = await createProfile(firebaseUser);
+        if (profile == null) {
+          //Profile could not be created or loaded, logout
+          await FirebaseAuth.instance.signOut();
+          return null;
+        }
+        profileResult = ParsingResult([profile]);
+      }
+
+      ParsingResult myChannelsResult = await myChannelsParser.loadCachedData();
+      if (myChannelsResult == null || forceRefresh) {
+        myChannelsResult = await myChannelsParser.download();
+      }
+
+      return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
+    } catch (e) {
+      print("Something went wrong in login loadData();" + e.toString());
+      print("Forcing relogin");
+      return _sendLoginResult(null);
     }
 
-    ParsingResult myChannelsResult = await myChannelsParser.loadCachedData();
-    if (myChannelsResult == null || forceRefresh) {
-      myChannelsResult = await myChannelsParser.download();
-    }
-
-    return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }
 
   Future<Profile> createProfile(FirebaseUser firebaseUser) async {
@@ -74,7 +88,12 @@ class UserService {
     if (profile == null) {
       var cachedProfile = await Profile.cachedProfile();
       cachedProfile.email = firebaseUser.email;
-      profile = await profileParser.uploadObject(cachedProfile);
+      try {
+        profile = await profileParser.uploadObject(cachedProfile);
+      } catch (e) {
+        print("profile could not created!!");
+        print(e);
+      }
     }
     return profile;
   }
@@ -82,6 +101,9 @@ class UserService {
   Future login({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
     ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
+    if (profileResult.object == null) {
+      throw new InvalidOperationException("No profile could be created");
+    }
     ParsingResult myChannelsResult = await myChannelsParser.download();
     return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }
@@ -89,6 +111,9 @@ class UserService {
   Future register({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
+    if (profileResult.object == null) {
+      throw new InvalidOperationException("No profile could be created");
+    }
     ParsingResult myChannelsResult = await myChannelsParser.download();
     return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
   }

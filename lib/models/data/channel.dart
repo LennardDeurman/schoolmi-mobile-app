@@ -38,6 +38,7 @@ class Channel extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);
     parseColorIndex(dictionary);
+    id = dictionary[Keys.channelId];
     name = dictionary[Keys.name];
     description = dictionary[Keys.description];
     imageUrl = dictionary[Keys.imageUrl];
@@ -60,6 +61,7 @@ class Channel extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
     superDict[Keys.isActive] = isActiveChannel;
     superDict[Keys.canAddTags] = canAddTags;
     superDict[Keys.canPublicJoin] = canPublicJoin;
+    superDict[Keys.channelId] = id;
     return superDict;
   }
 

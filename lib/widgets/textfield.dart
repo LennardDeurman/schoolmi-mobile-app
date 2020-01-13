@@ -15,7 +15,7 @@ class DefaultTextField extends StatelessWidget {
     final bool showClearOption;
     final Function validator;
     final Function onSaved;
-    final Function onSubmitted;
+    final Function(String value) onSubmitted;
     final Function onChanged;
     final Function onEditingComplete;
     final TextCapitalization textCapitalization;
@@ -80,6 +80,7 @@ class DefaultTextField extends StatelessWidget {
         textCapitalization: TextCapitalization.sentences,
         textInputAction: TextInputAction.done,
         onEditingComplete: onEditingComplete,
+        onFieldSubmitted: onSubmitted,
         obscureText: obscureText,
         decoration: InputDecoration(
           fillColor: BrandColors.blueGrey,

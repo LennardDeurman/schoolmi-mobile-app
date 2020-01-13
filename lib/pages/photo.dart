@@ -20,12 +20,14 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
 
   PageController _pageController;
   List<PhotoViewGalleryPageOptions> _imageOptions;
-  int _currentPage;
+  int _currentPage = 0;
 
 
   @override
   void initState() {
     super.initState();
+
+    _currentPage = 0;
 
     _pageController = PageController(initialPage: this.widget.startAtIndex);
 
@@ -36,7 +38,7 @@ class _PhotoViewPageState extends State<PhotoViewPage> {
         maxScale: PhotoViewComputedScale.covered * 2,
       );
       return option;
-    });
+    }).toList();
 
   }
 

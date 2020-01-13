@@ -37,7 +37,6 @@ class ListItem extends StatelessWidget {
         ),
       ),
       subtitle: DefaultTextField(
-          title: title,
           textFieldType: TextFieldType.filled,
           hint: hintText,
           onSaved: onSaved,

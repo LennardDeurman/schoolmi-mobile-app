@@ -45,7 +45,7 @@ class RequestOptionsBarState extends State<RequestOptionsBar> {
                 });
 
                 if (this.widget.onOptionsChanged != null) {
-                  this.widget.onOptionsChanged();
+                  this.widget.onOptionsChanged(filterIndex: widget.filterOptionsBox.selectedIndex, orderIndex: widget.orderOptionsBox.selectedIndex);
                 }
 
               }, baseColor: Colors.black,

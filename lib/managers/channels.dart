@@ -12,7 +12,6 @@ class ChannelsManager extends ChildManager {
   ChannelsManager (HomeManager homeManager) : super(homeManager);
 
   Future join(Channel channel) {
-
     return Api.joinChannel(channelId: channel.id);
   }
 

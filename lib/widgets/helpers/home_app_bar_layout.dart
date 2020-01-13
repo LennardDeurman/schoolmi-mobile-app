@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/asset_paths.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
+import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/textfield.dart';
 import 'package:schoolmi/widgets/highlighted_widget.dart';
 import 'package:schoolmi/widgets/circle_image.dart';
 import 'package:schoolmi/localization/localization.dart';
-import 'package:schoolmi/network/download_info.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomeAppBarLayout {
 
@@ -50,6 +51,7 @@ class HomeAppBarLayout {
     return null;
   }
 
+
   PreferredSizeWidget _buildDefaultAppBar() {
     return AppBar(
 
@@ -69,8 +71,8 @@ class HomeAppBarLayout {
           ),
           onPressed: onShowSearchPressed,
         ),
-          StreamBuilder<DownloadStatus>(
-          builder: (BuildContext context, AsyncSnapshot<DownloadStatus> loginStatusSnapshot) {
+        ScopedModelDescendant<HomeManager>(
+          builder: (BuildContext context, Widget widget, HomeManager manager) {
             return IconButton(
               icon: Container(child: _buildProfileImage(),
                 width: 30,
@@ -78,13 +80,20 @@ class HomeAppBarLayout {
               ),
               onPressed: onMyProfilePressed,
             );
-          })
+          },
+        )
 
       ],
-      title: StreamBuilder<DownloadStatus>(
-          builder: (BuildContext context, AsyncSnapshot<DownloadStatus> loginStatusSnapshot) {
-            return TitleLabel(title: this.title, color: Colors.white);
-          })
+      title: ScopedModelDescendant<HomeManager>(
+        builder: (BuildContext context, Widget widget, HomeManager manager) {
+          return TitleLabel(
+            title: this.title,
+            color: Colors.white,
+          );
+        },
+      )
+
+
     );
   }
 
@@ -108,8 +117,8 @@ class HomeAppBarLayout {
                             hint: Localization().getValue(Localization().searchHint),
                             controller: _searchTextController,
                             showClearOption: true,
-                            onSubmitted: () {
-                              onPerformSearchPressed(_searchTextController.text);
+                            onSubmitted: (String value) {
+                              onPerformSearchPressed(value);
                             },
                           )
                         ],

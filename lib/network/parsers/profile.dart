@@ -25,7 +25,7 @@ class ProfileParser extends NetworkParser {
 
   @override
   List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
-    return super.objectsFromResponse(response);
+    return objectsFromResponse(response);
   }
 
 

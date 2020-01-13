@@ -13,6 +13,18 @@ class QueryInfo {
     }
     return false;
   }
+
+  static String queryParam(dynamic value) {
+    if (value is String) {
+      return value ?? "";
+    } else {
+      if (value != null) {
+        return value.toString();
+      }
+    }
+    return "";
+  }
+
 }
 
 class ParserWithQueryInfo {

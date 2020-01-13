@@ -130,11 +130,15 @@ class Api {
 
   static Future<bool> usernameValid(String username) {
     Completer<bool> completer = new Completer();
+    Map<String, dynamic> dictionary = {
+      Keys.username: username
+    };
+
     _executeJsonRequest(Urls.usernameExists, completer, (http.Response response) {
       final body = json.decode(response.body)[Keys.object];
       bool valid = body[Keys.valid];
       completer.complete(valid);
-    });
+    }, postDictionary: dictionary);
     return completer.future;
   }
 

@@ -61,7 +61,7 @@ abstract class NetworkParser {
   }
 
   Future<ParsingResult> loadCachedData() async {
-    throw new UnimplementedError("This method is not implemented for this parser");
+    return null;
   }
 
 

@@ -1,6 +1,7 @@
 import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/network/network_parser.dart';
 import 'package:schoolmi/models/base_object.dart';
+import 'dart:async';
 
 abstract class UploadInterface<T extends BaseObject> {
 
@@ -37,7 +38,20 @@ abstract class UploadInterface<T extends BaseObject> {
 
   Future<List<T>> saveUploadObjects();
 
-
+  Future<List<T>> wrapUpload(Future<List<BaseObject>> future) {
+    Completer<List<T>> completer = new Completer();
+    future.then((List<BaseObject> baseObjects) {
+      List<T> objects = [];
+      for (BaseObject baseObject in baseObjects ) {
+        T object = baseObject as T;
+        objects.add(object);
+      }
+      completer.complete(objects);
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+    return completer.future;
+  }
 
 
 

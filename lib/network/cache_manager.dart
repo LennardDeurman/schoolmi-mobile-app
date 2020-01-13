@@ -27,7 +27,8 @@ class CacheManager {
     String jsonStr = sharedPreferences.get(key);
     if (jsonStr != null) {
       Map<String, dynamic> cacheObject = json.decode(jsonStr);
-      return ParsingResult.fromCacheDictionary(cacheObject, toObject: toObject);
+      ParsingResult parsingResult = ParsingResult.fromCacheDictionary(cacheObject, toObject: toObject);
+      return parsingResult;
     }
     return null;
   }

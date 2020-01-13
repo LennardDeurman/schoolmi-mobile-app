@@ -9,9 +9,12 @@ class Urls {
   static const String flagContent = "$baseUrl/flag";
   static const String channels = "$baseUrl/channels";
 
-  static String urlWithQueryParams(String url, Map<String, dynamic> queryMap) {
+  static String urlWithQueryParams(String url, Map<String, String> queryMap) {
     Uri oldUri = Uri.parse(url);
     queryMap.addAll(oldUri.queryParameters);
+    queryMap.removeWhere((String key, String value) {
+      return value == null || value == "";
+    });
     Uri newUri = Uri.https(oldUri.authority, oldUri.path, queryMap);
     return newUri.toString();
   }
@@ -19,10 +22,10 @@ class Urls {
   static String urlWithQueryInfo(String url, QueryInfo queryInfo) {
     if (queryInfo != null) {
       url = urlWithQueryParams(url, {
-        Keys.search: queryInfo.search,
-        Keys.mode: queryInfo.order,
-        Keys.filterMode: queryInfo.filter,
-        Keys.offset: queryInfo.offset
+        Keys.search: QueryInfo.queryParam(queryInfo.search),
+        Keys.mode: QueryInfo.queryParam(queryInfo.order),
+        Keys.filterMode: QueryInfo.queryParam(queryInfo.filter),
+        Keys.offset: QueryInfo.queryParam(queryInfo.offset)
       });
     }
     return url;
@@ -47,10 +50,10 @@ class Urls {
   static String uploadFile({int maxSize = 1024, String mode = "thumbnail", bool includeMini = true}) {
     String url = "$baseUrl/upload";
     return urlWithQueryParams(url, {
-      Keys.mode: mode,
-      Keys.width: maxSize,
-      Keys.height: maxSize,
-      Keys.mini: includeMini
+      Keys.mode: QueryInfo.queryParam(mode),
+      Keys.width: QueryInfo.queryParam(maxSize),
+      Keys.height: QueryInfo.queryParam(maxSize),
+      Keys.mini: QueryInfo.queryParam(includeMini)
     });
   }
 
@@ -64,8 +67,8 @@ class Urls {
     String url = "$baseUrl/channels/$channelId/comments?v=1";
     url = urlWithQueryInfo(url, queryInfo);
     url = urlWithQueryParams(url, {
-      Keys.questionId: questionId,
-      Keys.answerId: answerId
+      Keys.questionId: QueryInfo.queryParam(questionId),
+      Keys.answerId: QueryInfo.queryParam(answerId)
     });
     return url;
   }
@@ -91,7 +94,7 @@ class Urls {
   static String answers ({@required int channelId, int questionId, QueryInfo queryInfo}) {
     String url = "$baseUrl/channels/$channelId/answers";
     url = urlWithQueryParams(url, {
-      Keys.questionId: questionId
+      Keys.questionId: QueryInfo.queryParam(questionId)
     });
     url = urlWithQueryInfo(url, queryInfo);
     return url;
@@ -105,9 +108,9 @@ class Urls {
   static String contentReporters ({@required int channelId, int questionId = 0, int answerId = 0, int commentId = 0}) {
     String url = "$baseUrl/channels/$channelId/members";
     url = urlWithQueryParams(url, {
-      Keys.questionId: questionId,
-      Keys.answerId: answerId,
-      Keys.commentId: commentId
+      Keys.questionId: QueryInfo.queryParam(questionId),
+      Keys.answerId: QueryInfo.queryParam(answerId),
+      Keys.commentId: QueryInfo.queryParam(commentId)
     });
     return url;
   }
