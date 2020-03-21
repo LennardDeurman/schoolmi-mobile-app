@@ -7,8 +7,9 @@ class ContentActionsBar extends StatelessWidget {
 
   final Function onReplyPressed;
   final Function onEditPressed;
+  final bool canEdit;
 
-  ContentActionsBar ({ this.onEditPressed, this.onReplyPressed });
+  ContentActionsBar ({ this.onEditPressed, this.onReplyPressed, this.canEdit = false });
 
 
   @override
@@ -40,7 +41,7 @@ class ContentActionsBar extends StatelessWidget {
               onPressed: onReplyPressed,
             ),
           ),
-          Expanded(
+          Visibility(child: Expanded(
             child: HighlightedWidget(
               renderWidget: (bool highlighted, Color color) {
                 return FlatButton.icon(
@@ -52,7 +53,7 @@ class ContentActionsBar extends StatelessWidget {
               },
               onPressed: onEditPressed,
             ),
-          )
+          ), visible: canEdit)
         ],
       ),
     );

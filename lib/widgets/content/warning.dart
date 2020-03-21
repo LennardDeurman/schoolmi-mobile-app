@@ -42,6 +42,15 @@ class Warning extends StatelessWidget {
     );
   }
 
+  static Warning answerMarkedFlagged(Answer answer, { Function onPressed }) {
+    return Warning(
+      visible: answer.flagged,
+      title: Localization().getValue(Localization().answerFlagged),
+      color: Colors.orange,
+      onPressed: onPressed,
+    );
+  }
+
   static Warning questionMarkedDuplicated(Question question, { Function onPressed }) {
     return Warning(
       visible: question.duplicated,
@@ -108,13 +117,14 @@ class Warning extends StatelessWidget {
                   ),
                 ),
                 onTap: onPressed,
+                borderRadius: boxDecoration != null ? boxDecoration.borderRadius : BorderRadius.circular(40),
               ),
               color: Colors.transparent
           ),
           decoration: boxDecoration ?? BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(40)
-          )
+          ),
       ),
     );
   }

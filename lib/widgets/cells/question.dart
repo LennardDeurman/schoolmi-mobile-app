@@ -165,7 +165,7 @@ class QuestionCell extends StatelessWidget {
                           font: LabelFont.montserrat,
                           size: LabelSize.small,
                           color: Colors.grey,
-                          title: question.viewCount.toString(),
+                          title: (question.viewCount ?? 0).toString(),
                         ),
                         SizedBox(
                           width: 5,
@@ -192,12 +192,12 @@ class QuestionCell extends StatelessWidget {
                   Wrap(
                     children: <Widget>[
                       RegularLabel(
-                        title: "Geplaatst op: " + Dates.format(question.dateAdded, format: Dates.friendlyFormat),
+                        title: Localization().getValue(Localization().createdOn) + Dates.format(question.dateAdded, format: Dates.friendlyFormat),
                         color: BrandColors.grey,
                         size: LabelSize.small,
                       ),
                       RegularLabel(
-                        title: " door ",
+                        title: Localization().getValue(Localization().by),
                         color: BrandColors.grey,
                         size: LabelSize.small,
                       ),

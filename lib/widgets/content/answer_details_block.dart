@@ -1,5 +1,9 @@
 
+import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/managers/flag.dart';
 import 'package:schoolmi/managers/view_question.dart';
+import 'package:schoolmi/network/auth/user_service.dart';
+import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/content/content_actions_bar.dart';
 import 'package:schoolmi/widgets/content/details_block.dart';
 import 'package:flutter/material.dart';
@@ -18,20 +22,39 @@ class AnswerDetailsBlock extends DetailsBlock {
 
   AnswerDetailsBlock (ViewQuestionManager manager, this.answer) : super(manager);
 
-  void _answerUndoDeleted() {
+  @override
+  bool get canEditContent {
+    return UserService().loginResult.activeChannel.isUserAdmin || (answer.profile.firebaseUid == UserService().loginResult.profile.firebaseUid);
+  }
+
+  void _answerUndoDeleted(BuildContext context) {
+    manager.undoDeleteAnswer(answer).catchError((e) {
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    });
+  }
+
+  void _onVoteStateChanged(BuildContext context, int newVoteState) {
+    manager.votesManager.updateVoteInfo(answer, newVoteState, onError: () {
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    });
+  }
+
+  void _showReporters(BuildContext context) {
 
   }
 
-  void _onVoteStateChanged(int newVoteState) {
-
+  void _markAcceptedAnswer(BuildContext context) {
+    manager.markAnswerSelected(answer).catchError((e) {
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    });
   }
 
-  void _markAcceptedAnswer() {
-
-  }
-
-  void _onReportPressed() {
-
+  void _onReportPressed(BuildContext context) {
+    FlagManager flagManager = FlagManager.forAnswer(answer);
+    flagManager.bindEvents(manager);
+    flagManager.updateFlagStatus(!answer.flaggedByMe, onError: () {
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    });
   }
 
   void _onCommentsPressed() {
@@ -52,55 +75,80 @@ class AnswerDetailsBlock extends DetailsBlock {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Warning.answerMarkedDeleted(answer, onPressed: _answerUndoDeleted),
           Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
+            margin: EdgeInsets.only(
+              top: 10
+            ),
+            child: Column(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Votes(
-                      answer.votesInfo,
-                      onVoteStateChanged: _onVoteStateChanged,
-                    ),
-                    HighlightedIcon(iconData: Icons.check_circle_outline, selected: manager.question.isSelectedAnswer(answer), onPressed: _markAcceptedAnswer)
-                  ],
-                ),
-                Expanded(child: Container(
-                  margin: EdgeInsets.only(
-                    left: 20
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          RegularLabel(
-                            title: Dates.format(answer.dateAdded),
-                            size: LabelSize.small,
-                            font: LabelFont.montserrat,
-                          ),
-                          Spacer(),
-                          ReportButton(onPressed: _onReportPressed, flaggedByMe: answer.flaggedByMe)
-                        ],
-                      ),
-                      Container(
-                        child: RegularLabel(title: answer.body),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                      ),
-                      AttachmentsContainer(attachments: answer.attachments),
-                      DetailsBlock.buildLowerContainer(profile: answer.profile, commentsCount: answer.commentsCount, onCommentsPressed: _onCommentsPressed)
-                    ],
-                  ),
-                ))
+                Warning.answerMarkedFlagged(answer, onPressed: () {
+                  _showReporters(context);
+                }),
+                Warning.answerMarkedDeleted(answer, onPressed: () {
+                  _answerUndoDeleted(context);
+                }),
               ],
             ),
+          ),
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Votes(
+                          answer.votesInfo,
+                          onVoteStateChanged: (newVoteState) {
+                            _onVoteStateChanged(context, newVoteState);
+                          },
+                        ),
+                        HighlightedIcon(iconData: Icons.check_circle_outline, selected: manager.question.isSelectedAnswer(answer), onPressed: () {
+                          _markAcceptedAnswer(context);
+                        })
+                      ],
+                    ),
+                    Expanded(child: Container(
+                      margin: EdgeInsets.only(
+                          left: 20
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              RegularLabel(
+                                title: Dates.format(answer.dateAdded),
+                                size: LabelSize.small,
+                                font: LabelFont.montserrat,
+                              ),
+                              Spacer(),
+                              ReportButton(onPressed: () {
+                                _onReportPressed(context);
+                              }, flaggedByMe: answer.flaggedByMe)
+                            ],
+                          ),
+                          Container(
+                            child: RegularLabel(title: answer.body),
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                          ),
+                          AttachmentsContainer(attachments: answer.attachments),
+                          DetailsBlock.buildLowerContainer(profile: answer.profile, commentsCount: answer.commentsCount, onCommentsPressed: _onCommentsPressed)
+                        ],
+                      ),
+                    ))
+                  ],
+                )
+              ],
+            )
           ),
           ContentActionsBar (
             onEditPressed: _onEditPressed,
             onReplyPressed: _onCommentsPressed,
+            canEdit: canEditContent,
           )
         ],
       ),

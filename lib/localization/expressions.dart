@@ -11,4 +11,6 @@ class Expressions {
   final LocalizationObject otherUsers = LocalizationObject({ Languages.NL: "%s en %s andere gebruiker(s)" });
   final LocalizationObject selectedCount = LocalizationObject({ Languages.NL: "%d geselecteerd" });
   final LocalizationObject resultsRetrievedAt = LocalizationObject({ Languages.NL: "Opgehaald op %s" });
+  final LocalizationObject createdOn = LocalizationObject({ Languages.NL: "Geplaatst op "});
+  final LocalizationObject by = LocalizationObject({ Languages.NL: " door "});
 }

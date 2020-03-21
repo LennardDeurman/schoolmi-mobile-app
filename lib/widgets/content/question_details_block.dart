@@ -3,6 +3,7 @@ import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/models/data/question.dart';
 import 'package:schoolmi/managers/view_question.dart';
+import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/pages/duplicate_questions.dart';
 import 'package:schoolmi/widgets/alerts/report_question.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
@@ -28,10 +29,12 @@ class QuestionDetailsBlock extends DetailsBlock {
   }
 
   void _questionUndoDeleted(BuildContext context) {
-
+    manager.undoDelete().catchError((e) {
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+    });
   }
 
-  void _showFlaggedContent(BuildContext context) {
+  void _showReporters(BuildContext context) {
 
   }
 
@@ -53,6 +56,11 @@ class QuestionDetailsBlock extends DetailsBlock {
 
   void _onEditPressed(BuildContext context) {
 
+  }
+
+  @override
+  bool get canEditContent {
+    return UserService().loginResult.activeChannel.isUserAdmin || (question.profile.firebaseUid == UserService().loginResult.profile.firebaseUid);
   }
 
 
@@ -183,7 +191,7 @@ class QuestionDetailsBlock extends DetailsBlock {
             _questionUndoDeleted(context);
           }),
           Warning.questionMarkedFlagged(question, onPressed: () {
-            _showFlaggedContent(context);
+            _showReporters(context);
           }),
           _buildHeaderContainer(context),
           _buildBodyContainer(context),
@@ -197,6 +205,7 @@ class QuestionDetailsBlock extends DetailsBlock {
             onReplyPressed: () {
               _onCommentsPressed(context);
             },
+            canEdit: canEditContent,
           )
         ],
       ),

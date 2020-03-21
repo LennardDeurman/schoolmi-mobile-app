@@ -40,6 +40,7 @@ class ViewQuestionManager extends ChildManager {
     );
     duplicatesManager = SearchQuestionsForDuplicatesManager(this);
     votesManager = VotesManager();
+    votesManager.bindEvents(this);
   }
 
 
@@ -78,6 +79,27 @@ class ViewQuestionManager extends ChildManager {
     return Future.wait([questionFuture, answersFuture, duplicatesFuture]);
   }
 
+  Future undoDelete() {
+    question.isDeleted = false;
+    notifyListeners();
+    return questionsParser.uploadObject(question);
+  }
+
+  Future undoDeleteAnswer(Answer answer) {
+    answer.isDeleted = false;
+    notifyListeners();
+    return answerParser.uploadObject(answer);
+  }
+
+  Future markAnswerSelected(Answer answer) {
+    int oldSelectionAnswer = question.answerId;
+    question.answerId = answer.id;
+    notifyListeners();
+    return questionsParser.uploadObject(question).catchError((e) {
+      question.answerId = oldSelectionAnswer;
+      notifyListeners();
+    });
+  }
 
 
 

@@ -65,6 +65,7 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
     profileId = dictionary[Keys.profileId];
     activeChannelId = dictionary[Keys.activeChannelId];
     firebaseUid = dictionary[Keys.firebaseUid] ?? dictionary[Keys.uid];
+    parseColorIndex(dictionary);
     super.parse(dictionary);
   }
 

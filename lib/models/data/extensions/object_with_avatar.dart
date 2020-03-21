@@ -23,7 +23,7 @@ abstract class ObjectWithAvatar {
   String firstLetterOrNull (String value) {
     if (value != null) {
       if (value.length > 0) {
-        return value.substring(0, 1);
+        return value.substring(0, 1).toUpperCase();
       }
     }
     return null;
@@ -33,7 +33,7 @@ abstract class ObjectWithAvatar {
   String firstLetterOrEmpty (String value) {
     if (value != null) {
       if (value.length > 0) {
-        return value.substring(0, 1);
+        return value.substring(0, 1).toUpperCase();
       }
     }
     return "";
