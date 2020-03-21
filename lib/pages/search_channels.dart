@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:schoolmi/managers/channels.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/widgets/listviews/search_channels.dart';
 
 class SearchChannelsPage extends StatelessWidget {
 
@@ -18,7 +19,7 @@ class SearchChannelsPage extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      body: SearchChannelsPage(this.manager),
+      body: SearchChannelsListView(manager),
     );
   }
 

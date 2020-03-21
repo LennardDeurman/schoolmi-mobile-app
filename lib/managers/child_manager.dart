@@ -7,9 +7,12 @@ class ChildManager extends BaseManager {
 
 
   ChildManager (this.homeManager) {
+    initialize();
     loadData();
   }
 
   void loadData() {}
+
+  void initialize() {}
 
 }

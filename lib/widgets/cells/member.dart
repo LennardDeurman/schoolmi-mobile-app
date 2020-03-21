@@ -25,11 +25,7 @@ class MemberCell extends StatelessWidget {
 
   Widget _buildCell() {
     return BaseCell(
-      leading: CircleImage(
-        imageUrl: member.profile.profileImageUrl,
-        firstLetter: member.profile.firstLetter,
-        avatarColor: BrandColors.avatarColor(index: member.profile.colorIndex),
-      ),
+      leading: CircleImage.withAvatarObject(member),
       columnWidgets: <Widget>[
         RegularLabel(
           title: member.profile.fullName,
@@ -60,10 +56,8 @@ class MemberCell extends StatelessWidget {
   }
 
   Widget _buildAnonymousCell() {
-    return BaseCell(
-      leading: CircleImage(
-        firstLetter: member.firstLetter,
-      ),
+    return Visibility(visible: channel.isUserAdmin, child: BaseCell(
+      leading: CircleImage.withAvatarObject(member),
       columnWidgets: <Widget>[
         RegularLabel(
           title: member.email,
@@ -95,7 +89,7 @@ class MemberCell extends StatelessWidget {
       onPressed: () {
         onPressed(member);
       },
-    );
+    ));
   }
 
 

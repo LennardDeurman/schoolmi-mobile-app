@@ -100,8 +100,11 @@ class Urls {
     return url;
   }
 
-  static String members ({ @required int channelId }) {
+  static String members ({ @required int channelId, QueryInfo queryInfo }) {
     String url = "$baseUrl/channels/$channelId/members";
+    if (queryInfo != null) {
+      url = urlWithQueryInfo(url, queryInfo);
+    }
     return url;
   }
 

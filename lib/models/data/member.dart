@@ -3,6 +3,7 @@ import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 
 
@@ -10,10 +11,15 @@ class Member extends BaseObject with ObjectWithAvatar  {
   String email;
   int channelId;
   bool isAdmin;
+  bool blocked;
 
   Member (Map<String, dynamic> dictionary) : super(dictionary);
 
-  Member.create({ this.email, this.channelId, this.isAdmin = false }) : super(null);
+  Member.create({ email, channelId, isAdmin = false }) : super({
+    Keys.email: email,
+    Keys.channelId: channelId,
+    Keys.isAdmin: isAdmin
+  });
 
   bool get isCurrentUser {
     var result = UserService().loginResult;
@@ -32,12 +38,12 @@ class Member extends BaseObject with ObjectWithAvatar  {
 
   @override
   String get avatarImageUrl {
-    return null;
+    return profile != null ? profile.avatarImageUrl : null;
   }
 
   @override
   int get avatarColorIndex {
-    return null;
+    return profile != null ? profile.colorIndex : 0;
   }
 
 
@@ -46,8 +52,13 @@ class Member extends BaseObject with ObjectWithAvatar  {
     super.parse(dictionary);
     email = dictionary[Keys.email];
     channelId = dictionary[Keys.channelId];
-    isAdmin = dictionary[Keys.isAdmin];
+    blocked = ParsableObject.parseBool(dictionary[Keys.blocked]);
+    isAdmin = ParsableObject.parseBool(dictionary[Keys.isAdmin]);
     profile = Profile(dictionary);
+    profile.colorIndex = dictionary[Keys.colorIndex];
+    if (profile.firebaseUid == null) {
+      profile = null;
+    }
   }
 
   @override
@@ -56,6 +67,7 @@ class Member extends BaseObject with ObjectWithAvatar  {
     superDict[Keys.email] = email;
     superDict[Keys.channelId] = channelId;
     superDict[Keys.isAdmin] = isAdmin;
+    superDict[Keys.blocked] = blocked;
     return superDict;
   }
 }

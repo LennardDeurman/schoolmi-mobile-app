@@ -1,5 +1,7 @@
 
 import 'package:schoolmi/network/channel_base_parser.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/models/base_object.dart';
@@ -23,6 +25,11 @@ class TagsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
   }
 
   @override
+  List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
+    return uploadedObjects;
+  }
+
+  @override
   Map<String, dynamic> toPostDictionary(List<BaseObject> uploadObjects) {
     return makeMultiObjectsDictionary(Keys.tags, uploadObjects);
   }
@@ -31,5 +38,6 @@ class TagsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
   BaseObject toObject(Map dictionary) {
     return Tag(dictionary);
   }
+
 
 }

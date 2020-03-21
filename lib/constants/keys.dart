@@ -68,4 +68,5 @@ class Keys {
   static const String offset = "offset";
   static const String width = "width";
   static const String height = "height";
+  static const String blocked = "blocked";
 }

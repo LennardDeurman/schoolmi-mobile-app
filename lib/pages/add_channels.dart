@@ -27,6 +27,7 @@ class _AddChannelsPageState extends State<AddChannelsPage> {
   ChannelsManager _channelsManager;
   Presenter _presenter;
 
+
   @override
   void initState() {
     super.initState();
@@ -41,15 +42,16 @@ class _AddChannelsPageState extends State<AddChannelsPage> {
           title: TitleLabel(
             title: Localization().getValue(Localization().newChannel),
             color: Colors.white,
-          ),
+          )
         ),
         body: AddChannelsListView(
           _channelsManager,
           onAddChannelPressed: () {
-            _presenter.showChannelEdit();
+            _presenter.showChannelEdit(_channelsManager.homeManager);
           },
           onSearchPressed: _onSearchPressed,
-        )
+        ),
+
     );
   }
 

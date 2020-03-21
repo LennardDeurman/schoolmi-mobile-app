@@ -18,7 +18,7 @@ class TagCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: RegularLabel(
-        title: this.title,
+        title: this.title ?? "",
         size: LabelSize.small,
         color: Colors.white,
       ),
@@ -36,32 +36,20 @@ class TagListItemCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (onTagPressed != null)
-          onTagPressed(this.tag);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            SizedBox(width: 20.0),
-            this.leading ?? Container(),
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    child: TagCellWithIcon(color: BrandColors.grey, title: tag.name),
-                    alignment: Alignment.centerLeft,
-                  )
-                ],
-              ),
-            ),
-          ]),
-          Divider()
-        ],
-      ),
-    );
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+        child: Row(children: [
+      TagCellWithIcon(title: tag.name, color: BrandColors.grey),
+      Spacer(),
+      this.leading ?? Container(),
+    ]), decoration: BoxDecoration(
+     border: Border(
+       bottom: BorderSide(
+          color: BrandColors.blueGrey,
+          width: 1
+       )
+     )
+    ));
   }
 
 }
@@ -79,9 +67,8 @@ class TagCellWithIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 5.0, right: 5.0),
       child: Chip(
-        label: Text(title),
+        label: Text(title ?? ""),
         onDeleted: onDeleted,
         backgroundColor: color,
         deleteIcon: Icon(Icons.cancel),

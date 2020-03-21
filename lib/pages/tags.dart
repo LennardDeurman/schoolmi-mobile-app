@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/models/data/tag.dart';
+import 'package:schoolmi/network/parsers/tags.dart';
+import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
 import 'package:schoolmi/widgets/listviews/tags.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -39,6 +41,15 @@ class _TagsPageState extends State<TagsPage> {
     );
   }
 
+  @override
+  void initState() {
+    TagsParser tagsParser = this.widget.tagsManager.parser;
+    if (tagsParser != null) {
+      tagsParser.queryInfo = QueryInfo();
+    }
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +63,16 @@ class _TagsPageState extends State<TagsPage> {
                 color: Colors.white,
               ),
             ),
-            floatingActionButton: buildFloatingActionButton(),
-            body: TagsListView(widget.tagsManager, selectionManager: widget.selectionManager)
+            floatingActionButton: this.widget.selectionManager != null ? buildFloatingActionButton() : null,
+            body: ScopedModelDescendant<TagsManager>(
+              builder: (BuildContext context, Widget widget, TagsManager manager) {
+                if (manager.parser != null) {
+                  return TagsListView(this.widget.tagsManager, selectionManager: this.widget.selectionManager);
+                }
+                return Container();
+              }
+            )
+
         ));
   }
 

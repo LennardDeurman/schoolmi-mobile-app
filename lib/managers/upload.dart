@@ -19,7 +19,7 @@ class UploadManager extends BaseManager {
   }
 
   Future upload(File file) async {
-    executeAsync(Api.uploadFile(file: file).then((Upload upload) {
+    return executeAsync(Api.uploadFile(file: file).then((Upload upload) {
       uploadedFile = upload;
     }));
   }

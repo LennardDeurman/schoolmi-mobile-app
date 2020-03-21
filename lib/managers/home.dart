@@ -1,4 +1,5 @@
 import 'package:schoolmi/managers/base_manager.dart';
+import 'package:schoolmi/managers/channel_details.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/api.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
@@ -17,15 +18,22 @@ class HomeManager extends BaseManager {
 
   ProfileManager _profileManager;
 
+  ChannelDetailsManager _channelDetailsManager;
+
   QuestionsParser questionsParser; //To be set by layout
 
   HomeManager () {
     _profileManager = new ProfileManager(this);
+    _channelDetailsManager = new ChannelDetailsManager(this);
   }
 
 
   ProfileManager get profileManager {
     return _profileManager;
+  }
+
+  ChannelDetailsManager get channelDetailsManager {
+    return _channelDetailsManager;
   }
 
   Future<InitializationResult> initialize() async {
@@ -60,9 +68,9 @@ class HomeManager extends BaseManager {
   }
 
   Future leaveChannel() {
-    var channels = UserService().loginResult.channels.where((Channel channel) {
+    var channels = UserService().loginResult.myChannelsResult.objects.where((channel) {
       return !UserService().loginResult.isActiveChannel(channel);
-    });
+    }).toList();
     Channel newActiveChannel;
     if (channels.length > 0) {
       newActiveChannel = channels.first;

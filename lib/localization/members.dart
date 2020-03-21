@@ -22,5 +22,12 @@ class MembersLocalization {
   final LocalizationObject leaveChannelExtra = LocalizationObject({ Languages.NL: "Klik hier om het channel te verlaten" });
   final LocalizationObject requiresAdmin = LocalizationObject({ Languages.NL: "Je dient een beheerder te zijn" });
   final LocalizationObject setAdminFirst = LocalizationObject({ Languages.NL: "Je dient eerst een nieuwe beheerder aan te stellen" });
+  final LocalizationObject blockUserForChannel = LocalizationObject({ Languages.NL: "Blokkeer gebruiker" });
+  final LocalizationObject blockUserInfo = LocalizationObject({ Languages.NL: "Weet je zeker dat je deze gebruiker wilt blokkeren? Als je de gebruiker blokkeert kan de gebruiker met het email %s geen lid meer worden van %s." });
+  final LocalizationObject activeMembers = LocalizationObject({ Languages.NL: "Actieve leden" });
+  final LocalizationObject blockedMembers = LocalizationObject({ Languages.NL: "Geblokkeerde leden" });
+  final LocalizationObject deletedMembers = LocalizationObject({ Languages.NL: "Verwijderde leden" });
+  final LocalizationObject undoDeletedFromChannel = LocalizationObject( { Languages.NL: "Herstel verwijderde gebruiker" });
+  final LocalizationObject unblockFromChannel = LocalizationObject( { Languages.NL: "Deblokkeren" });
 }
 

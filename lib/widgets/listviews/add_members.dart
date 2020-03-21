@@ -50,9 +50,10 @@ class AddMembersListView extends StatelessWidget {
           ),
         );
       },
-      itemBuilder: (BuildContext context, int section, int rowIndex) {
+      itemBuilder: (BuildContext context, int rowIndex, int section) {
+
         if (section == 0) {
-          return formBuilder;
+          return formBuilder();
         } else if (section == 1) {
           String email = emails[rowIndex];
           return _buildEmailWidget(email);

@@ -238,8 +238,6 @@ class QuestionCell extends StatelessWidget {
                 _buildAnswersBox(),
                 SizedBox(height: 10),
                 Icon(Icons.star, size: 18, color: BrandColors.darkBlueGrey)
-
-
               ],
             ),
           )

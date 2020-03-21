@@ -6,14 +6,18 @@ import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/cells/base_cell.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:schoolmi/widgets/labels/title.dart';
+import 'package:sprintf/sprintf.dart';
 
 class MembersEditingDialog {
 
 
   final Member member;
   final MembersManager manager;
+  final Function(Member) onModified;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  MembersEditingDialog ({ this.member, this.manager });
+  MembersEditingDialog ({ this.member, this.manager, this.scaffoldKey, this.onModified });
 
   Future _executeAction(BuildContext context, { Function onPreExecute, Function onFailed }) {
 
@@ -22,13 +26,15 @@ class MembersEditingDialog {
     }
 
     manager.uploadObject = member;
+    if (onModified != null) {
+      onModified(member);
+    }
+    Navigator.pop(context);
     return manager.saveUploadObjects().catchError((e) {
       if (onFailed != null) {
         onFailed();
       }
-      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
-    }).whenComplete((){
-      Navigator.pop(context);
+      showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, scaffoldKey: scaffoldKey);
     });
   }
 
@@ -71,7 +77,106 @@ class MembersEditingDialog {
     );
   }
 
+  Widget _buildUndoDeletedWidget(BuildContext context) {
+    return BaseCell(
+      leading: Icon(Icons.undo),
+      columnWidgets: <Widget>[
+        RegularLabel(
+          title: Localization().getValue(Localization().undoDeletedFromChannel),
+        )
+      ],
+      onPressed: () {
+        _executeAction(context, onPreExecute: () {
+          member.isDeleted = false;
+        }, onFailed: () {
+          member.isDeleted = true;
+        });
+      },
+    );
+  }
 
+  Widget _buildUnblockWidget(BuildContext context) {
+    return BaseCell(
+      leading: Icon(Icons.undo),
+      columnWidgets: <Widget>[
+        RegularLabel(
+          title: Localization().getValue(Localization().unblockFromChannel),
+        )
+      ],
+      onPressed: () {
+        _executeAction(context, onPreExecute: () {
+          member.blocked = false;
+        }, onFailed: () {
+          member.blocked = true;
+        });
+      },
+    );
+  }
+
+  Widget _buildBlockMemberWidget(BuildContext context) {
+    return BaseCell(
+      leading: Icon(Icons.block),
+      columnWidgets: <Widget>[
+        RegularLabel(
+          title: Localization().getValue(Localization().blockUserForChannel),
+        )
+      ],
+      onPressed: () {
+        
+        showDialog(context: context, builder: (BuildContext context) {
+          return AlertDialog(
+            title: TitleLabel(title: Localization().getValue(Localization().blockUserForChannel)),
+            content: RegularLabel(
+              title: sprintf(Localization().getValue(Localization().blockUserInfo), [member.email, manager.channel.name])
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(Localization().getValue(Localization().confirm)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+
+                  _executeAction(context, onPreExecute: () {
+                    member.blocked = true;
+                  }, onFailed: () {
+                    member.blocked = false;
+                  });
+                },
+              ),
+              FlatButton(
+                child: Text(Localization().getValue(Localization().cancel)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+        
+
+      },
+    );
+  }
+
+
+  List<Widget> buildWidgets(BuildContext context) {
+    List<Widget> widgets = [];
+    if (member.blocked) {
+      widgets.add(_buildUnblockWidget(context));
+    }
+
+    if (member.isDeleted) {
+      widgets.add(_buildUndoDeletedWidget(context));
+    }
+
+    if (!member.isDeleted && !member.blocked) {
+      widgets.addAll([
+        _buildAdminStatusActionWidget(context),
+        _buildRemoveMemberWidget(context),
+        _buildBlockMemberWidget(context)
+      ]);
+    }
+    return widgets;
+  }
 
   void show(BuildContext context) {
     showRoundedModalBottomSheet(
@@ -84,10 +189,7 @@ class MembersEditingDialog {
           padding: EdgeInsets.only(bottom: 40.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildAdminStatusActionWidget(context),
-              _buildRemoveMemberWidget(context)
-            ],
+            children: buildWidgets(context),
           ),
         );
       },

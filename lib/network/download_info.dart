@@ -12,7 +12,7 @@ class DownloadStatusInfo {
 
   DownloadStatus _downloadStatus = DownloadStatus.idle;
   StreamController<DownloadStatus> _downloadStatusController = new StreamController();
-  Exception exception;
+  dynamic exception;
 
 
   DownloadStatusInfo () {
@@ -47,9 +47,9 @@ class DownloadStatusInfo {
     downloadStatus = DownloadStatus.success;
   }
 
-  void downloadDidFail(Exception exception) {
+  void downloadDidFail(e) {
     downloadStatus = DownloadStatus.failed;
-    this.exception = exception;
+    this.exception = e;
   }
 
 }

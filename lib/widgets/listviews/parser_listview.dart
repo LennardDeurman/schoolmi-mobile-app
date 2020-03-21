@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:schoolmi/network/network_parser.dart';
-import 'package:schoolmi/network/download_info.dart';
 import 'package:schoolmi/models/parsing_result.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/button.dart';
@@ -35,7 +34,7 @@ abstract class ParserListViewState<T extends ParserListView> extends State<T> {
 
   Exception _exception;
 
-  bool _isLoading;
+  bool _isLoading = false;
 
   int paginationLimit = 20;
 

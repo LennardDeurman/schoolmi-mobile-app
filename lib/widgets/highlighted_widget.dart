@@ -37,14 +37,13 @@ class HighlightedWidgetState extends State<HighlightedWidget> {
 
   @override
   void initState() {
-    super.initState();
-    selected = widget.selected;
     highlighted = false;
+    super.initState();
   }
 
   set highlighted (bool value) {
     _highlighted = value;
-    _currentColor = value ? widget.highlightedColor : (widget.selected ? widget.selectedColor : widget.baseColor);
+    _currentColor = value ? widget.highlightedColor : widget.baseColor;
   }
 
   bool get highlighted {
@@ -56,6 +55,9 @@ class HighlightedWidgetState extends State<HighlightedWidget> {
   }
 
   Color get currentColor {
+    if (widget.selected) {
+      return widget.selectedColor;
+    }
     return _currentColor;
   }
 

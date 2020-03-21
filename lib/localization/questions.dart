@@ -32,6 +32,7 @@ class QuestionsLocalization {
   final LocalizationObject unansweredQuestions = LocalizationObject({ Languages.NL: "Onbeantwoorde vragen" });
   final LocalizationObject flaggedQuestions = LocalizationObject({ Languages.NL: "Gemarkeerde vragen" });
   final LocalizationObject deletedQuestions = LocalizationObject({ Languages.NL: "Verwijderde vragen" });
+  final LocalizationObject duplicatedQuestions = LocalizationObject({ Languages.NL: "Dubbele vragen" });
   final LocalizationObject orderDateModified = LocalizationObject({ Languages.NL: "Laatst gewijzigd" });
   final LocalizationObject orderDateAdded = LocalizationObject({ Languages.NL: "Nieuwste" });
   final LocalizationObject orderVotes = LocalizationObject({ Languages.NL: "Meeste punten" });
@@ -40,4 +41,5 @@ class QuestionsLocalization {
   final LocalizationObject submitComment = LocalizationObject({ Languages.NL: "Plaats" });
   final LocalizationObject commentHint = LocalizationObject({ Languages.NL: "Plaats een reactie..." });
   final LocalizationObject noComments = LocalizationObject({ Languages.NL: "Nog geen reacties" });
+  final LocalizationObject searchQuestions = LocalizationObject({ Languages.NL: "Zoek vragen" });
 }

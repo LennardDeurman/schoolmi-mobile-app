@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/widgets/highlighted_widget.dart';
-import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
-import 'package:rounded_modal/rounded_modal.dart';
 import 'package:schoolmi/models/options.dart';
+import 'package:schoolmi/widgets/options/options_bar_state.dart';
 
 class RequestOptionsBar extends StatefulWidget {
 
@@ -23,62 +22,17 @@ class RequestOptionsBar extends StatefulWidget {
 }
 
 
-class RequestOptionsBarState extends State<RequestOptionsBar> {
-  
 
-  void _showOptionsPicker(OptionsBox optionsBox) {
-    showRoundedModalBottomSheet(
-      radius: 20.0,
-      color: Colors.white,
-      dismissOnTap: true,
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.only(bottom: 40.0),
-          child: ListView.builder(itemBuilder: (BuildContext context, int position) {
+class RequestOptionsBarState extends OptionsBarState<RequestOptionsBar> {
 
-            return HighlightedWidget(
-              onPressed: () {
-                Navigator.pop(context);
-                setState(() {
-                  optionsBox.selectedIndex = position;
-                });
-
-                if (this.widget.onOptionsChanged != null) {
-                  this.widget.onOptionsChanged(filterIndex: widget.filterOptionsBox.selectedIndex, orderIndex: widget.orderOptionsBox.selectedIndex);
-                }
-
-              }, baseColor: Colors.black,
-              renderWidget: (bool highlighted, Color color) {
-                return Container(
-                  padding: EdgeInsets.all(20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: RegularLabel(
-                          title: optionsBox.stringAtIndex(position),
-                          color: color,
-                          fontWeight: optionsBox.selectedIndex == position ? FontWeight.bold : FontWeight.normal,
-                        )
-                      ),
-                      Icon(Icons.chevron_right, color: BrandColors.darkBlueGrey)
-                    ],
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        width: 1,
-                        color: BrandColors.blueGrey
-                      )
-                    )
-                  ),
-                );
-              }
-            );
-          }, itemCount: optionsBox.optionsCount),
-        );
-      },
-    );
+  void _showOptions(OptionsBox optionsBox) {
+    showOptionsPicker(optionsBox, (int option) {
+      if (this.widget.onOptionsChanged != null) {
+        int filterIndex = widget.filterOptionsBox.selectedIndex;
+        int orderIndex = widget.orderOptionsBox.selectedIndex;
+        this.widget.onOptionsChanged(filterIndex: filterIndex, orderIndex: orderIndex);
+      }
+    });
   }
 
   @override
@@ -111,7 +65,7 @@ class RequestOptionsBarState extends State<RequestOptionsBar> {
               baseColor: Colors.black,
               highlightedColor: BrandColors.blue,
               onPressed: () {
-                _showOptionsPicker(widget.filterOptionsBox);
+                _showOptions(widget.filterOptionsBox);
               },
             )
         ),
@@ -145,7 +99,7 @@ class RequestOptionsBarState extends State<RequestOptionsBar> {
             );
           },
           onPressed: () {
-            _showOptionsPicker(widget.orderOptionsBox);
+            _showOptions(widget.orderOptionsBox);
           },
         )
 

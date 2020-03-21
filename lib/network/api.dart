@@ -1,4 +1,9 @@
 import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/models/data/duplicate_question.dart';
+import 'package:schoolmi/models/data/extensions/object_with_votes.dart';
+import 'package:schoolmi/models/data/profile.dart';
+import 'package:schoolmi/models/data/question.dart';
+import 'package:schoolmi/network/duplicates_api.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/upload.dart';
@@ -22,6 +27,7 @@ class Headers {
   static const String mediaTypeJson = "application/json";
 }
 
+
 class Api {
 
   static String dummyToken;
@@ -35,7 +41,12 @@ class Api {
     return firebaseToken;
   }
 
-  static void _executeJsonRequest(String url, Completer completer,
+  static Future<String> getMyUid() async {
+    String uuid = (await FirebaseAuth.instance.currentUser()).uid;
+    return uuid;
+  }
+
+  static void executeJsonRequest(String url, Completer completer,
       Function(http.Response response) handleSuccessAction, { Map<String, dynamic> postDictionary, HttpMethod httpMethod } ) async {
 
     if (httpMethod == null) {
@@ -55,6 +66,11 @@ class Api {
     }
 
     action.then((http.Response response) {
+      if (response != null) {
+        if (response.statusCode >= 400) {
+          throw InvalidOperationException("HTTP exception");
+        }
+      }
       handleSuccessAction(response);
     }).catchError((e) {
       completer.completeError(e);
@@ -72,8 +88,7 @@ class Api {
   static Future<List<BaseObject>> downloadObjects({@required NetworkParser parser}) {
     Completer<List<BaseObject>> completer = new Completer();
     parser.downloadStatusInfo.downloadDidStart();
-
-    _executeJsonRequest(parser.downloadUrl, completer, (http.Response response) {
+    executeJsonRequest(parser.downloadUrl, completer, (http.Response response) {
       var baseObjects = parser.objectsFromResponse(response);
       completer.complete(baseObjects);
     });
@@ -91,7 +106,7 @@ class Api {
 
   static Future<List<BaseObject>> uploadObjects({@required NetworkParser parser, @required List<BaseObject> uploadObjects}) {
     Completer<List<BaseObject>> completer = new Completer();
-    _executeJsonRequest(parser.uploadUrl, completer, (http.Response response) {
+    executeJsonRequest(parser.uploadUrl, completer, (http.Response response) {
       completer.complete(parser.objectsFromPostResponse(uploadObjects, response));
     }, postDictionary: parser.toPostDictionary(uploadObjects));
     return completer.future;
@@ -109,7 +124,7 @@ class Api {
 
   static Future<void> joinChannel({@required int channelId}) {
     Completer completer = new Completer();
-    _executeJsonRequest(Urls.joinChannel(channelId: channelId), completer, (http.Response response) {
+    executeJsonRequest(Urls.joinChannel(channelId: channelId), completer, (http.Response response) {
       completer.complete();
     }, httpMethod: HttpMethod.post);
     return completer.future;
@@ -117,7 +132,7 @@ class Api {
 
   static Future<void> leaveChannel({@required int channelId}) {
     Completer completer = new Completer();
-    _executeJsonRequest(Urls.leaveChannel(channelId: channelId), completer, (http.Response response) {
+    executeJsonRequest(Urls.leaveChannel(channelId: channelId), completer, (http.Response response) {
       final body = json.decode(response.body)[Keys.object];
       int statusCode = body[Keys.statusCode];
       if (statusCode == 1) {
@@ -134,7 +149,7 @@ class Api {
       Keys.username: username
     };
 
-    _executeJsonRequest(Urls.usernameExists, completer, (http.Response response) {
+    executeJsonRequest(Urls.usernameExists, completer, (http.Response response) {
       final body = json.decode(response.body)[Keys.object];
       bool valid = body[Keys.valid];
       completer.complete(valid);
@@ -150,7 +165,7 @@ class Api {
       Keys.deleted: !flagged
     };
     Completer<void> completer = new Completer();
-    _executeJsonRequest(Urls.flagContent, completer, (http.Response response) {
+    executeJsonRequest(Urls.flagContent, completer, (http.Response response) {
       completer.complete();
     }, postDictionary: dictionary);
 
@@ -190,6 +205,28 @@ class Api {
     }).catchError((e) {
       completer.completeError(e);
     });
+    return completer.future;
+  }
+
+
+  static Future removeAllMarkings (Question question, DuplicateQuestion duplicateOfQuestion) {
+    DuplicatesApi api = DuplicatesApi(question);
+    List<Map<String, dynamic>> map = duplicateOfQuestion.reporters.map((Profile profile) {
+      return api.makeDuplicateMap(
+        duplicateOfQuestionId: duplicateOfQuestion.id,
+        posterUid: profile.firebaseUid,
+        isDeleted: true
+      );
+    }).toList();
+    return api.updateDuplicateQuestions(duplicatesMapList: map);
+  }
+
+
+  static Future updateVotes({ @required VotesInfo votesInfo, @required int channelId }) {
+    Completer completer = new Completer();
+    executeJsonRequest(Urls.votes(channelId: channelId), completer, (http.Response response) {
+      completer.complete();
+    }, httpMethod: HttpMethod.post, postDictionary: votesInfo.toDictionary());
     return completer.future;
   }
 

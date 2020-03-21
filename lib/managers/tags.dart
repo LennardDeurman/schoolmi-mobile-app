@@ -12,7 +12,6 @@ class TagsManager extends ChannelDetailsChildManager with UploadInterface<Tag> {
   @override
   void onChannelLoad(Channel channel) {
     parser = TagsParser(channel);
-    notifyListeners();
   }
 
   @override

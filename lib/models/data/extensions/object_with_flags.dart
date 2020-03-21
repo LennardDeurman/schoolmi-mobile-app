@@ -1,4 +1,5 @@
 import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 class ObjectWithFlags {
 
 
@@ -10,12 +11,12 @@ class ObjectWithFlags {
   bool commentsFlagged;
 
   void parseFlagInfo(Map<String, dynamic> dictionary) {
-    flagged = dictionary[Keys.flagged];
-    flaggedByMe = dictionary[Keys.flaggedByMe];
-    parentFlagged = dictionary[Keys.parentFlagged];
-    duplicated = dictionary[Keys.duplicated];
-    flaggedDuplicateByMe = dictionary[Keys.flaggedDuplicateByMe];
-    commentsFlagged = dictionary[Keys.commentsFlagged];
+    flagged = ParsableObject.parseBool(dictionary[Keys.flagged]);
+    flaggedByMe = ParsableObject.parseBool(dictionary[Keys.flaggedByMe]);
+    parentFlagged = ParsableObject.parseBool(dictionary[Keys.parentFlagged]);
+    duplicated = ParsableObject.parseBool(dictionary[Keys.duplicated]);
+    flaggedDuplicateByMe = ParsableObject.parseBool(dictionary[Keys.flaggedDuplicateByMe]);
+    commentsFlagged = ParsableObject.parseBool(dictionary[Keys.commentsFlagged]);
   }
 
   Map<String, dynamic> flagInfoDictionary() {

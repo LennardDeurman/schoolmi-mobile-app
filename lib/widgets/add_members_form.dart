@@ -61,8 +61,8 @@ class AddMembersFormState extends State<AddMembersForm> {
                 onEditingComplete: () {
                   formKey.currentState.save();
                   if (formKey.currentState.validate()) {
-                    textController.clear();
                     widget.onEditingComplete(textController.text);
+                    textController.clear();
                   }
 
                 },

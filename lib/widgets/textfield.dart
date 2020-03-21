@@ -82,6 +82,7 @@ class DefaultTextField extends StatelessWidget {
         onEditingComplete: onEditingComplete,
         onFieldSubmitted: onSubmitted,
         obscureText: obscureText,
+        onChanged: onChanged,
         decoration: InputDecoration(
           fillColor: BrandColors.blueGrey,
           filled: true,

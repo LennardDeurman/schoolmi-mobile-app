@@ -1,5 +1,7 @@
+import 'package:schoolmi/network/auth/user_service.dart';
+import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
-import 'package:schoolmi/widgets/request_options_bar.dart';
+import 'package:schoolmi/widgets/options/request_options_bar.dart';
 import 'package:schoolmi/network/parsers/questions.dart';
 import 'package:schoolmi/models/options.dart';
 import 'package:schoolmi/models/base_object.dart';
@@ -30,7 +32,6 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: BrandColors.blueGrey,
         child: Column(
           children: <Widget>[
             Container(
@@ -40,8 +41,22 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
                   onOptionsChanged: ({int orderIndex, int filterIndex }) async {
                     this.orderIndex = orderIndex;
                     this.filterIndex = filterIndex;
+
+                    QuestionsParser parser = widget.parser;
+                    parser.queryInfo = new QueryInfo(
+                      order: orderOptionsBox.value.value,
+                      filter: filterOptionsBox.value.value
+                    );
                     refreshIndicatorKey.currentState.show();
                   }
+              ),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          width: 1,
+                          color: BrandColors.blueGrey
+                      )
+                  )
               ),
             ),
             Expanded(
@@ -71,6 +86,10 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
       Localization().getValue(Localization().updatedQuestions): 5,
       Localization().getValue(Localization().unansweredQuestions): 4
     });
+    if (UserService().loginResult.activeChannel.isUserAdmin) {
+      filterOptionsBox.addOption(Option(Localization().getValue(Localization().flaggedQuestions), 3));
+      filterOptionsBox.addOption(Option(Localization().getValue(Localization().deletedQuestions), 6));
+    }
     filterOptionsBox.selectedIndex = filterIndex;
     return filterOptionsBox;
   }
@@ -85,6 +104,9 @@ class QuestionsListViewState extends ParserListViewState<QuestionsListView> {
     orderOptionsBox.selectedIndex = orderIndex;
     return orderOptionsBox;
   }
+
+
+
 
 
 

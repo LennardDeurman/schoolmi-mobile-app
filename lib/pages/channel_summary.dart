@@ -7,7 +7,6 @@ import 'package:schoolmi/widgets/cells/base_cell.dart';
 import 'package:schoolmi/widgets/circle_image.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
-import 'package:schoolmi/constants/routes.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/presenter.dart';
 
@@ -29,7 +28,7 @@ class ChannelSummaryPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done, color: Colors.white),
         onPressed: () {
-          Navigator.popUntil(context, ModalRoute.withName(Routes.home));
+          Navigator.of(context).popUntil((route) => route.isFirst);
         },
       ),
       body: Container(child: ListView(
@@ -136,7 +135,7 @@ class ChannelSummaryPage extends StatelessWidget {
           BaseCell(
             leading: SvgPicture.asset(AssetPaths.classRoom, width: 20),
             onPressed: () {
-              Presenter(context).showMembers(channelEditManager.uploadObject);
+              Presenter(context).showMembers(channelEditManager.homeManager.channelDetailsManager.membersManager);
             },
             columnWidgets: <Widget>[
               RegularLabel(
@@ -177,7 +176,7 @@ class ChannelSummaryPage extends StatelessWidget {
           BaseCell(
             leading: SvgPicture.asset(AssetPaths.tag, width: 20),
             onPressed: () {
-              Presenter(context).showTags(channelEditManager.uploadObject);
+              Presenter(context).showTags(channelEditManager.homeManager);
             },
             columnWidgets: <Widget>[
               RegularLabel(

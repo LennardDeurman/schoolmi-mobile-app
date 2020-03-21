@@ -36,7 +36,11 @@ class _ChannelEditPage extends State<ChannelEditPage> {
 
 
   GlobalKey<FormState> _channelFormKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ChannelEditManager _channelEditManager;
+
+  TextEditingController _channelNameTextController;
+  TextEditingController _channelDescriptionTextController;
 
   @override
   void initState() {
@@ -46,35 +50,47 @@ class _ChannelEditPage extends State<ChannelEditPage> {
       widget.homeManager,
       channel: this.widget.channel
     );
+
+    _channelDescriptionTextController = TextEditingController(
+      text: _channelEditManager.uploadObject.description
+    );
+
+    _channelNameTextController = TextEditingController(
+        text: _channelEditManager.uploadObject.name
+    );
   }
 
 
-  Widget _buildTextBox ({ String title, String subtitle, Function(String) onSaved, String hint, int maxLines = 1}) {
-    return Column(
+  Widget _buildTextBox ({ String title, TextEditingController controller, String subtitle, Function(String) onSaved, String hint, int maxLines = 1}) {
+    return Container(child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         TitleLabel(
           title: title,
         ),
-        Visibility(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: RegularLabel(
-              title: subtitle,
-              size: LabelSize.regular,
-            ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: RegularLabel(
+            title: subtitle,
+            size: LabelSize.regular,
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0),
-          child: DefaultTextField(
-            onSaved: onSaved,
-            validator: Validators.notEmptyValidator,
-            hint: hint,
-            maxLines: maxLines,
-          ),
+        SizedBox(
+          height: 10,
+        ),
+        DefaultTextField(
+          onSaved: onSaved,
+          validator: Validators.notEmptyValidator,
+          hint: hint,
+          controller: controller,
+          maxLines: maxLines,
         )
       ],
-    );
+    ), padding: EdgeInsets.symmetric(
+     vertical: 20
+    ));
   }
 
   Widget _buildSubmitButton() {
@@ -88,8 +104,9 @@ class _ChannelEditPage extends State<ChannelEditPage> {
               return ScopedModelDescendant<UploadManager>(
                   builder: (BuildContext context, Widget child, UploadManager uploadManager) {
                     return DefaultButton(
-                      child: RegularLabel(title: Localization().getValue(Localization().next)),
-                      isLoading: uploadManager.isLoading || manager.isLoading,
+
+                      child: RegularLabel(title: Localization().getValue(Localization().next), color: Colors.white, fontWeight: FontWeight.bold, size: LabelSize.medium),
+                      isLoading: manager.isLoading,
                       onPressed: _nextButtonPressed,
                     );
                   }
@@ -109,88 +126,131 @@ class _ChannelEditPage extends State<ChannelEditPage> {
       child: ScopedModel<UploadManager>(
         model: _channelEditManager.avatarImageUploadManager,
         child: Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               backgroundColor: BrandColors.blue,
             ),
-            body: Column(
-              children: <Widget>[
-                Expanded(
-                    child: Form(
-                      key: _channelFormKey,
-                      child: ListView(
-                        children: <Widget>[
-                          _buildTextBox(
-                              title: Localization().getValue(Localization().chooseChannelName),
-                              subtitle: Localization().getValue(Localization().chooseChannelNameDescription),
-                              hint: Localization().getValue(Localization().chooseChannelNameHint),
-                              onSaved: (String value) {
-                                _channelEditManager.uploadObject.name = value;
-                              }
-                          ),
-                          _buildTextBox(
-                              title: Localization().getValue(Localization().addChannelDescriptionTitle),
-                              subtitle: Localization().getValue(Localization().addChannelDescription),
-                              hint: Localization().getValue(Localization().addChannelDescriptionHint),
-                              onSaved: (String value) {
-                                _channelEditManager.uploadObject.description = value;
-                              }
-                          ),
-                          ListItem(
-                              trailing: DefaultButton(
-                                child: RegularLabel(title: Localization().getValue(Localization().changeProfilePicture)),
-                                onPressed: () {
-
-                                  FileSelector fileSelector = FileSelector(onFilesSelected: (List<File> files) {
-                                    _channelEditManager.avatarImageUploadManager.upload(files.first).catchError((e) {
-                                      showSnackBar(message: Localization().getValue(Localization().imageUploadError), buildContext: context, isError: true);
-                                    });
-                                  }, context: context);
-                                  fileSelector.openFilePicker();
-
-                                },
+            body: Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        child: Form(
+                          key: _channelFormKey,
+                          child: ListView(
+                            children: <Widget>[
+                              _buildTextBox(
+                                  title: Localization().getValue(Localization().chooseChannelName),
+                                  subtitle: Localization().getValue(Localization().chooseChannelNameDescription),
+                                  hint: Localization().getValue(Localization().chooseChannelNameHint),
+                                  controller: _channelNameTextController,
+                                  onSaved: (String value) {
+                                    _channelEditManager.uploadObject.name = value;
+                                  }
                               ),
-                              leading: ScopedModelDescendant<UploadManager>(builder: (BuildContext context, Widget widget, UploadManager manager) {
-                                return CircleImage(
-                                    imageUrl: _channelEditManager.avatarImageUploadManager.presentingUrl,
-                                    firstLetter: _channelEditManager.uploadObject.firstLetter,
-                                    avatarColor: BrandColors.avatarColor(index: _channelEditManager.uploadObject.colorIndex)
-                                );
-                              }),
-                              contentPadding: EdgeInsets.all(20)
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Expanded(child: TitleLabel(
-                                title: Localization().getValue(Localization().everyMemberCanAddTags),
-                              )),
-                              Switch(
-                                  value: _channelEditManager.uploadObject.canAddTags,
-                                  onChanged: (bool value) {
-                                    _channelEditManager.uploadObject.canAddTags = value;
+                              _buildTextBox(
+                                  title: Localization().getValue(Localization().addChannelDescriptionTitle),
+                                  subtitle: Localization().getValue(Localization().addChannelDescription),
+                                  hint: Localization().getValue(Localization().addChannelDescriptionHint),
+                                  controller: _channelDescriptionTextController,
+                                  onSaved: (String value) {
+                                    _channelEditManager.uploadObject.description = value;
                                   }
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Expanded(child: TitleLabel(
-                                title: Localization().getValue(Localization().openChannel),
-                              )),
-                              Switch(
-                                  value: _channelEditManager.uploadObject.canPublicJoin,
-                                  onChanged: (bool value) {
-                                    _channelEditManager.uploadObject.canPublicJoin = value;
-                                  }
-                              )
-                            ],
-                          )
+                              ),
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    ScopedModelDescendant<UploadManager>(builder: (BuildContext context, Widget widget, UploadManager manager) {
+                                      if (manager.isLoading) {
+                                        return CircleAvatar(
+                                          child: SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                              strokeWidth: 1,
+                                            ),
+                                          ),
+                                          backgroundColor: BrandColors.blue,
+                                        );
+                                      } else {
+                                        if (_channelEditManager.uploadObject.hasImage || _channelEditManager.avatarImageUploadManager.presentingUrl != null) {
+                                          return CircleImage(
+                                            imageUrl: _channelEditManager.avatarImageUploadManager.presentingUrl,
+                                            firstLetter: _channelEditManager.uploadObject.firstLetter,
+                                            avatarColor: BrandColors.avatarColor(index: _channelEditManager.uploadObject.colorIndex),
+                                          );
+                                        } else {
+                                          return CircleAvatar(
+                                            child: Icon(Icons.person, color: Colors.white),
+                                            backgroundColor: BrandColors.blue,
+                                          );
+                                        }
+                                      }
 
-                        ],
-                      ),
-                    )
-                ),
-                _buildSubmitButton()
-              ],
+                                    }),
+                                    Spacer(),
+                                    DefaultButton(
+
+                                      child: RegularLabel(title: Localization().getValue(Localization().changeProfilePicture), color: Colors.white, fontWeight: FontWeight.bold, size: LabelSize.regular),
+                                      onPressed: () {
+
+                                        FileSelector fileSelector = FileSelector(onFilesSelected: (List<File> files) {
+                                          _channelEditManager.avatarImageUploadManager.upload(files.first).then((_) {
+                                            _channelEditManager.uploadObject.imageUrl = _channelEditManager.avatarImageUploadManager.presentingUrl;
+                                          }).catchError((e) {
+                                            showSnackBar(message: Localization().getValue(Localization().imageUploadError), scaffoldKey: _scaffoldKey, isError: true);
+                                          });
+                                        }, context: context);
+                                        fileSelector.openFilePicker();
+
+                                      },
+                                    )
+                                  ],
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(child: TitleLabel(
+                                    title: Localization().getValue(Localization().everyMemberCanAddTags),
+                                  )),
+                                  Switch(
+                                      value: _channelEditManager.uploadObject.canAddTags,
+                                      onChanged: (bool value) {
+                                        _channelEditManager.uploadObject.canAddTags = value;
+                                      }
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(child: TitleLabel(
+                                    title: Localization().getValue(Localization().openChannel),
+                                  )),
+                                  Switch(
+                                      value: _channelEditManager.uploadObject.canPublicJoin,
+                                      onChanged: (bool value) {
+                                        _channelEditManager.uploadObject.canPublicJoin = value;
+                                      }
+                                  )
+                                ],
+                              )
+
+                            ],
+                          ),
+                        )
+                      )
+                  ),
+                  _buildSubmitButton()
+                ],
+              ),
             ),
             backgroundColor: Colors.white)
       ),

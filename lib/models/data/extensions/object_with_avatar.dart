@@ -7,6 +7,19 @@ abstract class ObjectWithAvatar {
   int get avatarColorIndex;
 
 
+  bool get hasImage {
+    String firstLetter = this.firstLetter;
+    bool hasFirstLetter = false;
+    if (firstLetter != null) {
+      hasFirstLetter = firstLetter.length > 0;
+    }
+    return hasCustomImage || hasFirstLetter;
+  }
+
+  bool get hasCustomImage {
+    return avatarImageUrl != null;
+  }
+
   String firstLetterOrNull (String value) {
     if (value != null) {
       if (value.length > 0) {
@@ -25,5 +38,7 @@ abstract class ObjectWithAvatar {
     }
     return "";
   }
+
+
 
 }

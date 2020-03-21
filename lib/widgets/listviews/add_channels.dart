@@ -29,6 +29,15 @@ class AddChannelsListView extends ParserListView {
 class _AddChannelsListViewState extends ParserListViewState<AddChannelsListView> {
 
   @override
+  void initState() {
+    super.initState();
+
+    widget.manager.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   bool get canLoadMore {
     return false;
   }
@@ -116,15 +125,26 @@ class _AddChannelsListViewState extends ParserListViewState<AddChannelsListView>
     return PublicChannelCell(
       channel: channel,
       onPressedJoin: (Channel channel) {
+
         int indexOf = parsingResult.objects.indexOf(channel);
-        parsingResult.objects.removeAt(indexOf);
-        widget.manager.join(channel).catchError((e) {
-          parsingResult.objects.insert(indexOf, channel);
+        setState(() {
+          parsingResult.objects.removeAt(indexOf);
+        });
+
+        widget.manager.join(channel).then((_) {
+          widget.manager.homeManager.switchToChannel(channel);
+          showSnackBar(message: Localization().getValue(Localization().youAreMember), isError: false, buildContext: context);
+        }).catchError((e) {
+          setState(() {
+            parsingResult.objects.insert(indexOf, channel);
+          });
           showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
         });
       },
     );
   }
+
+
 
 
 

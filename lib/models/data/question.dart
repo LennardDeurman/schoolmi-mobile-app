@@ -1,5 +1,7 @@
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/models/data/answer.dart';
+import 'package:schoolmi/models/data/duplicate_question.dart';
 import 'package:schoolmi/models/data/extensions/object_with_tags.dart';
 import 'package:schoolmi/models/data/extensions/object_with_flags.dart';
 import 'package:schoolmi/models/data/extensions/object_with_votes.dart';
@@ -14,10 +16,17 @@ class Question extends BaseObject with ObjectWithFlags, ObjectWithViewCount, Obj
   String title;
   String body;
 
+  List<Answer> answers = [];
+  List<DuplicateQuestion> duplicateQuestions = [];
+
   Question (Map<String, dynamic> dictionary) : super(dictionary);
 
   bool get hasCheckedAnswer {
     return answerId != null;
+  }
+
+  bool isSelectedAnswer (Answer answer) {
+    return answerId == answer.id;
   }
 
   @override
@@ -27,6 +36,7 @@ class Question extends BaseObject with ObjectWithFlags, ObjectWithViewCount, Obj
     parseVotesInfo(dictionary, questionId: id);
     parseFlagInfo(dictionary);
     parseTags(dictionary);
+    parseViewCount(dictionary);
 
     answerId = dictionary[Keys.answerId];
     channelId = dictionary[Keys.channelId];

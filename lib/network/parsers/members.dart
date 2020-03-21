@@ -13,7 +13,7 @@ class MembersParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
   @override
   String get downloadUrl {
-    return Urls.members(channelId: channel.id);
+    return Urls.members(channelId: channel.id, queryInfo: queryInfo);
   }
 
   @override

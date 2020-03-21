@@ -5,12 +5,12 @@ abstract class ParsableObject {
 
   void parse(Map<String, dynamic> dictionary);
 
-  static List<BaseObject> parseObjectsList(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
+  static List<T> parseObjectsList<T extends BaseObject>(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
     var dictionaryValuesList = dictionary[key];
     if (dictionaryValuesList != null) {
-      List<BaseObject> baseObjects = List<BaseObject>();
+      List<T> baseObjects = List<T>();
       for (Map<String, dynamic> dictionaryValue in dictionaryValuesList) {
-        BaseObject baseObject = toObject(dictionaryValue);
+        T baseObject = toObject(dictionaryValue);
         baseObject.parse(dictionaryValue);
         baseObjects.add(baseObject);
       }

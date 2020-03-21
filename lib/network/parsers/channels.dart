@@ -5,6 +5,8 @@ import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/network/cache_manager.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/constants/keys.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 
@@ -32,6 +34,14 @@ class ChannelsParser extends NetworkParser with ParserWithQueryInfo {
       });
     }
     return super.loadCachedData();
+  }
+
+  @override
+  BaseObject updateObjectWithResponse(BaseObject uploadedObject, http.Response response) {
+    Map rootObject = json.decode(response.body)[Keys.object];
+    int newId = rootObject[Keys.channelId];
+    uploadedObject.id = newId;
+    return uploadedObject;
   }
 
   @override

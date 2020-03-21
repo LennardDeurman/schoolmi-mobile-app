@@ -1,5 +1,6 @@
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/extensions/dates.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 
 class ObjectWithViewCount {
 
@@ -10,7 +11,7 @@ class ObjectWithViewCount {
   void parseViewCount (Map<String, dynamic> dictionary) {
     viewCount = dictionary[Keys.viewCount];
     viewTime = Dates.parse(dictionary[Keys.viewTime]);
-    isSeen = dictionary[Keys.isSeen];
+    isSeen = ParsableObject.parseBool(dictionary[Keys.isSeen]);
   }
 
   Map<String, dynamic> viewsDictionary() {

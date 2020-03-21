@@ -22,6 +22,10 @@ class BaseCell extends StatelessWidget {
     this.trailing
   });
 
+  void _onPressed() {
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +55,16 @@ class BaseCell extends StatelessWidget {
         ),
       ),
       onTap: () {
-        if (this.onPressed != null)
-          this.onPressed();
-      },
+         if (this.onPressed != null) {
+           return () {
+             if (this.onPressed != null){
+               this.onPressed();
+             }
+           };
+         }
+
+         return null;
+      }(),
     )));
   }
 

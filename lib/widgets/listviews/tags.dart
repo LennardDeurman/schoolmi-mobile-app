@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/managers/selection.dart';
@@ -92,12 +93,25 @@ class _TagsListState extends ParserListViewState<TagsListView> {
   }
 
   bool shouldShowCreate(Tag newTag) {
-    return widget.manager.channel.canAddTags;
+    return widget.manager.channel.canAddTags && !parsingResult.objects.contains(newTag);
   }
 
-  void onNewTagPressed(Tag tag) {
+  void onNewTagPressed(Tag tag) async {
     widget.manager.uploadObject = tag;
-    widget.manager.saveUploadObjects();
+    var objects = await widget.manager.saveUploadObjects();
+    setState(() {
+      parsingResult.objects.addAll(objects);
+    });
+  }
+
+  void onDeleteTagPressed(Tag tag) async {
+    tag.isDeleted = true;
+    widget.manager.uploadObject = tag;
+    var objects = await widget.manager.saveUploadObjects();
+    setState(() {
+      parsingResult.objects.remove(objects.first);
+    });
+
   }
 
   Widget buildTagsSelectionBox() {
@@ -107,80 +121,98 @@ class _TagsListState extends ParserListViewState<TagsListView> {
   @override
   Widget buildListItem(BaseObject object) {
     Tag tag = object;
-    return TagListItemCell(tag);
+
+
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      child: TagListItemCell(tag, leading: widget.manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Container() ),
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: Localization().getValue(Localization().delete),
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () {
+            onDeleteTagPressed(tag);
+          },
+        )
+      ],
+    );
   }
 
   @override
   Widget buildFooter(int section) {
 
     TagsParser parser = widget.parser;
-    String search = parser.queryInfo.search;
-    if (search != null) {
-      Tag tag = Tag.create(name: search);
-      if (shouldShowCreate(tag)) {
-        return TagListItemCell(
-            tag,
-            leading: widget.manager.pendingObjects.contains(tag) ? CircularProgressIndicator(strokeWidth: 2) : Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey),
-            onTagPressed: onNewTagPressed
-        );
+    if (parser.queryInfo != null) {
+      String search = parser.queryInfo.search;
+      if (search != null) {
+
+        Tag tag = Tag.create(name: search);
+
+        if (shouldShowCreate(tag)) {
+          return TagListItemCell(
+              tag,
+              leading: widget.manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : IconButton(icon: Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey), onPressed: () {
+                onNewTagPressed(tag);
+              }),
+          );
+        }
       }
     }
+
+    return Container();
+  }
+
+  @override
+  Widget buildNoResultsBackground() {
     return Container();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
-      },
-      child: Container(
-        color: BrandColors.blueGrey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              color: Colors.white,
-              child:  Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: DefaultTextField(
-                        onChanged: (String value) async {
-                          TagsParser parser = widget.parser;
-                          parser.queryInfo = new QueryInfo(
-                              search: value
-                          );
-                          await performRefresh();
-                        },
-                        focusNode: _searchTextFieldFocusNode,
-                        hint: Localization().getValue(Localization().tagsHint),
-                      ),
+
+
+    return Container(
+      color: BrandColors.blueGrey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            color: Colors.white,
+            child:  Container(
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DefaultTextField(
+                      onSubmitted: (String value) {
+                        TagsParser parser = widget.parser;
+                        parser.queryInfo = null;
+                        if (value != null) {
+                          if (value.length > 0) {
+                            parser.queryInfo = new QueryInfo(
+                                search: value
+                            );
+                          }
+                        }
+
+                        refreshIndicatorKey.currentState.show();
+                      },
+                      focusNode: _searchTextFieldFocusNode,
+                      hint: Localization().getValue(Localization().tagsHint),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-                color: BrandColors.blueGrey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Announcer(title: Localization().getValue(Localization().results)),
-                    buildTagsSelectionBox(),
-                  ],
-                )
-            ),
-            Expanded(
-              child: Container(
+          ),
+          Expanded(
+            child: Container(
                 color: Colors.white,
                 child: buildRefreshWidget()
-              ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

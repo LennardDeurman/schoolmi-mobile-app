@@ -8,7 +8,7 @@ class Tag extends BaseObject with ObjectWithColorIndex {
 
   Tag (Map<String, dynamic> dictionary) : super(dictionary);
 
-  Tag.create({ this.name }) : super(null);
+  Tag.create({ String name }) : super({Keys.name: name});
 
   @override
   void parse(Map<String, dynamic> dictionary) {
@@ -18,4 +18,19 @@ class Tag extends BaseObject with ObjectWithColorIndex {
     name = dictionary[Keys.name] ?? dictionary[Keys.tagName];
   }
 
+  @override
+  Map<String, dynamic> toDictionary() {
+    var dictionary = super.toDictionary();
+    dictionary[Keys.tagName] = name;
+    dictionary[Keys.tagId] = id;
+    return dictionary;
+  }
+
+  @override
+  bool operator ==(other) {
+    if (other is Tag) {
+      return other.name == this.name && other.name != null;
+    }
+    return false;
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
+import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/widgets/cells/base_cell.dart';
 import 'package:schoolmi/widgets/circle_image.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
@@ -13,6 +15,29 @@ class PublicChannelCell extends StatelessWidget {
   final Function(Channel) onPressedJoin;
 
   PublicChannelCell ({this.channel, this.onPressedJoin});
+
+  Widget _buildTrailing() {
+    ParsingResult result = UserService().loginResult.myChannelsResult;
+    if (result.objects.contains(channel)) {
+      return Container();
+    }
+
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: FlatButton(
+        color: BrandColors.blue,
+        child: TitleLabel(
+          title: Localization().getValue(Localization().becomeMember),
+          size: TitleSize.small,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          if (this.onPressedJoin != null)
+            this.onPressedJoin(channel);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,21 +69,7 @@ class PublicChannelCell extends StatelessWidget {
               color: BrandColors.blueGrey
           )
       ),
-      trailing: Container(
-        padding: EdgeInsets.all(10),
-        child: FlatButton(
-          color: BrandColors.blue,
-          child: TitleLabel(
-            title: Localization().buildNumberAndText(Localization().becomeMember, count: channel.membersCount),
-            size: TitleSize.small,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            if (this.onPressedJoin != null)
-              this.onPressedJoin(channel);
-          },
-        ),
-      ),
+      trailing: _buildTrailing(),
     );
   }
 
