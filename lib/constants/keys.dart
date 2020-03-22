@@ -69,4 +69,5 @@ class Keys {
   static const String width = "width";
   static const String height = "height";
   static const String blocked = "blocked";
+  static const String selectedUserOption = "selected_user_option";
 }

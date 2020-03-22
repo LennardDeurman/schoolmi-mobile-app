@@ -42,4 +42,20 @@ class QuestionsLocalization {
   final LocalizationObject commentHint = LocalizationObject({ Languages.NL: "Plaats een reactie..." });
   final LocalizationObject noComments = LocalizationObject({ Languages.NL: "Nog geen reacties" });
   final LocalizationObject searchQuestions = LocalizationObject({ Languages.NL: "Zoek vragen" });
+  final LocalizationObject showOnlyUnansweredQuestions = LocalizationObject({ Languages.NL: "Alleen onbeantwoorde vragen tonen"});
+  final LocalizationObject showOnlyFollowedQuestions = LocalizationObject({ Languages.NL: "Alleen vragen die ik volg tonen"});
+  final LocalizationObject questionsFilterByPersons = LocalizationObject({ Languages.NL: "Van wie wil je vragen zien?"});
+  final LocalizationObject orderBy = LocalizationObject({ Languages.NL: "Sorteren op: " });
+  final LocalizationObject everyone = LocalizationObject({ Languages.NL: "Iedereen" });
+  final LocalizationObject specificRoles = LocalizationObject({ Languages.NL: "Specifieke rollen" });
+  final LocalizationObject specificUsers = LocalizationObject({ Languages.NL: "Specifieke gebruikers"});
+  final LocalizationObject fromWhomQuestions = LocalizationObject( { Languages.NL: "Van wie wil je vragen zien? "});
+  final LocalizationObject fromWhomAnswers = LocalizationObject( { Languages.NL: "Van wie wil je antwoorden zien? "});
+  final LocalizationObject questionOptionEveryoneHint = LocalizationObject({ Languages.NL: "Vragen van iedere gebruiker in dit channel worden getoond" });
+  final LocalizationObject questionOptionSpecificUsersHint = LocalizationObject({ Languages.NL: "Selecteer hier als je alleen vragen wilt tonen van specifieke gebruikers" });
+  final LocalizationObject questionOptionSpecificRolesHint = LocalizationObject({ Languages.NL: "Selecteer hier als je alleen vragen wilt tonen van gebruikers met specifieke rollen (bijv. leerlingen / sa)" });
+  final LocalizationObject answerOptionEveryoneHint = LocalizationObject({ Languages.NL: "Antwoorden van iedere gebruiker in dit channel op deze vraag worden getoond" });
+  final LocalizationObject answerOptionSpecificUsersHint = LocalizationObject({ Languages.NL: "Selecteer hier als je alleen antwoorden wilt tonen van specifieke gebruikers" });
+  final LocalizationObject answerOptionSpecificRolesHint = LocalizationObject({ Languages.NL: "Selecteer hier als je alleen antwoorden wilt tonen van gebruikers met specifieke rollen (bijv. leerlingen / sa)" });
+  final LocalizationObject showDeletedAnswers = LocalizationObject({ Languages.NL: "Toon verwijderde antwoorden" });
 }

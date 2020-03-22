@@ -6,28 +6,27 @@ import 'package:schoolmi/models/options.dart';
 import 'package:schoolmi/widgets/highlighted_widget.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 
-abstract class OptionsBarState<T extends StatefulWidget> extends State<T> {
+class OptionsBoxPicker {
 
-  void showOptionsPicker(OptionsBox optionsBox, Function(int) onOptionPressed) {
+  final OptionsBox optionsBox;
+
+  OptionsBoxPicker (this.optionsBox);
+
+  void showOptionsPicker(BuildContext context, Function(int) onOptionPressed) {
     showRoundedModalBottomSheet(
       radius: 20.0,
       color: Colors.white,
       dismissOnTap: true,
       context: context,
       builder: (BuildContext context) {
+
         return Container(
           padding: EdgeInsets.only(bottom: 40.0),
           child: ListView.builder(itemBuilder: (BuildContext context, int position) {
 
             return HighlightedWidget(
                 onPressed: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    optionsBox.selectedIndex = position;
-                  });
-
                   onOptionPressed(position);
-
                 }, baseColor: Colors.black,
                 renderWidget: (bool highlighted, Color color) {
                   return Container(
@@ -60,5 +59,6 @@ abstract class OptionsBarState<T extends StatefulWidget> extends State<T> {
       },
     );
   }
+
 
 }

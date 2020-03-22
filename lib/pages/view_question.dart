@@ -8,7 +8,8 @@ import 'package:schoolmi/models/options.dart';
 import 'package:schoolmi/widgets/content/answer_details_block.dart';
 import 'package:schoolmi/widgets/content/question_details_block.dart';
 import 'package:schoolmi/widgets/listviews/advanced_listview.dart';
-import 'package:schoolmi/widgets/options/answers_options_bar.dart';
+import 'package:schoolmi/widgets/options/filter_options_bar.dart';
+import 'package:schoolmi/widgets/options/filter_options_bottomsheet.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ViewQuestionPage extends StatefulWidget {
@@ -31,6 +32,7 @@ class _ViewQuestionPageState extends State<ViewQuestionPage> {
 
   ViewQuestionManager _viewQuestionManager;
   OptionsBox _answerOrderOptionsBox;
+  AnswersFilterOptionsManager _answerOptionsManager;
   GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   @override
@@ -46,6 +48,8 @@ class _ViewQuestionPageState extends State<ViewQuestionPage> {
     _answerOrderOptionsBox.name = Localization().getValue(Localization().order);
     _answerOrderOptionsBox.selectedIndex = 1;
 
+    _answerOptionsManager = AnswersFilterOptionsManager();
+
     WidgetsBinding.instance.addPostFrameCallback( ( Duration duration ) {
       this._refreshIndicatorKey.currentState.show();
     } );
@@ -53,10 +57,6 @@ class _ViewQuestionPageState extends State<ViewQuestionPage> {
 
   Future _onRefresh() {
     return _viewQuestionManager.refreshAllData();
-  }
-
-  void onAnswerOrderChange(Option selectedOption) {
-
   }
 
   @override
@@ -94,7 +94,23 @@ class _ViewQuestionPageState extends State<ViewQuestionPage> {
                         );
                       },
                       headerBuilder: () {
-                        return AnswersOptionsBar(title: Localization().buildNumberAndText(Localization().answers, count: _viewQuestionManager.question.answers.length), orderOptionsBox: _answerOrderOptionsBox, onChange: onAnswerOrderChange);
+                        return FilterOptionsBar(
+                            typesOptionsBox: OptionsBox.fromMap({
+                              Localization().buildNumberAndText(Localization().answers, count: _viewQuestionManager.question.answers.length): 1
+                            }),
+                            orderOptionsBox: _answerOrderOptionsBox,
+                            optionsManagerBuilder: () {
+                              AnswersFilterOptionsManager filterManager = AnswersFilterOptionsManager();
+                              filterManager.copy(_answerOptionsManager);
+                              return filterManager;
+                            },
+                            onApplyPressed: (BuildContext context, FilterOptionsManager manager) {
+                              this._answerOptionsManager.copy(manager);
+                            },
+                            shouldRefresh: () {
+
+                            },
+                        );
                       },
                       numberOfRows: _viewQuestionManager.question.answers.length
                   )
