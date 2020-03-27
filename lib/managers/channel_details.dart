@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:schoolmi/managers/child_manager.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/members.dart';
+import 'package:schoolmi/managers/roles.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/download_info.dart';
 import 'package:schoolmi/network/network_parser.dart';
 import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/network/parsers/roles.dart';
 
 class ChannelDetailsChildManager extends ChildManager {
 
@@ -48,6 +50,7 @@ class ChannelDetailsManager extends ChildManager {
 
   MembersManager membersManager;
   TagsManager tagsManager;
+  RolesManager rolesManager;
 
   ChannelDetailsManager (HomeManager homeManager) : super(homeManager) {
 
@@ -63,6 +66,7 @@ class ChannelDetailsManager extends ChildManager {
 
     membersManager = new MembersManager(homeManager);
     tagsManager = new TagsManager(homeManager);
+    rolesManager = new RolesManager(homeManager);
   }
 
   @override
@@ -74,6 +78,7 @@ class ChannelDetailsManager extends ChildManager {
     }
     membersManager.channel = channel;
     tagsManager.channel = channel;
+    rolesManager.channel = channel;
   }
 
 }

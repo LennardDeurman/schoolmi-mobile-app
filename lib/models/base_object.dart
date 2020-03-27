@@ -21,7 +21,6 @@ abstract class BaseObject with ParsableObject  {
 
   @override
   void parse(Map<String, dynamic> dictionary) {
-    print(dictionary);
     var profileDictionary = dictionary[Keys.user];
     if (profileDictionary != null) {
       profile = Profile(profileDictionary);

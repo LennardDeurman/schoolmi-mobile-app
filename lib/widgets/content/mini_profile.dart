@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:schoolmi/constants/asset_paths.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
+import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/widgets/circle_image.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
@@ -12,10 +14,49 @@ class MiniProfileWidget extends StatelessWidget {
 
   MiniProfileWidget (this.profile);
 
+  Widget _buildDummyContainer({ String title, String subtitle }) {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          height: 25,
+          width: 25,
+          child: CircleAvatar(
+            child: Icon(Icons.account_circle, color: BrandColors.grey),
+          ),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            RegularLabel(
+              title: title,
+              size: LabelSize.small,
+              fontWeight: FontWeight.bold,
+            ),
+            RegularLabel(
+              title: subtitle,
+              size: LabelSize.small,
+              fontWeight: FontWeight.normal,
+            )
+          ],
+        )
+      ],
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Row(
+  Widget _buildContent() {
+
+    if (profile == null) {
+      return _buildDummyContainer(
+        title: Localization().getValue(Localization().userDeleted),
+        subtitle: Localization().getValue(Localization().userDeletedHint),
+      );
+    }
+
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         SizedBox(
@@ -61,7 +102,13 @@ class MiniProfileWidget extends StatelessWidget {
           ],
         )
       ],
-    ), decoration: BoxDecoration(
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(child: _buildContent(), decoration: BoxDecoration(
         color: BrandColors.blueGrey,
         border: Border.all(color: BrandColors.darkBlueGrey, width: 0.5),
         borderRadius: BorderRadius.circular(15)

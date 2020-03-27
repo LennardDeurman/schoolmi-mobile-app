@@ -13,12 +13,35 @@ abstract class SearchListViewState<T extends ParserListView> extends ParserListV
     return Localization().getValue(Localization().search);
   }
 
+  @override
+  void initState() {
+    ParserWithQueryInfo parser = widget.parser as ParserWithQueryInfo;
+    parser.queryInfo = null;
+    super.initState();
+  }
+
   void onChangedSearchField(String value) {
 
   }
 
   void onSubmittedSearchField(String value) {
 
+  }
+
+  String get search {
+    ParserWithQueryInfo parser = widget.parser as ParserWithQueryInfo;
+    return hasSearch ? parser.queryInfo.search : null;
+  }
+
+  bool get hasSearch {
+    ParserWithQueryInfo parser = widget.parser as ParserWithQueryInfo;
+    if (parser.queryInfo != null) {
+      String search = parser.queryInfo.search;
+      if (search != null) {
+        return search.isNotEmpty;
+      }
+    }
+    return false;
   }
 
   void performSearch(String value) async {

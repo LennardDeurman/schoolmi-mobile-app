@@ -4,11 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
-import 'package:schoolmi/widgets/announcer.dart';
-import 'package:schoolmi/network/parsers/tags.dart';
-import 'package:schoolmi/network/query_info.dart';
 import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/widgets/textfield.dart';
+import 'package:schoolmi/widgets/listviews/search_listview.dart';
 import 'package:schoolmi/widgets/cells/tag.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
@@ -83,9 +80,7 @@ class _TagsPickerState extends _TagsListState {
 
 }
 
-class _TagsListState extends ParserListViewState<TagsListView> {
-
-  final FocusNode _searchTextFieldFocusNode = FocusNode();
+class _TagsListState extends SearchListViewState<TagsListView> {
 
   @override
   bool get canLoadMore {
@@ -112,6 +107,11 @@ class _TagsListState extends ParserListViewState<TagsListView> {
       parsingResult.objects.remove(objects.first);
     });
 
+  }
+
+  @override
+  String get searchHint {
+    return Localization().getValue(Localization().tagsHint);
   }
 
   Widget buildTagsSelectionBox() {
@@ -142,21 +142,17 @@ class _TagsListState extends ParserListViewState<TagsListView> {
   @override
   Widget buildFooter(int section) {
 
-    TagsParser parser = widget.parser;
-    if (parser.queryInfo != null) {
-      String search = parser.queryInfo.search;
-      if (search != null) {
+    String search = this.search;
+    if (search != null) {
+      Tag tag = Tag.create(name: search);
 
-        Tag tag = Tag.create(name: search);
-
-        if (shouldShowCreate(tag)) {
-          return TagListItemCell(
-              tag,
-              leading: widget.manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : IconButton(icon: Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey), onPressed: () {
-                onNewTagPressed(tag);
-              }),
-          );
-        }
+      if (shouldShowCreate(tag)) {
+        return TagListItemCell(
+          tag,
+          leading: widget.manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : IconButton(icon: Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey), onPressed: () {
+            onNewTagPressed(tag);
+          }),
+        );
       }
     }
 
@@ -169,52 +165,8 @@ class _TagsListState extends ParserListViewState<TagsListView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-
-
-    return Container(
-      color: BrandColors.blueGrey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-            child:  Container(
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: DefaultTextField(
-                      onSubmitted: (String value) {
-                        TagsParser parser = widget.parser;
-                        parser.queryInfo = null;
-                        if (value != null) {
-                          if (value.length > 0) {
-                            parser.queryInfo = new QueryInfo(
-                                search: value
-                            );
-                          }
-                        }
-
-                        refreshIndicatorKey.currentState.show();
-                      },
-                      focusNode: _searchTextFieldFocusNode,
-                      hint: Localization().getValue(Localization().tagsHint),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-                color: Colors.white,
-                child: buildRefreshWidget()
-            ),
-          )
-        ],
-      ),
-    );
+  void onSubmittedSearchField(String value) {
+    performSearch(value);
   }
 
 

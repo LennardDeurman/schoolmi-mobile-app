@@ -70,4 +70,8 @@ class Keys {
   static const String height = "height";
   static const String blocked = "blocked";
   static const String selectedUserOption = "selected_user_option";
+  static const String roleId = "role_id";
+  static const String roles = "roles";
+  static const String roleName = "role_name";
+
 }

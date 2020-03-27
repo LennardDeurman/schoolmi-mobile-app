@@ -35,7 +35,15 @@ class MemberCell extends StatelessWidget {
           title: member.email,
           size: LabelSize.small,
           fontWeight: FontWeight.w300,
-        ), visible: channel.isUserAdmin)
+        ), visible: channel.isUserAdmin),
+        Visibility(
+          visible: member.hasRole,
+          child: RegularLabel(
+            title: member.hasRole ? member.role.name : "",
+            fontWeight: FontWeight.bold,
+            customSize: 12,
+          ),
+        )
       ],
       trailing: Visibility(visible: member.isAdmin, child:  Container(
         padding: EdgeInsets.all(10),
@@ -66,6 +74,14 @@ class MemberCell extends StatelessWidget {
         RegularLabel(
           title: Localization().getValue(Localization().noAccountMatched),
           size: LabelSize.small,
+        ),
+        Visibility(
+          visible: member.hasRole,
+          child: RegularLabel(
+            title: member.hasRole ? member.role.name : "",
+            fontWeight: FontWeight.bold,
+            customSize: 12,
+          ),
         )
       ],
       trailing: Visibility(visible: member.isAdmin, child:  Container(

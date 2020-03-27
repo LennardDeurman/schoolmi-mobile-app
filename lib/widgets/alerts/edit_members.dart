@@ -1,6 +1,9 @@
+import 'package:schoolmi/managers/roles.dart';
 import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/models/data/role.dart';
+import 'package:schoolmi/pages/roles.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/cells/base_cell.dart';
@@ -157,8 +160,72 @@ class MembersEditingDialog {
     );
   }
 
+  Widget _buildRoleWidget(BuildContext context) {
+    return BaseCell(
+      leading: Icon(Icons.person),
+      columnWidgets: <Widget>[
+        RegularLabel(
+          title: Localization().getValue(Localization().assignRole),
+        )
+      ],
+      onPressed: () {
+        Navigator.pop(context);
+        RolesManager rolesManager = manager.homeManager.channelDetailsManager.rolesManager;
+        PickRolesPage.show(
+          context: context,
+          rolesManager: rolesManager,
+          selectedRole: member.role,
+          onRolePressed: (Role role) async {
+            Navigator.pop(context);
+
+            Role oldRole = member.role;
+            if (oldRole == role) {
+              role = null;
+            }
+
+            try {
+              member.role = role;
+              onModified(member);
+
+
+
+              Role activeRole = role;
+              if (role != null) {
+                if (role.id == null) {
+                  rolesManager.uploadObject = role;
+                  List<Role> roles = await rolesManager.saveUploadObjects();
+                  activeRole = roles.first;
+                }
+              }
+
+              member.role = activeRole;
+              manager.uploadObject = member;
+              await manager.saveUploadObjects();
+            } catch (e) {
+              member.role = oldRole;
+              onModified(member);
+              showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, scaffoldKey: scaffoldKey);
+            }
+
+
+
+
+
+          }
+        );
+      },
+    );
+  }
+
 
   List<Widget> buildWidgets(BuildContext context) {
+
+    if (member.isCurrentUser) {
+      return [
+        _buildRoleWidget(context)
+      ];
+    }
+
     List<Widget> widgets = [];
     if (member.blocked) {
       widgets.add(_buildUnblockWidget(context));
@@ -172,24 +239,29 @@ class MembersEditingDialog {
       widgets.addAll([
         _buildAdminStatusActionWidget(context),
         _buildRemoveMemberWidget(context),
-        _buildBlockMemberWidget(context)
+        _buildBlockMemberWidget(context),
+        _buildRoleWidget(context)
       ]);
     }
+
     return widgets;
   }
 
-  void show(BuildContext context) {
+
+
+  void show(BuildContext parentContext) {
+
     showRoundedModalBottomSheet(
       radius: 20.0,
       color: Colors.white,
       dismissOnTap: false,
-      context: context,
+      context: parentContext,
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.only(bottom: 40.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: buildWidgets(context),
+            children: buildWidgets(parentContext),
           ),
         );
       },

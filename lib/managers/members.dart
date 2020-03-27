@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:schoolmi/managers/base_manager.dart';
 import 'package:schoolmi/managers/channel_details.dart';
 import 'package:schoolmi/managers/home.dart';
+import 'package:schoolmi/managers/roles.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/models/data/member.dart';
+import 'package:schoolmi/models/data/role.dart';
 import 'package:schoolmi/network/parsers/members.dart';
 import 'package:schoolmi/managers/upload_interface.dart';
+
 
 class AddMembersManager extends BaseManager with UploadInterface<Member> {
 
@@ -60,5 +65,6 @@ class MembersManager extends ChannelDetailsChildManager with UploadInterface<Mem
   Future<List<Member>> saveUploadObjects() {
     return executeAsync<List<Member>>(wrapUpload(performUpload(parser)));
   }
+
 
 }

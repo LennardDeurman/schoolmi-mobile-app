@@ -3,6 +3,7 @@ import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/models/data/role.dart';
 import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 
@@ -12,6 +13,7 @@ class Member extends BaseObject with ObjectWithAvatar  {
   int channelId;
   bool isAdmin;
   bool blocked;
+  Role role;
 
   Member (Map<String, dynamic> dictionary) : super(dictionary);
 
@@ -27,6 +29,14 @@ class Member extends BaseObject with ObjectWithAvatar  {
       if (result.firebaseUser.email == email) {
         return true;
       }
+    }
+    return false;
+  }
+
+  bool get hasRole {
+    bool hasRole = role != null;
+    if (hasRole) {
+      return role.name != null;
     }
     return false;
   }
@@ -56,6 +66,10 @@ class Member extends BaseObject with ObjectWithAvatar  {
     isAdmin = ParsableObject.parseBool(dictionary[Keys.isAdmin]);
     profile = Profile(dictionary);
     profile.colorIndex = dictionary[Keys.colorIndex];
+    int roleId = dictionary[Keys.roleId];
+    if (roleId != null) {
+      role = Role(dictionary);
+    }
     if (profile.firebaseUid == null) {
       profile = null;
     }
@@ -68,6 +82,9 @@ class Member extends BaseObject with ObjectWithAvatar  {
     superDict[Keys.channelId] = channelId;
     superDict[Keys.isAdmin] = isAdmin;
     superDict[Keys.blocked] = blocked;
+    if (role != null) {
+      superDict[Keys.roleId] = role.id;
+    }
     return superDict;
   }
 }

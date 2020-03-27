@@ -29,5 +29,14 @@ class MembersLocalization {
   final LocalizationObject deletedMembers = LocalizationObject({ Languages.NL: "Verwijderde leden" });
   final LocalizationObject undoDeletedFromChannel = LocalizationObject( { Languages.NL: "Herstel verwijderde gebruiker" });
   final LocalizationObject unblockFromChannel = LocalizationObject( { Languages.NL: "Deblokkeren" });
+  final LocalizationObject userDeleted = LocalizationObject( { Languages.NL: "Account verwijderd" });
+  final LocalizationObject userDeletedHint = LocalizationObject( { Languages.NL: "Deze gebruiker is verwijderd" });
+  final LocalizationObject assignRole = LocalizationObject( { Languages.NL: "Rol toewijzen "});
+  final LocalizationObject newRoleHint = LocalizationObject( {Languages.NL: "Klik om deze rol aan te maken en toe te wijzen" });
+  final LocalizationObject rolesHint = LocalizationObject( { Languages.NL: "Zoek naar rollen of maak een nieuwe rol"});
+  final LocalizationObject noRolesHint = LocalizationObject( { Languages.NL: "Er zijn nog geen rollen aangemaakt. Met rollen kun je aangeven wat de rol is van gebruikers in het systeem en kun je ze bij vragen en antwoorden gezamenlijk aanspreken."});
+  final LocalizationObject help = LocalizationObject( { Languages.NL: "Help" });
+  final LocalizationObject rolesHelp = LocalizationObject( { Languages.NL: "Met rollen kun je aangeven wat de rol is van gebruikers in het systeem en kun je ze bij vragen en antwoorden gezamenlijk aanspreken." });
+  final LocalizationObject assignNoRole = LocalizationObject( { Languages.NL: "Geen rol toewijzen "});
 }
 

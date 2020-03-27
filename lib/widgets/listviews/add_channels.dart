@@ -35,6 +35,7 @@ class _AddChannelsListViewState extends ParserListViewState<AddChannelsListView>
     widget.manager.addListener(() {
       setState(() {});
     });
+
   }
 
   @override

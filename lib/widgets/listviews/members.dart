@@ -7,6 +7,7 @@ import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:flutter/material.dart';
+import 'package:schoolmi/widgets/listviews/search_listview.dart';
 
 class MembersListView extends ParserListView {
 
@@ -22,7 +23,7 @@ class MembersListView extends ParserListView {
 
 }
 
-class MembersListViewState extends ParserListViewState<MembersListView> {
+class MembersListViewState extends SearchListViewState<MembersListView> {
 
   @override
   void initState() {
@@ -57,11 +58,7 @@ class MembersListViewState extends ParserListViewState<MembersListView> {
       member: member,
       channel: membersParser.channel,
       onPressed: (Member member) {
-        if (membersParser.channel.isUserAdmin && !member.isCurrentUser) {
-
-
-
-
+        if (membersParser.channel.isUserAdmin) {
 
           MembersEditingDialog(member: member, manager: widget.manager, scaffoldKey: widget.scaffoldKey, onModified: (Member member){
             if (shouldRemoveMember(member)) {
@@ -76,6 +73,11 @@ class MembersListViewState extends ParserListViewState<MembersListView> {
         }
       }
     );
+  }
+
+  @override
+  void onChangedSearchField(String value) {
+    performSearch(value);
   }
 
 }

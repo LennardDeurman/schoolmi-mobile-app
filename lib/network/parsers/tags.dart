@@ -1,4 +1,7 @@
 
+import 'dart:convert';
+
+import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/network/channel_base_parser.dart';
 
 import 'package:http/http.dart' as http;
@@ -26,7 +29,9 @@ class TagsParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
   @override
   List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
-    return uploadedObjects;
+    Map<String, dynamic> dictionary = json.decode(response.body);
+    Map<String, dynamic> objectDict = dictionary[Keys.object];
+    return ParsableObject.parseObjectsList(objectDict, Keys.results, toObject: toObject);
   }
 
   @override

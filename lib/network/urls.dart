@@ -108,6 +108,12 @@ class Urls {
     return url;
   }
 
+  static String roles ({@required int channelId, QueryInfo queryInfo}) {
+    String url = "$baseUrl/channels/$channelId/members/roles";
+    url = urlWithQueryInfo(url, queryInfo);
+    return url;
+  }
+
   static String contentReporters ({@required int channelId, int questionId = 0, int answerId = 0, int commentId = 0}) {
     String url = "$baseUrl/channels/$channelId/members";
     url = urlWithQueryParams(url, {

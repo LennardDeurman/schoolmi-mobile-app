@@ -35,7 +35,6 @@ class _MembersPageState extends State<MembersPage> {
   GlobalKey<MembersListViewState> _listViewKey = GlobalKey<MembersListViewState>();
 
 
-
   Widget buildFloatingActionButton() {
     if (widget.membersManager.channel != null) {
       if (widget.membersManager.channel.isUserAdmin) {
@@ -73,6 +72,7 @@ class _MembersPageState extends State<MembersPage> {
     return localization[filterCode];
   }
 
+
   void _refresh(int filterCode) {
     setState(() {
       MembersParser parser = widget.membersManager.parser;
@@ -83,6 +83,11 @@ class _MembersPageState extends State<MembersPage> {
     });
   }
 
+  @override
+  void initState() {
+    widget.membersManager.homeManager.channelDetailsManager.rolesManager.download();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

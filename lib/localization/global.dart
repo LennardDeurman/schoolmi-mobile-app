@@ -2,6 +2,7 @@ import 'package:schoolmi/localization/localization.dart';
 class GlobalLocalization {
 
   final LocalizationObject search = LocalizationObject({ Languages.NL: "Zoeken" });
+  final LocalizationObject okay = LocalizationObject({ Languages.NL: "Oke" });
   final LocalizationObject yes = LocalizationObject({ Languages.NL: "Ja" });
   final LocalizationObject no = LocalizationObject({ Languages.NL: "Nee" });
   final LocalizationObject name = LocalizationObject({ Languages.NL: "Naam" });
