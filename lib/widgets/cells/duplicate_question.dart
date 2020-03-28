@@ -75,6 +75,7 @@ class DuplicateQuestionCell extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
                           RegularLabel(
                             title: question.title,
@@ -89,13 +90,13 @@ class DuplicateQuestionCell extends StatelessWidget {
                                 children: <Widget>[
                                   Icon(Icons.person, color: color, size: 15),
                                   SizedBox(width: 5),
-                                  RegularLabel(
+                                  Expanded(child: RegularLabel(
                                     title: reportersAsString,
                                     color: color,
                                     fontWeight: FontWeight.w300,
                                     font: LabelFont.montserrat,
                                     size: LabelSize.small,
-                                  )
+                                  ))
                                 ],
                               );
                             },

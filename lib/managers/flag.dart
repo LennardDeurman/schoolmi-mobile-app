@@ -53,6 +53,21 @@ class FlagManager extends Model {
     });
   }
 
+  void clearFlag({ Function onError }) {
+    _object.flagged = false;
+    bool oldMyFlagState = _object.flaggedByMe;
+    _object.flaggedByMe = false;
+    notifyListeners();
+    Api.clearFlag(questionId: _questionId, answerId: _answerId, commentId: _commentId).catchError((e) {
+      _object.flagged = true;
+      _object.flaggedByMe = oldMyFlagState;
+      if (onError != null) {
+        onError();
+      }
+      notifyListeners();
+    });
+  }
+
 
 
 

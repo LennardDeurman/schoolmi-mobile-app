@@ -230,4 +230,16 @@ class Api {
     return completer.future;
   }
 
+  static Future clearFlag({@required int questionId, int answerId = 0, int commentId = 0}) {
+    Completer completer = new Completer();
+    executeJsonRequest(Urls.clearFlag, completer, (http.Response response) {
+      completer.complete();
+    }, httpMethod: HttpMethod.post, postDictionary: {
+      Keys.questionId: questionId,
+      Keys.answerId: answerId,
+      Keys.commentId: commentId
+    });
+    return completer.future;
+  }
+
 }

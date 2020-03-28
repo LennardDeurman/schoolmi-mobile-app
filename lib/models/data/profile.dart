@@ -2,6 +2,8 @@ import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/extensions/object_with_colorindex.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/models/data/role.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -18,6 +20,8 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
   int score;
   int profileId;
   int activeChannelId;
+  bool isAdmin;
+  Role role;
 
   static const String storageKey = "storageKey";
 
@@ -34,6 +38,13 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
   @override
   String get firstLetter {
     return firstLetterOrEmpty(username);
+  }
+
+  String get roleName {
+    if (role != null) {
+      return role.name;
+    }
+    return null;
   }
 
   String get fullName {
@@ -65,6 +76,11 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
     profileId = dictionary[Keys.profileId];
     activeChannelId = dictionary[Keys.activeChannelId];
     firebaseUid = dictionary[Keys.firebaseUid] ?? dictionary[Keys.uid];
+    int roleId = dictionary[Keys.roleId];
+    if (roleId != null) {
+      role = Role(dictionary);
+    }
+    isAdmin = ParsableObject.parseBool(dictionary[Keys.isAdmin]);
     parseColorIndex(dictionary);
     super.parse(dictionary);
   }

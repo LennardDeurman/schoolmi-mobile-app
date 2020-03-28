@@ -15,6 +15,8 @@ import 'package:schoolmi/widgets/content/warning.dart';
 import 'package:schoolmi/widgets/content/attachments.dart';
 import 'package:schoolmi/widgets/content/votes.dart';
 import 'package:schoolmi/extensions/dates.dart';
+import 'package:schoolmi/widgets/users/static_users_sheet.dart';
+import 'package:schoolmi/widgets/users/users_sheet.dart';
 
 class AnswerDetailsBlock extends DetailsBlock {
 
@@ -40,7 +42,13 @@ class AnswerDetailsBlock extends DetailsBlock {
   }
 
   void _showReporters(BuildContext context) {
-
+    FlagManager flagManager = FlagManager.forAnswer(answer);
+    flagManager.bindEvents(manager);
+    UsersSheet.showReporters(context: context, questionId: answer.questionId, answerId: answer.id, onDeleteMarkingPressed: () {
+      flagManager.clearFlag(onError: () {
+        showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+      });
+    });
   }
 
   void _markAcceptedAnswer(BuildContext context) {

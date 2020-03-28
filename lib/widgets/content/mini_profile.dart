@@ -75,10 +75,20 @@ class MiniProfileWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            RegularLabel(
-              title: profile.fullName,
-              size: LabelSize.small,
-              fontWeight: FontWeight.bold,
+            Row(
+              children: <Widget>[
+                RegularLabel(
+                  title: profile.fullName,
+                  size: LabelSize.small,
+                  fontWeight: FontWeight.bold,
+                ),
+                Visibility(child: Container(
+                  child: Icon(Icons.supervisor_account, color: BrandColors.grey, size: 14),
+                  margin: EdgeInsets.only(
+                    left: 10
+                  ),
+                ), visible: profile.isAdmin)
+              ],
             ),
             Container(
               padding: EdgeInsets.only(top: 5.0),
@@ -95,7 +105,14 @@ class MiniProfileWidget extends StatelessWidget {
                     size: LabelSize.small,
                     fontWeight: FontWeight.w600,
                     color: BrandColors.darkGrey,
-                  )
+                  ),
+                  SizedBox(width: 12),
+                  RegularLabel(
+                    title: profile.roleName ?? "",
+                    size: LabelSize.small,
+                    fontWeight: FontWeight.w600,
+                    color: BrandColors.darkGrey,
+                  ),
                 ],
               ),
             ),

@@ -19,7 +19,6 @@ class ViewQuestionManager extends ChildManager {
   QuestionsParser questionsParser;
   AnswerParser answerParser;
   DuplicatesParser duplicatesParser;
-  FlagManager flagManager;
   VotesManager votesManager;
   SearchQuestionsForDuplicatesManager duplicatesManager;
 

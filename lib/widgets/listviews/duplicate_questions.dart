@@ -9,6 +9,8 @@ import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:flutter/material.dart';
 import 'package:schoolmi/widgets/presenter.dart';
+import 'package:schoolmi/widgets/users/static_users_sheet.dart';
+import 'package:schoolmi/widgets/users/users_sheet.dart';
 
 class DuplicateQuestionsListView extends ParserListView {
 
@@ -41,7 +43,7 @@ class _DuplicateQuestionsListView extends ParserListViewState<DuplicateQuestions
   }
 
   void _showReporters(DuplicateQuestion question) {
-
+    UsersSheet.showUsers(context: context, profiles: question.reporters);
   }
 
   void _showQuestion(Question question) {

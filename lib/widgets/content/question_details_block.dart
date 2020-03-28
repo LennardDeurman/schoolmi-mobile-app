@@ -1,6 +1,7 @@
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/managers/flag.dart';
 import 'package:schoolmi/models/data/question.dart';
 import 'package:schoolmi/managers/view_question.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
@@ -15,8 +16,11 @@ import 'package:schoolmi/widgets/content/report_button.dart';
 import 'package:schoolmi/widgets/content/tags.dart';
 import 'package:schoolmi/widgets/content/votes.dart';
 import 'package:schoolmi/widgets/content/warning.dart';
+import 'package:schoolmi/widgets/highlighted_widget.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
+import 'package:schoolmi/widgets/users/static_users_sheet.dart';
+import 'package:schoolmi/widgets/users/users_sheet.dart';
 
 class QuestionDetailsBlock extends DetailsBlock {
 
@@ -35,7 +39,13 @@ class QuestionDetailsBlock extends DetailsBlock {
   }
 
   void _showReporters(BuildContext context) {
-
+    FlagManager flagManager = FlagManager.forQuestion(question);
+    flagManager.bindEvents(manager);
+    UsersSheet.showReporters(context: context, questionId: question.id, onDeleteMarkingPressed: () {
+      flagManager.clearFlag(onError: () {
+        showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
+      });
+    });
   }
 
   void _showDuplicates(BuildContext context) {
@@ -79,24 +89,38 @@ class QuestionDetailsBlock extends DetailsBlock {
     return manager.question;
   }
 
-  Widget _buildBodyUpperInformation() {
+  Widget _buildBodyUpperInformation(BuildContext context) {
     return Row(
       children: <Widget>[
-        RegularLabel(
-          fontWeight: FontWeight.bold,
-          font: LabelFont.montserrat,
-          size: LabelSize.small,
-          color: Colors.grey,
-          title:  question.viewCount.toString(),
-        ),
-        SizedBox(
-          width: 5,
-        ),
-        RegularLabel(
-            fontWeight: FontWeight.w400,
-            font: LabelFont.montserrat,
-            size: LabelSize.small,
-            title: Localization().buildNumberAndText(Localization().views, count: question.viewCount, excludeNumber: true)
+        HighlightedWidget(
+          onPressed: () {
+            if (UserService().loginResult.activeChannel.isUserAdmin) {
+              UsersSheet.showViewers(context: context, questionId: question.id);
+            }
+          },baseColor: Colors.grey,
+          renderWidget: (isSelected, color) {
+            return Wrap(
+              children: <Widget>[
+                RegularLabel(
+                  fontWeight: FontWeight.bold,
+                  font: LabelFont.montserrat,
+                  size: LabelSize.small,
+                  color: color,
+                  title:  question.viewCount.toString(),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                RegularLabel(
+                    fontWeight: FontWeight.w400,
+                    font: LabelFont.montserrat,
+                    size: LabelSize.small,
+                    color: color,
+                    title: Localization().buildNumberAndText(Localization().views, count: question.viewCount, excludeNumber: true)
+                )
+              ],
+            );
+          }
         ),
         Spacer(),
         RegularLabel(
@@ -116,7 +140,7 @@ class QuestionDetailsBlock extends DetailsBlock {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _buildBodyUpperInformation(),
+          _buildBodyUpperInformation(context),
           Container(
               child: RegularLabel(title: question.body),
               padding: EdgeInsets.symmetric(vertical: 20)

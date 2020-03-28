@@ -8,6 +8,7 @@ class Urls {
   static const String profile = "$baseUrl/profile";
   static const String flagContent = "$baseUrl/flag";
   static const String channels = "$baseUrl/channels";
+  static const String clearFlag = "$baseUrl/flag/clear";
 
   static String urlWithQueryParams(String url, Map<String, String> queryMap) {
     Uri oldUri = Uri.parse(url);
@@ -114,14 +115,21 @@ class Urls {
     return url;
   }
 
-  static String contentReporters ({@required int channelId, int questionId = 0, int answerId = 0, int commentId = 0}) {
-    String url = "$baseUrl/channels/$channelId/members";
+  static String reporters ({@required int channelId, int questionId = 0, int answerId = 0, int commentId = 0}) {
+    String url = "$baseUrl/channels/$channelId/reporters";
     url = urlWithQueryParams(url, {
-      Keys.questionId: QueryInfo.queryParam(questionId),
-      Keys.answerId: QueryInfo.queryParam(answerId),
-      Keys.commentId: QueryInfo.queryParam(commentId)
+      Keys.questionId: QueryInfo.queryParam(questionId ?? 0),
+      Keys.answerId: QueryInfo.queryParam(answerId ?? 0),
+      Keys.commentId: QueryInfo.queryParam(commentId ?? 0)
     });
     return url;
   }
+
+  static String questionViewers( { @required int channelId, @required int questionId }) {
+    String url = "$baseUrl/channels/$channelId/questions/$questionId/viewers";
+    return url;
+  }
+
+
 
 }
