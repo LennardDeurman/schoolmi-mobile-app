@@ -18,14 +18,14 @@ class RolesParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
   @override
   Map<String, dynamic> toPostDictionary(List<BaseObject> uploadObjects) {
-    return makeMultiObjectsDictionary(Keys.roles, uploadObjects);
+    return makeMultiObjectsDictionary(Keys().roles, uploadObjects);
   }
 
   @override
   List<BaseObject> objectsFromPostResponse(List<BaseObject> uploadedObjects, http.Response response) {
     Map<String, dynamic> dictionary = json.decode(response.body);
-    Map<String, dynamic> objectDict = dictionary[Keys.object];
-    return ParsableObject.parseObjectsList(objectDict, Keys.results, toObject: toObject);
+    Map<String, dynamic> objectDict = dictionary[Keys().object];
+    return ParsableObject.parseObjectsList(objectDict, Keys().results, toObject: toObject);
   }
 
   @override

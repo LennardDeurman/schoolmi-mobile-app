@@ -23,7 +23,7 @@ class MembersParser extends ChannelBaseNetworkParser with ParserWithQueryInfo {
 
   @override
   Map<String, dynamic> toPostDictionary(List<BaseObject> uploadObjects) {
-    return makeMultiObjectsDictionary(Keys.members, uploadObjects);
+    return makeMultiObjectsDictionary(Keys().members, uploadObjects);
   }
 
   @override

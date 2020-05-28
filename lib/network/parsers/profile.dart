@@ -37,8 +37,8 @@ class ProfileParser extends NetworkParser {
 
   @override
   List<BaseObject> objectsFromResponse(http.Response response) {
-    final body = json.decode(response.body)[Keys.object];
-    final profileDict = body[Keys.profile];
+    final body = json.decode(response.body)[Keys().object];
+    final profileDict = body[Keys().profile];
     if (profileDict != null) {
       List<Profile> objects = [Profile(profileDict)];
       CacheManager.save(CacheManager.myProfile, objects);

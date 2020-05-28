@@ -1,17 +1,12 @@
 import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/constants/keys.dart';
-import 'package:schoolmi/models/data/profile.dart';
+import 'package:schoolmi/models/data/extensions/object_with_default_props.dart';
 
-typedef ParseObjectCallback = BaseObject Function(Map dictionary);
 
-abstract class BaseObject with ParsableObject  {
+abstract class BaseObject with ParsableObject, ObjectWithDefaultProps  {
 
-  bool isDeleted;
   int id;
-  DateTime dateAdded;
-  DateTime dateModified;
-  Profile profile;
 
   final Map<String, dynamic> dictionary;
 
@@ -21,14 +16,8 @@ abstract class BaseObject with ParsableObject  {
 
   @override
   void parse(Map<String, dynamic> dictionary) {
-    var profileDictionary = dictionary[Keys.user];
-    if (profileDictionary != null) {
-      profile = Profile(profileDictionary);
-    }
-    id = dictionary[Keys.id];
-    dateAdded = Dates.parse(dictionary[Keys.dateAdded]);
-    dateModified = Dates.parse(dictionary[Keys.dateModified]);
-    isDeleted = ParsableObject.parseBool(dictionary[Keys.deleted]);
+    parseDefaultProps(dictionary);
+    this.id = dictionary[Keys().id];
   }
 
   @override
@@ -42,11 +31,10 @@ abstract class BaseObject with ParsableObject  {
   @override
   Map<String, dynamic> toDictionary() {
     return {
-      Keys.deleted: isDeleted,
-      Keys.id: id,
-      Keys.dateAdded: Dates.format(dateAdded),
-      Keys.dateModified: Dates.format(dateModified),
-      Keys.user: profile != null ? profile.toDictionary() : null
+      Keys().deleted: isDeleted,
+      Keys().id: id,
+      Keys().dateAdded: Dates.format(dateAdded),
+      Keys().dateModified: Dates.format(dateModified)
     };
   }
 

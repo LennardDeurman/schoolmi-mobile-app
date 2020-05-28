@@ -1,51 +1,33 @@
 import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/models/data/extensions/object_with_colorindex.dart';
+import 'package:schoolmi/models/parsable_object.dart';
+import 'package:schoolmi/models/data/extensions/object_with_color.dart';
+import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
-import 'package:schoolmi/models/data/role.dart';
-import 'package:schoolmi/models/parsable_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 
-class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
+class Profile extends BaseObject with ObjectWithColor, ObjectWithAvatar {
 
   String username;
   String firstName;
   String lastName;
-  String profileImageUrl;
-  String about;
   String email;
   String firebaseUid;
   int score;
-  int profileId;
+
   int activeChannelId;
-  bool isAdmin;
-  Role role;
+  Channel activeChannel;
 
   static const String storageKey = "storageKey";
 
-  @override
-  String get avatarImageUrl {
-    return profileImageUrl;
-  }
-
-  @override
-  int get avatarColorIndex {
-    return colorIndex;
-  }
 
   @override
   String get firstLetter {
     return firstLetterOrEmpty(username);
   }
 
-  String get roleName {
-    if (role != null) {
-      return role.name;
-    }
-    return null;
-  }
 
   String get fullName {
     if (firstName != null && lastName != null) {
@@ -66,48 +48,56 @@ class Profile extends BaseObject with ObjectWithColorIndex, ObjectWithAvatar {
 
   @override
   void parse(Map<String, dynamic> dictionary) {
-    username = dictionary[Keys.username];
-    firstName = dictionary[Keys.firstName];
-    lastName = dictionary[Keys.lastName];
-    profileImageUrl = dictionary[Keys.profileImageUrl];
-    about = dictionary[Keys.about];
-    email = dictionary[Keys.email];
-    score = (dictionary[Keys.score] ?? dictionary[Keys.profileScore]) ?? 0;
-    profileId = dictionary[Keys.profileId];
-    activeChannelId = dictionary[Keys.activeChannelId];
-    firebaseUid = dictionary[Keys.firebaseUid] ?? dictionary[Keys.uid];
-    int roleId = dictionary[Keys.roleId];
-    if (roleId != null) {
-      role = Role(dictionary);
-    }
-    isAdmin = ParsableObject.parseBool(dictionary[Keys.isAdmin]);
-    parseColorIndex(dictionary);
+    username = dictionary[Keys().username];
+    firstName = dictionary[Keys().firstName];
+    lastName = dictionary[Keys().lastName];
+    email = dictionary[Keys().email];
+    score = ParsableObject.parseIntOrZero(dictionary[Keys().score]);
+    firebaseUid = dictionary[Keys().firebaseUid];
+    parseMyChannelInfo(dictionary);
+    parseAvatarInfo(dictionary);
+    parseColorInfo(dictionary);
     super.parse(dictionary);
+  }
+
+  void parseMyChannelInfo(Map<String, dynamic> dictionary) {
+    activeChannelId = dictionary[Keys().activeChannelId];
+    Map channelDictionary = dictionary[Keys().activeChannel];
+    if (channelDictionary != null) {
+      activeChannel = Channel(channelDictionary);
+    }
   }
 
   @override
   Map<String, dynamic> toDictionary() {
-    return {
-      Keys.username: username,
-      Keys.firstName: firstName,
-      Keys.lastName: lastName,
-      Keys.profileImageUrl: profileImageUrl,
-      Keys.about: about,
-      Keys.email: email,
-      Keys.score: score,
-      Keys.profileId: profileId,
-      Keys.activeChannelId: activeChannelId,
-      Keys.firebaseUid: firebaseUid
+    Map<String, dynamic> superdict = super.toDictionary();
+
+    superdict = {
+      Keys().username: username,
+      Keys().firstName: firstName,
+      Keys().lastName: lastName,
+      Keys().email: email,
+      Keys().score: score,
+      Keys().activeChannelId: activeChannelId,
+      Keys().activeChannel: ParsableObject.tryGetDict(activeChannel),
+      Keys().firebaseUid: firebaseUid
     };
+
+
+    superdict.addAll(avatarDictionary());
+    superdict.addAll(colorInfoDictionary());
+
+    return superdict;
+
   }
 
 
   static Future<void> setCachedInfo({ String email, String firstName, String lastName, String username}) async {
     Profile profile = Profile({
-      Keys.username: username,
-      Keys.firstName: firstName,
-      Keys.lastName: lastName,
-      Keys.email: email
+      Keys().username: username,
+      Keys().firstName: firstName,
+      Keys().lastName: lastName,
+      Keys().email: email
     });
     String jsonStr = json.encode(profile.toDictionary());
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

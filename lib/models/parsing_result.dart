@@ -1,3 +1,4 @@
+import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/extensions/dates.dart';
@@ -14,14 +15,14 @@ class ParsingResult {
   ParsingResult (this.objects);
 
   ParsingResult.fromCacheDictionary(Map<String, dynamic> dictionary, { @required ParseObjectCallback toObject}) {
-      var results = dictionary[Keys.results];
+      var results = dictionary[Keys().results];
       if (results != null) {
         List resultList = results;
         objects = resultList.map((dictionary) {
           return toObject(dictionary);
         }).toList();
       }
-      dateTime = Dates.parse(dictionary[Keys.dateModified]);
+      dateTime = Dates.parse(dictionary[Keys().dateModified]);
       retrievedOnline = false;
   }
 

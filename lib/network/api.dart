@@ -133,8 +133,8 @@ class Api {
   static Future<void> leaveChannel({@required int channelId}) {
     Completer completer = new Completer();
     executeJsonRequest(Urls.leaveChannel(channelId: channelId), completer, (http.Response response) {
-      final body = json.decode(response.body)[Keys.object];
-      int statusCode = body[Keys.statusCode];
+      final body = json.decode(response.body)[Keys().object];
+      int statusCode = body[Keys().statusCode];
       if (statusCode == 1) {
         throw new InvalidOperationException("Status indicates you should first set a new admin");
       }
@@ -146,12 +146,12 @@ class Api {
   static Future<bool> usernameValid(String username) {
     Completer<bool> completer = new Completer();
     Map<String, dynamic> dictionary = {
-      Keys.username: username
+      Keys().username: username
     };
 
     executeJsonRequest(Urls.usernameExists, completer, (http.Response response) {
-      final body = json.decode(response.body)[Keys.object];
-      bool valid = body[Keys.valid];
+      final body = json.decode(response.body)[Keys().object];
+      bool valid = body[Keys().valid];
       completer.complete(valid);
     }, postDictionary: dictionary);
     return completer.future;
@@ -159,10 +159,10 @@ class Api {
 
   static Future<void> updateFlagStatus({ @required int questionId, int answerId = 0, int commentId = 0, bool flagged = true }) {
     Map<String, dynamic> dictionary = {
-      Keys.questionId: questionId,
-      Keys.answerId: answerId,
-      Keys.commentId: commentId,
-      Keys.deleted: !flagged
+      Keys().questionId: questionId,
+      Keys().answerId: answerId,
+      Keys().commentId: commentId,
+      Keys().deleted: !flagged
     };
     Completer<void> completer = new Completer();
     executeJsonRequest(Urls.flagContent, completer, (http.Response response) {
@@ -194,13 +194,13 @@ class Api {
     );
     multipartRequest.headers.addAll(headers);
     multipartRequest.files.add(http.MultipartFile.fromBytes(
-      Keys.file,
+      Keys().file,
       bytes,
       filename: fileName,
     ));
     multipartRequest.send().then((http.StreamedResponse response) async {
       http.Response httpResponse = await http.Response.fromStream(response);
-      final body = json.decode(httpResponse.body)[Keys.object];
+      final body = json.decode(httpResponse.body)[Keys().object];
       completer.complete(Upload(body));
     }).catchError((e) {
       completer.completeError(e);
@@ -235,9 +235,9 @@ class Api {
     executeJsonRequest(Urls.clearFlag, completer, (http.Response response) {
       completer.complete();
     }, httpMethod: HttpMethod.post, postDictionary: {
-      Keys.questionId: questionId,
-      Keys.answerId: answerId,
-      Keys.commentId: commentId
+      Keys().questionId: questionId,
+      Keys().answerId: answerId,
+      Keys().commentId: commentId
     });
     return completer.future;
   }

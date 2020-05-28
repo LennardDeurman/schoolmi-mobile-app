@@ -1,32 +1,26 @@
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/parsable_object.dart';
+
 class ObjectWithFlags {
 
 
-  bool flagged;
-  bool parentFlagged;
-  bool duplicated;
+  int flagsCount;
   bool flaggedByMe;
-  bool flaggedDuplicateByMe;
-  bool commentsFlagged;
 
-  void parseFlagInfo(Map<String, dynamic> dictionary) {
-    flagged = ParsableObject.parseBool(dictionary[Keys.flagged]);
-    flaggedByMe = ParsableObject.parseBool(dictionary[Keys.flaggedByMe]);
-    parentFlagged = ParsableObject.parseBool(dictionary[Keys.parentFlagged]);
-    duplicated = ParsableObject.parseBool(dictionary[Keys.duplicated]);
-    flaggedDuplicateByMe = ParsableObject.parseBool(dictionary[Keys.flaggedDuplicateByMe]);
-    commentsFlagged = ParsableObject.parseBool(dictionary[Keys.commentsFlagged]);
+  void parseFlagsInfo(Map<String, dynamic> dictionary) {
+    flagsCount = ParsableObject.parseIntOrZero(dictionary[Keys().flagsCount]);
+    flaggedByMe = ParsableObject.parseBool(dictionary[Keys().flaggedByMe]);
   }
 
-  Map<String, dynamic> flagInfoDictionary() {
+  bool get flagged {
+    return flagsCount > 0;
+  }
+
+  Map<String, dynamic> flagsInfoDictionary() {
     return {
-      Keys.flagged: flagged,
-      Keys.flaggedByMe: flaggedByMe,
-      Keys.parentFlagged: parentFlagged,
-      Keys.duplicated: duplicated,
-      Keys.flaggedDuplicateByMe: flaggedDuplicateByMe,
-      Keys.commentsFlagged: commentsFlagged
+      Keys().flagged: flagged,
+      Keys().flagsCount: flagsCount,
+      Keys().flaggedByMe: flaggedByMe
     };
   }
 

@@ -38,8 +38,8 @@ class ChannelsParser extends NetworkParser with ParserWithQueryInfo {
 
   @override
   BaseObject updateObjectWithResponse(BaseObject uploadedObject, http.Response response) {
-    Map rootObject = json.decode(response.body)[Keys.object];
-    int newId = rootObject[Keys.channelId];
+    Map rootObject = json.decode(response.body)[Keys().object];
+    int newId = rootObject[Keys().channelId];
     uploadedObject.id = newId;
     return uploadedObject;
   }

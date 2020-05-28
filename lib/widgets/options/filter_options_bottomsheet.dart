@@ -37,12 +37,12 @@ class UsersSelection {
   UsersSelection();
 
   UsersSelection.fromDictionary(Map<String, dynamic> dictionary) {
-    selectedUsersOption = dictionary[Keys.selectedUserOption];
+    selectedUsersOption = dictionary[Keys().selectedUserOption];
   }
 
   Map<String, dynamic> toDictionary() {
     return {
-      Keys.selectedUserOption: selectedUsersOption
+      Keys().selectedUserOption: selectedUsersOption
     };
   }
 

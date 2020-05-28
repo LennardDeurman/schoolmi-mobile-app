@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/extensions/dates.dart';
+
+typedef ParseObjectCallback = ParsableObject Function(Map dictionary);
 
 abstract class ParsableObject {
 
@@ -24,6 +27,21 @@ abstract class ParsableObject {
       return value;
     }
     return value == 1;
+  }
+
+  static int parseIntOrZero(dynamic value) {
+    return value ?? 0;
+  }
+
+  static DateTime parseDate(dynamic value) {
+    return Dates.parse(value);
+  }
+
+  static Map<String, dynamic> tryGetDict(ParsableObject object) {
+    if (object != null) {
+      return object.toDictionary();
+    }
+    return null;
   }
 
   Map<String, dynamic> toDictionary();

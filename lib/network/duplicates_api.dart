@@ -14,16 +14,16 @@ class DuplicatesApi {
 
   Map<String, dynamic> makeDuplicateMap({ int duplicateOfQuestionId, bool isDeleted, String posterUid }) {
     return {
-      Keys.questionId: question.id,
-      Keys.isDuplicateOf: duplicateOfQuestionId,
-      Keys.deleted: isDeleted,
-      Keys.uid: posterUid
+      Keys().questionId: question.id,
+      Keys().isDuplicateOf: duplicateOfQuestionId,
+      Keys().deleted: isDeleted,
+      Keys().uid: posterUid
     };
   }
 
   Future updateDuplicateQuestions ( { List<Map<String, dynamic>> duplicatesMapList} ) {
     Map<String, dynamic> map = {
-      Keys.duplicates: duplicatesMapList
+      Keys().duplicates: duplicatesMapList
     };
     Completer completer = new Completer();
     String url = Urls.duplicatedQuestions(channelId: this.question.channelId, questionId: this.question.id);

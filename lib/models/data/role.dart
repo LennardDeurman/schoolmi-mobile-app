@@ -1,24 +1,27 @@
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/models/data/extensions/object_with_colorindex.dart';
+import 'package:schoolmi/models/data/extensions/object_with_color.dart';
+import 'package:schoolmi/models/data/extensions/object_with_name.dart';
+import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
+import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
 
-class Role extends BaseObject with ObjectWithColorIndex {
+class Role extends BaseObject with ObjectWithColor, ObjectWithName, ProfileLinkedObject, ChannelLinkedObject {
 
-  String name;
 
   Role (Map<String, dynamic> dictionary) : super(dictionary);
 
 
   Role.create({ String name }) : super({
-    Keys.name: name
+    Keys().name: name
   });
 
   @override
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);
-    id = dictionary[Keys.roleId];
-    name = dictionary[Keys.name] ?? dictionary[Keys.roleName];
-    parseColorIndex(dictionary);
+    parseColorInfo(dictionary);
+    parseNameInfo(dictionary);
+    parseChannelLink(dictionary);
+    parseProfileLink(dictionary);
   }
 
   @override
@@ -32,8 +35,10 @@ class Role extends BaseObject with ObjectWithColorIndex {
   @override
   Map<String, dynamic> toDictionary() {
     var dictionary = super.toDictionary();
-    dictionary[Keys.roleId] = id;
-    dictionary[Keys.name] = name;
+    dictionary.addAll(colorInfoDictionary());
+    dictionary.addAll(nameDictionary());
+    dictionary.addAll(profileLinkDictionary());
+    dictionary.addAll(channelLinkDictionary());
     return dictionary;
   }
 

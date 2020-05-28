@@ -1,26 +1,29 @@
 
 import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/models/data/profile.dart';
+import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
+import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
 import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
 import 'package:schoolmi/models/data/role.dart';
 import 'package:schoolmi/models/parsable_object.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 
 
-class Member extends BaseObject with ObjectWithAvatar  {
+class Member extends BaseObject with ObjectWithAvatar, ChannelLinkedObject, ProfileLinkedObject  {
+
   String email;
-  int channelId;
   bool isAdmin;
   bool blocked;
+
+  int roleId;
   Role role;
 
   Member (Map<String, dynamic> dictionary) : super(dictionary);
 
   Member.create({ email, channelId, isAdmin = false }) : super({
-    Keys.email: email,
-    Keys.channelId: channelId,
-    Keys.isAdmin: isAdmin
+    Keys().email: email,
+    Keys().channelId: channelId,
+    Keys().isAdmin: isAdmin
   });
 
   bool get isCurrentUser {
@@ -46,45 +49,44 @@ class Member extends BaseObject with ObjectWithAvatar  {
     return firstLetterOrEmpty(email);
   }
 
-  @override
-  String get avatarImageUrl {
-    return profile != null ? profile.avatarImageUrl : null;
-  }
-
-  @override
-  int get avatarColorIndex {
-    return profile != null ? profile.colorIndex : 0;
-  }
 
 
   @override
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);
-    email = dictionary[Keys.email];
-    channelId = dictionary[Keys.channelId];
-    blocked = ParsableObject.parseBool(dictionary[Keys.blocked]);
-    isAdmin = ParsableObject.parseBool(dictionary[Keys.isAdmin]);
-    profile = Profile(dictionary);
-    profile.colorIndex = dictionary[Keys.colorIndex];
-    int roleId = dictionary[Keys.roleId];
-    if (roleId != null) {
-      role = Role(dictionary);
+
+    email = dictionary[Keys().email];
+    channelId = dictionary[Keys().channelId];
+    blocked = ParsableObject.parseBool(dictionary[Keys().blocked]);
+    isAdmin = ParsableObject.parseBool(dictionary[Keys().isAdmin]);
+
+
+    roleId = dictionary[Keys().roleId];
+    Map<String, dynamic> roleDictionary = dictionary[Keys().role];
+    if (roleDictionary != null) {
+      role = Role(roleDictionary);
     }
-    if (profile.firebaseUid == null) {
-      profile = null;
+
+    parseProfileLink(dictionary);
+
+    if (profile != null) {
+      imageUrl = profile.imageUrl;
     }
+
   }
 
   @override
   Map<String, dynamic> toDictionary() {
     Map<String, dynamic> superDict = super.toDictionary();
-    superDict[Keys.email] = email;
-    superDict[Keys.channelId] = channelId;
-    superDict[Keys.isAdmin] = isAdmin;
-    superDict[Keys.blocked] = blocked;
-    if (role != null) {
-      superDict[Keys.roleId] = role.id;
-    }
+    superDict[Keys().email] = email;
+    superDict[Keys().channelId] = channelId;
+    superDict[Keys().isAdmin] = isAdmin;
+    superDict[Keys().blocked] = blocked;
+    superDict[Keys().roleId] = roleId;
+    superDict[Keys().role] = ParsableObject.tryGetDict(role);
+    superDict.addAll(channelLinkDictionary());
+    superDict.addAll(profileLinkDictionary());
+    superDict.addAll(avatarDictionary());
     return superDict;
   }
 }

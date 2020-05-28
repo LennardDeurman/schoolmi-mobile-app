@@ -1,10 +1,17 @@
+import 'package:schoolmi/models/data/extensions/object_with_color.dart';
+import 'package:schoolmi/constants/keys.dart';
+
 abstract class ObjectWithAvatar {
 
   String get firstLetter;
 
-  String get avatarImageUrl;
+  String imageUrl;
 
-  int get avatarColorIndex;
+  void parseAvatarInfo(Map<String, dynamic> dictionary) {
+
+
+      imageUrl = dictionary[Keys().imageUrl];
+  }
 
 
   bool get hasImage {
@@ -17,7 +24,7 @@ abstract class ObjectWithAvatar {
   }
 
   bool get hasCustomImage {
-    return avatarImageUrl != null;
+    return imageUrl != null;
   }
 
   String firstLetterOrNull (String value) {
@@ -37,6 +44,12 @@ abstract class ObjectWithAvatar {
       }
     }
     return "";
+  }
+
+  Map<String, dynamic> avatarDictionary() {
+    return {
+      Keys().imageUrl: imageUrl
+    };
   }
 
 

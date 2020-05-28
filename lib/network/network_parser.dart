@@ -25,8 +25,8 @@ abstract class NetworkParser {
   }
 
   BaseObject updateObjectWithResponse(BaseObject uploadedObject, http.Response response) {
-    Map rootObject = json.decode(response.body)[Keys.object];
-    int newId = rootObject[Keys.lastRowId];
+    Map rootObject = json.decode(response.body)[Keys().object];
+    int newId = rootObject[Keys().lastRowId];
     uploadedObject.id = newId;
     return uploadedObject;
   }
@@ -38,7 +38,7 @@ abstract class NetworkParser {
 
   List<BaseObject> objectsFromResponse(http.Response response) {
     Map<String, dynamic> dictionary = json.decode(response.body);
-    return ParsableObject.parseObjectsList(dictionary, Keys.object, toObject: toObject);
+    return ParsableObject.parseObjectsList(dictionary, Keys().object, toObject: toObject);
   }
 
   Map<String, dynamic> makeMultiObjectsDictionary(String key, List<BaseObject> baseObjects) {

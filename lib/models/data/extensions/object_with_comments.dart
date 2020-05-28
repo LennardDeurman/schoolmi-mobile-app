@@ -1,16 +1,20 @@
 import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 
 class ObjectWithComments  {
 
   int commentsCount;
+  int commentsUpdates;
 
-  void parseCommentInfo(Map<String, dynamic> dictionary) {
-    commentsCount = dictionary[Keys.commentsCount] ?? 0;
+  void parseCommentsInfo(Map<String, dynamic> dictionary) {
+    commentsCount = ParsableObject.parseIntOrZero(dictionary[Keys().commentsCount]);
+    commentsUpdates = ParsableObject.parseIntOrZero(dictionary[Keys().commentsUpdates]);
   }
 
-  Map<String, dynamic> commentsDictionary() {
+  Map<String, dynamic> commentsInfoDictionary() {
     return {
-      Keys.commentsCount: commentsCount
+      Keys().commentsCount: commentsCount,
+      Keys().commentsUpdates: commentsUpdates
     };
   }
 }

@@ -1,63 +1,39 @@
-import 'package:schoolmi/constants/keys.dart';
-import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/models/data/answer.dart';
-import 'package:schoolmi/models/data/duplicate_question.dart';
+import 'package:schoolmi/models/content_object.dart';
+import 'package:schoolmi/constants/keys.dart';
 import 'package:schoolmi/models/data/extensions/object_with_tags.dart';
-import 'package:schoolmi/models/data/extensions/object_with_flags.dart';
-import 'package:schoolmi/models/data/extensions/object_with_votes.dart';
-import 'package:schoolmi/models/data/extensions/object_with_attachments.dart';
-import 'package:schoolmi/models/data/extensions/object_with_viewcount.dart';
 
-class Question extends BaseObject with ObjectWithFlags, ObjectWithViewCount, ObjectWithVotes, ObjectWithAttachments, ObjectWithTags {
+class Question extends ContentObject with ObjectWithTags {
 
-  int answerId;
-  int channelId;
-  int answerCount;
-  String title;
-  String body;
-
-  List<Answer> answers = [];
-  List<DuplicateQuestion> duplicateQuestions = [];
+  int correctAnswerId;
+  Answer correctAnswer;
 
   Question (Map<String, dynamic> dictionary) : super(dictionary);
 
   bool get hasCheckedAnswer {
-    return answerId != null;
+    return correctAnswerId != null;
   }
 
   bool isSelectedAnswer (Answer answer) {
-    return answerId == answer.id;
+    return correctAnswerId == answer.id;
   }
 
   @override
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);
-    parseAttachments(dictionary);
-    parseVotesInfo(dictionary, questionId: id);
-    parseFlagInfo(dictionary);
     parseTags(dictionary);
-    parseViewCount(dictionary);
 
-    answerId = dictionary[Keys.answerId];
-    channelId = dictionary[Keys.channelId];
-    answerCount = dictionary[Keys.answerCount] ?? 0;
-    title = dictionary[Keys.title];
-    body = dictionary[Keys.body];
-
+    correctAnswerId = dictionary[Keys().correctAnswerId];
+    Map<String, dynamic> correctAnswerDict = dictionary[Keys().correctAnswer];
+    if (correctAnswerDict != null) {
+      correctAnswer = Answer(correctAnswerDict);
+    }
   }
 
   @override
   Map<String, dynamic> toDictionary() {
     Map<String, dynamic> superDict = super.toDictionary();
-    superDict.addAll(attachmentsDictionary());
-    superDict.addAll(votesInfo.votesInfoDictionary());
-    superDict.addAll(flagInfoDictionary());
     superDict.addAll(tagsDictionary());
-    superDict[Keys.title] = title;
-    superDict[Keys.body] = body;
-    superDict[Keys.answerCount] = answerCount;
-    superDict[Keys.answerId] = answerId;
-    superDict[Keys.channelId] = channelId;
     return superDict;
   }
 }

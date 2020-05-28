@@ -5,10 +5,11 @@ class ObjectWithVotes  {
 
   VotesInfo votesInfo;
 
-  void parseVotesInfo(Map<String, dynamic> dictionary, { int questionId, int answerId }) {
+  void parseVotesInfo(Map<String, dynamic> dictionary, { int questionId, int answerId, int commentId }) {
     votesInfo = VotesInfo();
     votesInfo.questionId = questionId;
     votesInfo.answerId = answerId;
+    votesInfo.commentId = commentId;
     votesInfo.parse(dictionary);
   }
 
@@ -24,12 +25,14 @@ class VotesInfo extends ParsableObject {
 
   int votesCount = 0;
   int vote = 0;
+
   int questionId;
+  int commentId;
   int answerId;
 
   int _myVoteState;
 
-  VotesInfo ({ this.questionId, this.answerId });
+  VotesInfo ({ this.questionId, this.answerId, this.commentId });
 
   void _clearCurrentVoteState() {
     if (_myVoteState == VoteState.negative) {
@@ -57,17 +60,15 @@ class VotesInfo extends ParsableObject {
 
   @override
   void parse(Map<String, dynamic> dictionary) {
-    vote = dictionary[Keys.vote] ?? 0;
-    votesCount = dictionary[Keys.votesCount] ?? 0;
-    _myVoteState = dictionary[Keys.myVoteState] ?? 0;
+    vote = ParsableObject.parseIntOrZero(dictionary[Keys().vote]);
+    votesCount = ParsableObject.parseIntOrZero(dictionary[Keys().votesCount]);
+    _myVoteState = ParsableObject.parseIntOrZero(dictionary[Keys().myVote]);
   }
 
   @override
   Map<String, dynamic> toDictionary() {
     return {
-      Keys.vote: _myVoteState,
-      Keys.questionId: questionId,
-      Keys.answerId: answerId
+      Keys().vote: _myVoteState
     };
   }
 
@@ -78,8 +79,8 @@ class VotesInfo extends ParsableObject {
 
   Map<String, dynamic> votesInfoDictionary() {
     return {
-      Keys.votesCount: votesCount,
-      Keys.vote: vote
+      Keys().votesCount: votesCount,
+      Keys().vote: vote
     };
   }
 }

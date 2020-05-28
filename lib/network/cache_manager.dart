@@ -13,10 +13,10 @@ class CacheManager {
 
   static Future save(String key, List<BaseObject> objects) async {
     Map<String, dynamic> cacheObject = {
-      Keys.results: objects.map((BaseObject baseObject) {
+      Keys().results: objects.map((BaseObject baseObject) {
         return baseObject.toDictionary();
       }).toList(),
-      Keys.dateModified: Dates.format(DateTime.now())
+      Keys().dateModified: Dates.format(DateTime.now())
     };
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString(key, json.encode(cacheObject));

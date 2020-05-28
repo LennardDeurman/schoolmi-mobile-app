@@ -45,7 +45,7 @@ class OptionsBox {
   }
 
   OptionsBox.fromMap(Map<String, int> map) {
-    map.keys.forEach((String key) {
+    map.Keys().forEach((String key) {
       addOption(Option(key, map[key]));
     });
   }

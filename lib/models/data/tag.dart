@@ -1,28 +1,36 @@
 import 'package:schoolmi/models/base_object.dart';
 import 'package:schoolmi/constants/keys.dart';
-import 'package:schoolmi/models/data/extensions/object_with_colorindex.dart';
+import 'package:schoolmi/models/data/extensions/object_with_color.dart';
+import 'package:schoolmi/models/data/extensions/object_with_name.dart';
+import 'package:schoolmi/models/data/extensions/object_with_default_props.dart';
+import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
+import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
+import 'package:schoolmi/models/parsable_object.dart';
 
-class Tag extends BaseObject with ObjectWithColorIndex {
+class Tag extends BaseObject with ObjectWithColor, ObjectWithName, ChannelLinkedObject, ProfileLinkedObject {
 
   String name;
 
   Tag (Map<String, dynamic> dictionary) : super(dictionary);
 
-  Tag.create({ String name }) : super({Keys.name: name});
+  Tag.create({ String name }) : super({Keys().name: name});
 
   @override
   void parse(Map<String, dynamic> dictionary) {
     super.parse(dictionary);
-    parseColorIndex(dictionary);
-    id = dictionary[Keys.id] ?? dictionary[Keys.tagId]; //Unfortunately required due to server issues
-    name = dictionary[Keys.name] ?? dictionary[Keys.tagName];
+    parseColorInfo(dictionary);
+    parseNameInfo(dictionary);
+    parseChannelLink(dictionary);
+    parseProfileLink(dictionary);
   }
 
   @override
   Map<String, dynamic> toDictionary() {
     var dictionary = super.toDictionary();
-    dictionary[Keys.tagName] = name;
-    dictionary[Keys.tagId] = id;
+    dictionary.addAll(nameDictionary());
+    dictionary.addAll(colorInfoDictionary());
+    dictionary.addAll(channelLinkDictionary());
+    dictionary.addAll(profileLinkDictionary());
     return dictionary;
   }
 
@@ -33,4 +41,30 @@ class Tag extends BaseObject with ObjectWithColorIndex {
     }
     return false;
   }
+}
+
+class ContentTag extends ParsableObject with ObjectWithDefaultProps {
+
+  Tag tag;
+  int tagId;
+
+  ContentTag (Map<String, dynamic> dictionary) {
+    parse(dictionary);
+  }
+
+  @override
+  void parse(Map<String, dynamic> dictionary) {
+    parseDefaultProps(dictionary);
+    tagId = dictionary[Keys().tagId];
+    Map tagDictionary = dictionary[Keys().tag];
+    if (tagDictionary != null) {
+      tag = Tag(tagDictionary);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toDictionary() {
+    throw UnimplementedError();
+  }
+
 }

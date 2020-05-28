@@ -4,19 +4,18 @@ import 'package:schoolmi/constants/keys.dart';
 
 class ObjectWithTags {
 
-  List<Tag> tags;
+  List<ContentTag> contentTags;
 
   void parseTags(Map<String, dynamic> dictionary) {
-    tags = ParsableObject.parseObjectsList<Tag>(dictionary, Keys.tags, toObject: (Map dictionary) {
-      return Tag(dictionary);
+    contentTags = ParsableObject.parseObjectsList(dictionary, Keys().tags, toObject: (Map dict) {
+      return ContentTag(dict);
     });
   }
 
   Map<String, dynamic> tagsDictionary() {
     return {
-      Keys.tags: tags.map((Tag tag) {
-        return tag.toDictionary();
-      }).toList()
+      Keys().tags: contentTags.map((e) => e.toDictionary()).toList()
     };
   }
+
 }
