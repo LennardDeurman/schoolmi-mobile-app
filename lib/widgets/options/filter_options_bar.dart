@@ -4,7 +4,7 @@ import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/highlighted_widget.dart';
 import 'package:schoolmi/widgets/labels/title.dart';
-import 'package:schoolmi/models/options.dart';
+import 'package:schoolmi/network/models/options.dart';
 import 'package:schoolmi/widgets/options/filter_options_bottomsheet.dart';
 import 'package:schoolmi/widgets/options/options_box_picker.dart';
 

@@ -1,5 +1,5 @@
 import 'package:schoolmi/managers/base_manager.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 
 class SelectionManager<T extends BaseObject> extends BaseManager {
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/widgets/cells/base_cell.dart';
 import 'package:schoolmi/widgets/circle_image.dart';

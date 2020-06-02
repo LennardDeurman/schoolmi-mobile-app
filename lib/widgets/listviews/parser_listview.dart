@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:schoolmi/network/network_parser.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsers/abstract/network_parser.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/button.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
@@ -10,7 +10,7 @@ import 'package:schoolmi/widgets/message_container.dart';
 import 'package:schoolmi/widgets/parsing_result_bar.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/listviews/advanced_listview.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 
 abstract class ParserListView extends StatefulWidget {
 

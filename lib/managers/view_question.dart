@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:schoolmi/managers/duplicates.dart';
 import 'package:schoolmi/managers/flag.dart';
 import 'package:schoolmi/managers/votes.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/parsers/answers.dart';
 import 'package:schoolmi/network/parsers/duplicates.dart';

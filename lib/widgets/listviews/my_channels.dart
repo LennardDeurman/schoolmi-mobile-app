@@ -6,7 +6,7 @@ import 'package:schoolmi/widgets/cells/add_channel.dart';
 import 'package:schoolmi/widgets/cells/channel.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/localization/localization.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:flutter/material.dart';
 

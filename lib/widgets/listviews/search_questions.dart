@@ -3,7 +3,7 @@ import 'package:schoolmi/managers/search_questions.dart';
 import 'package:schoolmi/models/data/question.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/listviews/search_listview.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:flutter/material.dart';
 
 class SearchQuestionsListView extends ParserListView {

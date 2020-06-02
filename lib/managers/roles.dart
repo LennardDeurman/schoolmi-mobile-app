@@ -3,7 +3,7 @@ import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/upload_interface.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/models/data/role.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/network/parsers/roles.dart';
 import 'package:schoolmi/network/query_info.dart';
 

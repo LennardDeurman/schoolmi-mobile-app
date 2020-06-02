@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/models/data/question_viewer.dart';
-import 'package:schoolmi/network/channel_base_parser.dart';
+import 'package:schoolmi/network/parsers/abstract/channel_base_parser.dart';
 import 'package:schoolmi/network/urls.dart';
 
 class QuestionViewersParser extends ChannelBaseNetworkParser {

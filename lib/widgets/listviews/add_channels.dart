@@ -6,7 +6,7 @@ import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/cells/add_channel.dart';
 import 'package:schoolmi/widgets/cells/public_channel.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 

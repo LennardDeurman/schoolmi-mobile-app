@@ -3,7 +3,7 @@ import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/cells/member.dart';
 import 'package:schoolmi/widgets/alerts/edit_members.dart';
 import 'package:schoolmi/network/parsers/members.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/member.dart';
 import 'package:schoolmi/managers/members.dart';
 import 'package:flutter/material.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
-import 'package:schoolmi/models/options.dart';
+import 'package:schoolmi/network/models/options.dart';
 import 'package:schoolmi/widgets/highlighted_widget.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 

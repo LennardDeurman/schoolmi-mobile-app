@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/localization/localization.dart';

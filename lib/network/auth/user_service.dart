@@ -4,7 +4,7 @@ import 'package:schoolmi/network/auth/login_result.dart';
 import 'package:schoolmi/network/parsers/profile.dart';
 import 'package:schoolmi/network/parsers/channels.dart';
 import 'package:schoolmi/network/cache_manager.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/models/parsing_result.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'dart:async';
 

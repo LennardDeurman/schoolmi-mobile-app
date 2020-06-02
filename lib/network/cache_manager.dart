@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/network/models/base.dart';
+import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/extensions/dates.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/models/parsing_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 

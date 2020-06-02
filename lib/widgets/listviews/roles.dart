@@ -6,7 +6,7 @@ import 'package:schoolmi/constants/asset_paths.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/managers/roles.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/role.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';

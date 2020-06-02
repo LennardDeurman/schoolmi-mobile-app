@@ -1,11 +1,11 @@
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/query_info.dart';
-import 'package:schoolmi/network/network_parser.dart';
+import 'package:schoolmi/network/parsers/abstract/network_parser.dart';
 import 'package:schoolmi/network/urls.dart';
 import 'package:schoolmi/network/cache_manager.dart';
-import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/models/parsing_result.dart';
-import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/parsing_result.dart';
+import 'package:schoolmi/network/keys.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

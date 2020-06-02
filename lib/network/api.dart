@@ -1,14 +1,14 @@
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/duplicate_question.dart';
 import 'package:schoolmi/models/data/extensions/object_with_votes.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/models/data/question.dart';
 import 'package:schoolmi/network/duplicates_api.dart';
 import 'package:schoolmi/network/urls.dart';
-import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/models/data/upload.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
-import 'package:schoolmi/network/network_parser.dart';
+import 'package:schoolmi/network/parsers/abstract/network_parser.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';

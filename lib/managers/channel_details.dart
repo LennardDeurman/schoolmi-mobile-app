@@ -7,7 +7,7 @@ import 'package:schoolmi/managers/roles.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/download_info.dart';
-import 'package:schoolmi/network/network_parser.dart';
+import 'package:schoolmi/network/parsers/abstract/network_parser.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/network/parsers/roles.dart';
 

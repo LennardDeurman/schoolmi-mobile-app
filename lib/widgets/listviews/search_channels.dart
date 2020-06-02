@@ -3,7 +3,7 @@ import 'package:schoolmi/widgets/listviews/parser_listview.dart';
 import 'package:schoolmi/widgets/cells/public_channel.dart';
 import 'package:schoolmi/widgets/listviews/search_listview.dart';
 import 'package:schoolmi/managers/channels.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:flutter/material.dart';

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:schoolmi/managers/child_manager.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/upload.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/network/api.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/models/data/profile.dart';

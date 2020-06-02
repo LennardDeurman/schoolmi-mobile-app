@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
-import 'package:schoolmi/constants/keys.dart';
+import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/labels/regular.dart';
 import 'package:schoolmi/widgets/labels/title.dart';

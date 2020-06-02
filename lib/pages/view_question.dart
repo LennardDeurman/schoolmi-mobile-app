@@ -4,7 +4,7 @@ import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/managers/view_question.dart';
 import 'package:schoolmi/models/data/question.dart';
-import 'package:schoolmi/models/options.dart';
+import 'package:schoolmi/network/models/options.dart';
 import 'package:schoolmi/widgets/content/answer_details_block.dart';
 import 'package:schoolmi/widgets/content/question_details_block.dart';
 import 'package:schoolmi/widgets/listviews/advanced_listview.dart';

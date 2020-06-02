@@ -1,6 +1,6 @@
 import 'package:schoolmi/extensions/exceptions.dart';
-import 'package:schoolmi/network/network_parser.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/parsers/abstract/network_parser.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'dart:async';
 
 abstract class UploadInterface<T extends BaseObject> {

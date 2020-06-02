@@ -6,7 +6,7 @@ import 'package:schoolmi/network/api.dart';
 import 'package:schoolmi/widgets/alerts/snackbar.dart';
 import 'package:schoolmi/widgets/cells/duplicate_question.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:flutter/material.dart';
 import 'package:schoolmi/widgets/presenter.dart';
 import 'package:schoolmi/widgets/users/static_users_sheet.dart';

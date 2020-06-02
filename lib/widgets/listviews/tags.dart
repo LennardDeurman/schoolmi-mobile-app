@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:schoolmi/managers/tags.dart';
 import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/widgets/listviews/parser_listview.dart';
-import 'package:schoolmi/models/base_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/widgets/listviews/search_listview.dart';
 import 'package:schoolmi/widgets/cells/tag.dart';
 import 'package:schoolmi/constants/brand_colors.dart';

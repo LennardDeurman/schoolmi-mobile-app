@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schoolmi/models/base_object.dart';
-import 'package:schoolmi/models/parsing_result.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/parsing_result.dart';
 import 'package:schoolmi/models/data/profile.dart';
 import 'package:schoolmi/models/data/channel.dart';
 import 'package:flutter/foundation.dart';
