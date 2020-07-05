@@ -1,22 +1,89 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
-import 'package:schoolmi/network/auth/login_result.dart';
-import 'package:schoolmi/network/parsers/profile.dart';
-import 'package:schoolmi/network/parsers/channels.dart';
-import 'package:schoolmi/network/cache_manager.dart';
-import 'package:schoolmi/network/models/parsing_result.dart';
-import 'package:schoolmi/models/data/profile.dart';
-import 'dart:async';
+import 'package:schoolmi/extensions/future_utils.dart';
+import 'package:schoolmi/network/fetcher.dart';
+import 'package:schoolmi/network/fetch_result.dart';
+import 'package:schoolmi/network/cache_protocol.dart';
+import 'package:schoolmi/network/models/profile.dart';
+import 'package:schoolmi/network/models/channel.dart';
+import 'package:schoolmi/network/requests/profile.dart';
+import 'package:schoolmi/network/requests/channels.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class UserResult {
+
+  CombinedResult<Channel> _myChannelsResult;
+  CombinedResult<Profile> _myProfileResult;
+
+  Channel _activeChannel;
+
+  final FirebaseUser firebaseUser;
+
+
+  UserResult ({ CombinedResult<Channel> myChannelsResult, CombinedResult<Profile> myProfileResult, this.firebaseUser }) {
+    _activeChannel = myChannelsResult.result.objects.first;
+    _myChannelsResult = myChannelsResult;
+    _myProfileResult = myProfileResult;
+  }
+  
+  FetchResult<Channel> get myChannelsResult {
+    return _myChannelsResult.result;
+  }
+  
+  FetchResult<Profile> get myProfileResult {
+    return _myProfileResult.result;
+  }
+  
+  
+  Channel get activeChannel {
+    return _activeChannel;
+  }
+
+  set activeChannel (Channel channel) {
+    if (!isAuthorizedChannel(channel)) {
+      _myChannelsResult.result.insertNew(channel);
+    }
+    _activeChannel = channel;
+  }
+
+  bool isActiveChannel (Channel channel) {
+    return _activeChannel == channel;
+  }
+
+  bool isAuthorizedChannel (Channel channel) {
+    return _myChannelsResult.result.objects.contains(channel);
+  }
+
+  Future refreshMyChannels() {
+    return UserService().loadMyChannels().then((result) {
+      this._myChannelsResult = result;
+    });
+  }
+
+  Future refreshMyProfile() {
+    return UserService().loadMyProfile(firebaseUser).then((result) {
+      this._myProfileResult = result;
+    });
+  }
+
+
+
+
+}
 
 
 class UserService {
 
-  final ProfileParser profileParser = ProfileParser();
-  final ChannelsParser myChannelsParser = ChannelsParser();
+  final Fetcher<Profile> profileFetcher = Fetcher<Profile>(ProfileRequest());
+  final Fetcher<Channel> myChannelsFetcher = Fetcher<Channel>(MyChannelsRequest());
 
-  StreamController<LoginResult> _loginStreamController = StreamController<LoginResult>.broadcast();
+  final MyChannelsCacheProtocol myChannelsCacheProtocol = MyChannelsCacheProtocol();
+  final ProfileCacheProtocol profileCacheProtocol = ProfileCacheProtocol();
 
-  LoginResult _loginResult;
+  StreamController<UserResult> _userResultStreamController = StreamController<UserResult>.broadcast();
+
+  UserResult _userResult;
 
   static final UserService _instance = UserService._internal();
 
@@ -25,71 +92,90 @@ class UserService {
   }
 
   UserService._internal () {
+
+
     FirebaseAuth.instance.onAuthStateChanged.listen((FirebaseUser firebaseUser) async {
       if (firebaseUser != null) {
         if (firebaseUser.isEmailVerified) {
-          _sendLoginResult(await loadData(firebaseUser));
+          _sendResult(await loadData(firebaseUser));
           return;
         }
       } else {
-        if (_loginResult != null) {
-          _destroyData(_loginResult);
+        if (_userResult != null) {
+          _destroyData();
         }
       }
-      _sendLoginResult(null);
+      _sendResult(null);
     });
 
-    _loginStreamController.onCancel = () {
-      _loginStreamController.close();
+    _userResultStreamController.onCancel = () {
+      _userResultStreamController.close();
     };
 
 
   }
 
-  Stream get loginStream {
-    return _loginStreamController.stream;
+  Stream get userResultStream {
+    return _userResultStreamController.stream;
   }
 
-  LoginResult get loginResult {
-    return _loginResult;
+  UserResult get userResult {
+    return _userResult;
   }
 
-  Future<LoginResult> loadData(FirebaseUser firebaseUser, { bool forceRefresh = false }) async {
+  Future<CombinedResult<Channel>> loadMyChannels() async {
+    return CombinedResult<Channel>(
+      onlineResult: await FutureUtils.safeLoad(myChannelsFetcher.download(
+          cacheProtocol: myChannelsCacheProtocol
+      )),
+      offlineResult: await myChannelsCacheProtocol.load()
+    );
+  }
+
+  Future<CombinedResult<Profile>> loadMyProfile(FirebaseUser firebaseUser) async {
+    return CombinedResult<Profile>(
+      onlineResult: await FutureUtils.safeLoad(createProfile(firebaseUser).then((e) {
+        return FetchResult([e]);
+      })),
+      offlineResult: await profileCacheProtocol.load()
+    );
+  }
+
+  Future<UserResult> loadData(FirebaseUser firebaseUser) async {
 
     try {
-      ParsingResult profileResult = await  profileParser.loadCachedData();
-      if (profileResult == null || forceRefresh) {
-        Profile profile = await createProfile(firebaseUser);
-        if (profile == null) {
-          //Profile could not be created or loaded, logout
-          await FirebaseAuth.instance.signOut();
-          return null;
-        }
-        profileResult = ParsingResult([profile]);
+
+      CombinedResult<Channel> myChannelsResult = await loadMyChannels();
+      CombinedResult<Profile> myProfileResult = await loadMyProfile(firebaseUser);
+      //Validate the profile result
+      if (myProfileResult.result == null) {
+        await FirebaseAuth.instance.signOut();
+        return null;
       }
 
-      ParsingResult myChannelsResult = await myChannelsParser.loadCachedData();
-      if (myChannelsResult == null || forceRefresh) {
-        myChannelsResult = await myChannelsParser.download();
-      }
-
-      return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
+      return _sendResult(UserResult(
+          myChannelsResult: myChannelsResult,
+          myProfileResult: myProfileResult,
+          firebaseUser: firebaseUser
+      ));
     } catch (e) {
       print("Something went wrong in login loadData();" + e.toString());
       print("Forcing relogin");
-      return _sendLoginResult(null);
+      return _sendResult(null);
     }
 
   }
 
   Future<Profile> createProfile(FirebaseUser firebaseUser) async {
-    ParsingResult parsingResult = await profileParser.download();
-    Profile profile = parsingResult.object;
+    FetchResult<Profile> fetchResult = await profileFetcher.download(
+      cacheProtocol: profileCacheProtocol
+    );
+    Profile profile = fetchResult.object;
     if (profile == null) {
       var cachedProfile = await Profile.cachedProfile();
       cachedProfile.email = firebaseUser.email;
       try {
-        profile = await profileParser.uploadObject(cachedProfile);
+        profile = await profileFetcher.restRequest.postSingle(cachedProfile);
       } catch (e) {
         print("profile could not created!!");
         print(e);
@@ -100,22 +186,46 @@ class UserService {
 
   Future login({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
+    FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
     if (profileResult.object == null) {
       throw new InvalidOperationException("No profile could be created");
     }
-    ParsingResult myChannelsResult = await myChannelsParser.download();
-    return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
+    FetchResult<Channel> myChannelsResult = await myChannelsFetcher.download(
+      cacheProtocol: myChannelsCacheProtocol
+    );
+    return _sendResult(
+        UserResult(
+            myChannelsResult: CombinedResult<Channel>(
+              onlineResult: myChannelsResult
+            ),
+            myProfileResult: CombinedResult<Profile>(
+              onlineResult: profileResult
+            ),
+            firebaseUser: firebaseUser
+        )
+    );
   }
 
   Future register({ String email, String password }) async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    ParsingResult profileResult =  ParsingResult([await createProfile(firebaseUser)]);
+    FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
     if (profileResult.object == null) {
       throw new InvalidOperationException("No profile could be created");
     }
-    ParsingResult myChannelsResult = await myChannelsParser.download();
-    return _sendLoginResult(LoginResult(myChannelsResult: myChannelsResult, profileResult: profileResult, firebaseUser: firebaseUser));
+    FetchResult myChannelsResult = await myChannelsFetcher.download(
+      cacheProtocol: myChannelsCacheProtocol
+    );
+    return _sendResult(
+        UserResult(
+            myChannelsResult: CombinedResult<Channel>(
+                onlineResult: myChannelsResult
+            ),
+            myProfileResult: CombinedResult<Profile>(
+                onlineResult: profileResult
+            ),
+            firebaseUser: firebaseUser
+        )
+    );
   }
 
   Future sendPasswordForgotEmail({ String email }) async {
@@ -127,19 +237,25 @@ class UserService {
   }
 
   Future refreshStream(FirebaseUser firebaseUser) async {
-    _sendLoginResult(await loadData(firebaseUser));
+    _sendResult(await loadData(firebaseUser));
+  }
+
+  UserResult _sendResult(UserResult userResult) {
+    _userResult = userResult;
+    _userResultStreamController.sink.add(userResult);
+    return _userResult;
   }
 
 
-  LoginResult _sendLoginResult(LoginResult loginResult) {
-    _loginResult = loginResult;
-    _loginStreamController.sink.add(loginResult);
-    return _loginResult;
+  void _deleteAllCachedData()  {
+    SharedPreferences.getInstance().then((register) {
+      register.clear();
+    });
   }
 
-  void _destroyData(LoginResult loginResult) {
-    CacheManager.deleteAllData();
-    _sendLoginResult(null);
+  void _destroyData() {
+    _deleteAllCachedData();
+    _sendResult(null);
   }
 
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
-import 'package:schoolmi/widgets/labels/regular.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
 
 class Announcer extends StatelessWidget {
   final String title;

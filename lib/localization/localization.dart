@@ -1,5 +1,5 @@
 import 'package:sprintf/sprintf.dart';
-import 'package:schoolmi/models/data/profile.dart';
+import 'package:schoolmi/network/models/profile.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/localization/login.dart';
 import 'package:schoolmi/localization/global.dart';

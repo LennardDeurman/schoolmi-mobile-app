@@ -1,4 +1,4 @@
-import 'package:schoolmi/models/data/extensions/object_with_color.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
 import 'package:schoolmi/network/keys.dart';
 
 abstract class ObjectWithAvatar {
@@ -8,8 +8,6 @@ abstract class ObjectWithAvatar {
   String imageUrl;
 
   void parseAvatarInfo(Map<String, dynamic> dictionary) {
-
-
       imageUrl = dictionary[Keys().imageUrl];
   }
 

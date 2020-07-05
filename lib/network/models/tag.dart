@@ -1,13 +1,14 @@
 import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/network/keys.dart';
-import 'package:schoolmi/models/data/extensions/object_with_color.dart';
-import 'package:schoolmi/models/data/extensions/object_with_name.dart';
-import 'package:schoolmi/models/data/extensions/object_with_default_props.dart';
-import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
+import 'package:schoolmi/network/models/extensions/object_with_name.dart';
+import 'package:schoolmi/network/models/extensions/object_with_default_props.dart';
+import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/identity_linked_object.dart';
+import 'package:schoolmi/network/models/identity.dart';
 
-class Tag extends BaseObject with ObjectWithColor, ObjectWithName, ChannelLinkedObject, ProfileLinkedObject {
+class Tag extends BaseObject with ObjectWithColor, ObjectWithName, ChannelLinkedObject, ProfileLinkedObject, IdentityLinkedObject {
 
   String name;
 
@@ -41,6 +42,14 @@ class Tag extends BaseObject with ObjectWithColor, ObjectWithName, ChannelLinked
     }
     return false;
   }
+
+  Identity get identity {
+    return Identity(
+      member: member,
+      profile: profile
+    );
+  }
+
 }
 
 class ContentTag extends ParsableObject with ObjectWithDefaultProps {

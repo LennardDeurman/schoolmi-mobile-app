@@ -1,21 +1,19 @@
 import 'package:schoolmi/extensions/dates.dart';
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/extensions/object_with_default_props.dart';
-import 'package:flutter/foundation.dart';
 
 
-typedef ParseObjectCallback = ParsableObject Function(Map dictionary);
 
 abstract class ParsableObject {
 
   void parse(Map<String, dynamic> dictionary);
 
-  static List<T> parseObjectsList<T extends BaseObject>(Map<String, dynamic> dictionary, String key, {@required ParseObjectCallback toObject}) {
+  static List<T> parseObjectsList<T extends ParsableObject>(Map<String, dynamic> dictionary, String key, {ParsableObject objectCreator (Map<String, dynamic> map)}) {
     var dictionaryValuesList = dictionary[key];
     if (dictionaryValuesList != null) {
       List<T> baseObjects = List<T>();
       for (Map<String, dynamic> dictionaryValue in dictionaryValuesList) {
-        T baseObject = toObject(dictionaryValue);
+        T baseObject = objectCreator(dictionaryValue);
         baseObject.parse(dictionaryValue);
         baseObjects.add(baseObject);
       }

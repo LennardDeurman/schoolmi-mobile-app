@@ -1,6 +1,6 @@
-import 'package:schoolmi/models/data/member.dart';
-import 'package:schoolmi/models/data/channel.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/member.dart';
+import 'package:schoolmi/network/models/channel.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/network/keys.dart';
 
 class ChannelLinkedObject {

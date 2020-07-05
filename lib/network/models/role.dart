@@ -1,11 +1,13 @@
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/models/data/extensions/object_with_color.dart';
-import 'package:schoolmi/models/data/extensions/object_with_name.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
-import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
+import 'package:schoolmi/network/models/extensions/object_with_name.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/identity_linked_object.dart';
+import 'package:schoolmi/network/models/identity.dart';
 
-class Role extends BaseObject with ObjectWithColor, ObjectWithName, ProfileLinkedObject, ChannelLinkedObject {
+class Role extends BaseObject with ObjectWithColor, ObjectWithName, ProfileLinkedObject, ChannelLinkedObject, IdentityLinkedObject {
 
 
   Role (Map<String, dynamic> dictionary) : super(dictionary);
@@ -40,6 +42,13 @@ class Role extends BaseObject with ObjectWithColor, ObjectWithName, ProfileLinke
     dictionary.addAll(profileLinkDictionary());
     dictionary.addAll(channelLinkDictionary());
     return dictionary;
+  }
+
+  Identity get identity {
+    return Identity(
+        member: member,
+        profile: profile
+    );
   }
 
 }

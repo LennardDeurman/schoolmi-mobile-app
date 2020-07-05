@@ -1,19 +1,21 @@
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
-import 'package:schoolmi/models/data/extensions/object_with_attachments.dart';
-import 'package:schoolmi/models/data/extensions/object_with_votes.dart';
-import 'package:schoolmi/models/data/extensions/object_with_comments.dart';
-import 'package:schoolmi/models/data/extensions/object_with_followers.dart';
-import 'package:schoolmi/models/data/extensions/object_with_flags.dart';
-import 'package:schoolmi/models/data/extensions/object_with_views.dart';
-import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/models/extensions/object_with_attachments.dart';
+import 'package:schoolmi/network/models/extensions/object_with_votes.dart';
+import 'package:schoolmi/network/models/extensions/object_with_comments.dart';
+import 'package:schoolmi/network/models/extensions/object_with_followers.dart';
+import 'package:schoolmi/network/models/extensions/object_with_flags.dart';
+import 'package:schoolmi/network/models/extensions/object_with_views.dart';
+import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/identity_linked_object.dart';
+import 'package:schoolmi/network/models/identity.dart';
 
 class ContentObject extends BaseObject with ChannelLinkedObject,
     ProfileLinkedObject, ObjectWithAttachments,
     ObjectWithVotes, ObjectWithComments,
-    ObjectWithFollowers, ObjectWithFlags, ObjectWithViews {
+    ObjectWithFollowers, ObjectWithFlags, ObjectWithViews, IdentityLinkedObject {
 
   bool anonymous;
   String body;
@@ -41,7 +43,6 @@ class ContentObject extends BaseObject with ChannelLinkedObject,
     body = dictionary[Keys().body];
     contentUuid = dictionary[Keys().contentUuid];
 
-
   }
 
   Map<String, dynamic> contentDictionary() {
@@ -66,6 +67,10 @@ class ContentObject extends BaseObject with ChannelLinkedObject,
     dictionary.addAll(channelLinkDictionary());
     dictionary.addAll(attachmentsDictionary());
     return dictionary;
+  }
+
+  Identity get identity {
+    return Identity(member: member, profile: profile);
   }
 
 }

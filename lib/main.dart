@@ -5,7 +5,6 @@ import 'package:schoolmi/constants/fonts.dart';
 import 'package:schoolmi/pages/auth.dart';
 import 'package:schoolmi/pages/home.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
-import 'package:schoolmi/network/auth/login_result.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 
@@ -52,12 +51,12 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<LoginResult>(
-      stream: UserService().loginStream,
+    return StreamBuilder<UserResult>(
+      stream: UserService().userResultStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          LoginResult loginResult = snapshot.data;
-          if (loginResult == null) {
+          UserResult userResult = snapshot.data;
+          if (userResult == null) {
             return AuthPage();
           }
           return HomePage();

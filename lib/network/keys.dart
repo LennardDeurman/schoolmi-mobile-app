@@ -1,6 +1,6 @@
 
 
-class Keys with GlobalKeys, ContentKeys, QuestionKeys, ProfileKeys, CommonRelationsKeys, UploadKeys, MemberKeys, ChannelKeys, UrlKeys, ResponseKeys, NotificationSettingsKeys {
+class Keys with GlobalKeys, ContentKeys, QuestionKeys, ProfileKeys, CommonRelationsKeys, UploadKeys, MemberKeys, ChannelKeys, UrlKeys, ResponseKeys, NotificationSettingsKeys, DeviceKeys {
 
   static final Keys _instance = Keys._internal();
 
@@ -22,6 +22,7 @@ class GlobalKeys {
   final String imageUrl = "image_url";
   final String colorIndex = "color_index";
   final String enabled = "enabled";
+  final String valid = "valid";
 }
 
 class ContentKeys {
@@ -37,6 +38,7 @@ class ContentKeys {
   final String flagged = "flagged";
   final String flagsCount = "flags_count";
   final String flaggedByMe = "flagged_by_me";
+  final String reason = "reason";
 
   final String viewCount = "view_count";
   final String questionViewTime = "question_view_time";
@@ -55,6 +57,12 @@ class ContentKeys {
 
   final String newComment = "new_comment";
   final String editedComment = "edited_comment";
+
+  final String copyOfVersionId = "copy_of_version_id";
+  final String copyOfVersion = "copy_of_version";
+
+  final String overriddenEventPreferencesId = "overridden_event_preferences_id";
+  final String overriddenEventPreferences = "overridden_event_preferences";
 }
 
 class QuestionKeys {
@@ -62,8 +70,12 @@ class QuestionKeys {
   final String correctAnswerId = "correct_answer_id";
   final String correctAnswer = "correct_answer";
 
-
   final String flaggedDuplicate = "flagged_duplicate";
+  final String flaggedDuplicateByMe = "flagged_duplicate_by_me";
+  final String duplicateFlagsCount = "duplicate_flags_count";
+  final String duplicateOfQuestionIds = "duplicate_of_question_ids";
+
+  final String answerCount = "answer_count";
 }
 
 class ProfileKeys {
@@ -98,7 +110,7 @@ class CommonRelationsKeys {
   final String question = "question";
   final String questionId = "question_id";
   final String tagIds = "tag_ids";
-
+  final String reporters = "reporters";
 }
 
 class UploadKeys {
@@ -170,6 +182,12 @@ class UrlKeys {
   final String limit = "limit";
   final String orderType = "order_type";
   final String showDeletedAnswers = "show_deleted_answers";
+
+}
+
+class DeviceKeys {
+
+  final String registrationToken = "registration_token";
 
 }
 

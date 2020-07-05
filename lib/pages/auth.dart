@@ -6,14 +6,13 @@ import 'package:schoolmi/extensions/errorcodes.dart';
 import 'package:schoolmi/extensions/validators.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/managers/auth.dart';
-import 'package:schoolmi/widgets/alerts/snackbar.dart';
-import 'package:schoolmi/widgets/buildings.dart';
-import 'package:schoolmi/widgets/button.dart';
-import 'package:schoolmi/widgets/textfield.dart';
-import 'package:schoolmi/widgets/logo.dart';
-import 'package:schoolmi/widgets/labels/regular.dart';
-import 'package:schoolmi/widgets/labels/title.dart';
-import 'package:schoolmi/widgets/highlighted_widget.dart';
+import 'package:schoolmi/widgets/brand/buildings.dart';
+import 'package:schoolmi/widgets/extensions/buttons.dart';
+import 'package:schoolmi/widgets/extensions/textfields.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
+import 'package:schoolmi/widgets/extensions/messages.dart';
+import 'package:schoolmi/widgets/extensions/hyperlinks.dart';
+import 'package:schoolmi/widgets/brand/logo.dart';
 import 'package:schoolmi/styles/shadow_bg.dart';
 import 'package:schoolmi/localization/localization.dart';
 
@@ -114,9 +113,9 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   Widget _buildForgotPasswordLabel() {
     return Align(
       alignment: Alignment.centerRight,
-      child: HighlightedWidget(onPressed: () {
+      child: Hyperlink(onPressed: () {
         _authManager.authActionState = AuthActionState.forgotPassword;
-      }, renderWidget: (bool isHighlighted, Color currentColor) {
+      }, builder: (bool isHighlighted, Color currentColor) {
         return RegularLabel(
           title: Localization().getValue(Localization().forgotPassword),
           size: LabelSize.small,

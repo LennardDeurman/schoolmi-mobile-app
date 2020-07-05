@@ -1,9 +1,8 @@
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
-import 'package:schoolmi/models/data/extensions/object_with_color.dart';
-import 'package:schoolmi/models/data/channel.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
+import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/network/keys.dart';
-import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/network/models/extensions/object_with_avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 

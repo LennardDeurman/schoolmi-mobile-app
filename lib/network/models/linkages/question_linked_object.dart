@@ -1,6 +1,6 @@
-import 'package:schoolmi/models/data/question.dart';
+import 'package:schoolmi/network/models/question.dart';
 import 'package:schoolmi/network/keys.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 
 class QuestionLinkedObject {
 

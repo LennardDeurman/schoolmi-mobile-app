@@ -1,10 +1,9 @@
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
-import 'package:schoolmi/models/data/extensions/object_with_color.dart';
-import 'package:schoolmi/models/data/extensions/object_with_name.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/extensions/object_with_avatar.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
+import 'package:schoolmi/network/models/extensions/object_with_name.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
 
 class Channel extends BaseObject with ObjectWithColor, ObjectWithName, ObjectWithAvatar, ProfileLinkedObject {
 

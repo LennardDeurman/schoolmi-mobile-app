@@ -1,5 +1,5 @@
 import 'package:schoolmi/network/keys.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 
 class ObjectWithName {
 

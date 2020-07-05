@@ -1,5 +1,5 @@
-import 'package:schoolmi/network/models/parsable_object.dart';
-import 'package:schoolmi/models/data/attachment.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/models/attachment.dart';
 import 'package:schoolmi/network/keys.dart';
 
 class ObjectWithAttachments {
@@ -7,7 +7,7 @@ class ObjectWithAttachments {
   List<Attachment> attachments;
 
   void parseAttachments(Map<String, dynamic> dictionary) {
-      attachments = ParsableObject.parseObjectsList(dictionary, Keys().attachments, toObject: (Map dict) {
+      attachments = ParsableObject.parseObjectsList(dictionary, Keys().attachments, objectCreator: (Map dict) {
         return Attachment(dict);
       });
   }

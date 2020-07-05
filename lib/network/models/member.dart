@@ -1,11 +1,10 @@
 
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
-import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
-import 'package:schoolmi/models/data/role.dart';
-import 'package:schoolmi/network/models/parsable_object.dart';
+import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/extensions/object_with_avatar.dart';
+import 'package:schoolmi/network/models/role.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 
 
@@ -27,7 +26,7 @@ class Member extends BaseObject with ObjectWithAvatar, ChannelLinkedObject, Prof
   });
 
   bool get isCurrentUser {
-    var result = UserService().loginResult;
+    var result = UserService().userResult;
     if (result.firebaseUser != null) {
       if (result.firebaseUser.email == email) {
         return true;

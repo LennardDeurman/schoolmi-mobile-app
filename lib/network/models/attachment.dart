@@ -1,8 +1,7 @@
-import 'package:schoolmi/network/models/parsable_object.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/models/data/extensions/object_with_default_props.dart';
-import 'package:schoolmi/models/data/linkages/channel_linked_object.dart';
-import 'package:schoolmi/models/data/linkages/profile_linked_object.dart';
+import 'package:schoolmi/network/models/extensions/object_with_default_props.dart';
+import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
 import 'package:schoolmi/network/keys.dart';
 
 class Upload extends BaseObject with ChannelLinkedObject, ProfileLinkedObject {

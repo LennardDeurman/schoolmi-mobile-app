@@ -1,5 +1,5 @@
 import 'package:schoolmi/network/models/abstract/content_object.dart';
-import 'package:schoolmi/models/data/linkages/content_linked_object.dart';
+import 'package:schoolmi/network/models/linkages/content_linked_object.dart';
 
 class Comment extends ContentObject with ContentLinkedObject {
 

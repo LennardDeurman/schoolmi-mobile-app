@@ -4,8 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:rounded_modal/rounded_modal.dart';
-import 'package:schoolmi/widgets/labels/regular.dart';
-import 'package:schoolmi/widgets/labels/title.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 

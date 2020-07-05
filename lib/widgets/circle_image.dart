@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:schoolmi/widgets/labels/regular.dart';
-import 'package:schoolmi/models/data/extensions/object_with_avatar.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
+import 'package:schoolmi/network/models/extensions/object_with_avatar.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
 
 class CircleImage extends StatefulWidget {
 
@@ -12,11 +13,13 @@ class CircleImage extends StatefulWidget {
 
   CircleImage ({this.imageUrl, this.firstLetter, this.avatarColor});
 
-  static CircleImage withAvatarObject(ObjectWithAvatar avatar) {
+  static CircleImage withAvatarObject(dynamic avatar) {
+    if (avatar is ObjectWithAvatar && avatar is ObjectWithColor)
+      throw UnimplementedError("Avatar object must be both an ObjectWithAvatar and an ObjectWithColor");
     return CircleImage(
-      imageUrl: avatar.avatarImageUrl,
+      imageUrl: avatar.imageUrl,
       firstLetter: avatar.firstLetter,
-      avatarColor: BrandColors.avatarColor(index: avatar.avatarColorIndex)
+      avatarColor: BrandColors.avatarColor(index: avatar.colorIndex)
     );
   }
 
