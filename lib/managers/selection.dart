@@ -1,4 +1,4 @@
-import 'package:schoolmi/managers/base_manager.dart';
+import 'package:schoolmi/managers/abstract.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
 
 class SelectionManager<T extends BaseObject> extends BaseManager {

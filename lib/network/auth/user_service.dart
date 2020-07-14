@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/extensions/future_utils.dart';
@@ -16,13 +17,15 @@ class UserResult {
   CombinedResult<Channel> _myChannelsResult;
   CombinedResult<Profile> _myProfileResult;
 
-  Channel _activeChannel;
+  ValueNotifier<Channel> _activeChannelNotifier;
+  ValueNotifier<Profile> _profileNotifier;
 
   final FirebaseUser firebaseUser;
 
 
   UserResult ({ CombinedResult<Channel> myChannelsResult, CombinedResult<Profile> myProfileResult, this.firebaseUser }) {
-    _activeChannel = myChannelsResult.result.objects.first;
+    _activeChannelNotifier = ValueNotifier<Channel>(myChannelsResult.result.objects.first);
+    _profileNotifier = ValueNotifier<Profile>(myProfileResult.result.object);
     _myChannelsResult = myChannelsResult;
     _myProfileResult = myProfileResult;
   }
@@ -34,21 +37,24 @@ class UserResult {
   FetchResult<Profile> get myProfileResult {
     return _myProfileResult.result;
   }
-  
+
+  Profile get myProfile {
+    return _profileNotifier.value;
+  }
   
   Channel get activeChannel {
-    return _activeChannel;
+    return _activeChannelNotifier.value;
   }
 
   set activeChannel (Channel channel) {
     if (!isAuthorizedChannel(channel)) {
       _myChannelsResult.result.insertNew(channel);
     }
-    _activeChannel = channel;
+    _activeChannelNotifier.value = channel;
   }
 
   bool isActiveChannel (Channel channel) {
-    return _activeChannel == channel;
+    return activeChannel == channel;
   }
 
   bool isAuthorizedChannel (Channel channel) {
@@ -58,15 +64,51 @@ class UserResult {
   Future refreshMyChannels() {
     return UserService().loadMyChannels().then((result) {
       this._myChannelsResult = result;
+      if (!isAuthorizedChannel(activeChannel)) {
+        _activeChannelNotifier.value = this._myChannelsResult.result.objects.first;
+      }
     });
   }
 
   Future refreshMyProfile() {
     return UserService().loadMyProfile(firebaseUser).then((result) {
       this._myProfileResult = result;
+      _profileNotifier.value = _myProfileResult.result.object;
     });
   }
 
+  Future refreshAll() {
+    return Future.wait([
+      refreshMyProfile(),
+      refreshMyChannels()
+    ]);
+  }
+
+  Future saveMyProfile (Profile profile) {
+    return ProfileRequest().postSingle(
+      profile,
+      singleObjectFormat: true
+    ).then((newProfile) {
+      this._myProfileResult.onlineResult = FetchResult([newProfile]);
+      this._profileNotifier.value = newProfile;
+    });
+  }
+
+  void registerProfileListener(Function listener){
+    this._profileNotifier.addListener(listener);
+  }
+
+  void unregisterProfileListener(Function listener) {
+    this._profileNotifier.removeListener(listener);
+  }
+
+  void registerActiveChannelListener(Function listener) {
+    this._activeChannelNotifier.addListener(listener);
+  }
+
+  void unregisterActiveChannelListener(Function listener) {
+    this._activeChannelNotifier.removeListener(listener);
+  }
 
 
 

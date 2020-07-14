@@ -13,7 +13,7 @@ import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/widgets/extensions/messages.dart';
 import 'package:schoolmi/widgets/extensions/hyperlinks.dart';
 import 'package:schoolmi/widgets/brand/logo.dart';
-import 'package:schoolmi/styles/shadow_bg.dart';
+import 'package:schoolmi/widgets/extensions/shadows.dart';
 import 'package:schoolmi/localization/localization.dart';
 
 

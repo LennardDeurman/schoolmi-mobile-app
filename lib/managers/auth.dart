@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schoolmi/managers/base_manager.dart';
+import 'package:schoolmi/managers/abstract.dart';
 import 'package:schoolmi/network/models/profile.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
