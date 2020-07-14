@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/extensions/messages.dart';
 import 'package:schoolmi/widgets/extensions/backgrounds.dart';
+import 'package:schoolmi/widgets/extensions/buttons.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
+import 'package:schoolmi/widgets/lists/tableview.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/network/fetcher.dart';
 import 'package:schoolmi/network/fetch_result.dart';
@@ -16,6 +21,41 @@ abstract class FetcherListView<T extends ParsableObject> extends StatefulWidget 
 
   @override
   FetcherListViewState<FetcherListView, T> createState();
+
+}
+
+class FetchResultBar extends StatelessWidget {
+
+  final ListState listState;
+
+
+  FetchResultBar (this.listState);
+
+  static String formatDate(DateTime dateTime) {
+    DateFormat dateFormat = new DateFormat("d-MM-y HH:mm:ss", "nl");
+    return dateFormat.format(dateTime);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Visibility(child: SizedBox(width: 15, height: 15, child: CircularProgressIndicator(
+          strokeWidth: 2,
+        )), visible: listState.isLoading),
+        Visibility(child: SizedBox(
+          width: 10,
+        ), visible: listState.isLoading),
+        Visibility(child: Text(
+          Localization().buildWithParams(Localization().resultsRetrievedAt, [formatDate(listState.fetchResult.dateTime)]),
+          style: TextStyle(
+              fontSize: 12
+          ),
+        ), visible: listState.fetchResult != null)
+      ],
+    ), padding: EdgeInsets.symmetric(vertical: 8), color: BrandColors.blueGrey);
+  }
 
 }
 
@@ -87,16 +127,114 @@ class SearchListState<T extends ParsableObject> {
 
 }
 
-class FetcherListViewState<T extends FetcherListView, Z extends ParsableObject> extends State<T> {
+abstract class TableViewProviderProtocol<T extends ParsableObject>  {
+
+  Widget rowBuilder(BuildContext context, int index, int section);
+
+  Widget objectCellBuilder(T object);
+
+  Widget sectionHeaderBuilder(int section);
+
+  Widget sectionFooterBuilder(int section);
+
+  int numberOfRows (int section);
+
+  int get sectionCount {
+    return 1;
+  }
+
+  TableViewBuilder provide();
+
+}
+
+class FetcherTableViewProvider<T extends ParsableObject> extends TableViewProviderProtocol<T> {
+
+  final ListState<T> listState;
+  final Function(T object) builder;
+  final Function onLoadMorePressed;
+
+  FetcherTableViewProvider (this.listState, { this.builder, this.onLoadMorePressed });
+
+  Widget buildLoadMoreWidget() {
+    return Visibility(child: Container(
+      padding: EdgeInsets.all(20),
+      child: Center(
+          child: DefaultButton(
+            child: RegularLabel(title: Localization().getValue(Localization().loadMore)),
+            isLoading: listState.isLoading,
+            onPressed: onLoadMorePressed,
+          )
+      ),
+    ), visible: listState.canLoadMore);
+  }
+
+  Widget buildStatusBar() {
+    return FetchResultBar(this.listState);
+  }
+
+  @override
+  Widget sectionFooterBuilder(int section) {
+    return buildLoadMoreWidget();
+  }
+
+  @override
+  Widget sectionHeaderBuilder(int section) {
+    if (section == 0) {
+      return buildStatusBar();
+    }
+    return Container();
+  }
+
+  @override
+  Widget objectCellBuilder(T object) {
+    return this.builder(object);
+  }
+
+  @override
+  int numberOfRows(int section) {
+    return listState.fetchResult.objects.length;
+  }
+
+  @override
+  Widget rowBuilder(BuildContext context, int index, int section) {
+    var object = listState.fetchResult.objects[index];
+    return objectCellBuilder(object);
+  }
+
+  @override
+  TableViewBuilder provide() {
+    return TableViewBuilder(
+      itemBuilder: rowBuilder,
+      sectionHeaderBuilder: sectionHeaderBuilder,
+      sectionFooterBuilder: sectionFooterBuilder,
+      numberOfRows: numberOfRows,
+      sectionCount: sectionCount
+    );
+  }
+
+}
+
+abstract class FetcherListViewState<T extends FetcherListView, Z extends ParsableObject> extends State<T> {
 
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final ListState<Z> listState = ListState();
   final SearchListState<Z> searchListState = SearchListState();
 
+  FetcherTableViewProvider _tableViewProvider;
+
   @override
   void initState() {
     super.initState();
     searchListState.initialize(listState, refreshIndicatorKey);
+    _tableViewProvider = tableViewProvider();
+  }
+
+  Widget objectCellBuilder(Z object);
+
+  FetcherTableViewProvider tableViewProvider() {
+    return FetcherTableViewProvider<Z>(listState, builder: (object) {
+      return objectCellBuilder(object);
+    });
   }
 
   void loadFuture(Future future) {
@@ -135,6 +273,16 @@ class FetcherListViewState<T extends FetcherListView, Z extends ParsableObject> 
       return ListBackgrounds.buildErrorBackground(listState.exception);
     }
     return Container();
+  }
+
+  Widget buildListView() {
+    if (listState.fetchResult == null) {
+      return ListView(); //Dummy listview to make sure refresh indicator is correctly working
+    }
+
+    return TableView(
+      _tableViewProvider.provide()
+    );
   }
 
 
