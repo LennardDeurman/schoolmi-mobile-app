@@ -8,6 +8,7 @@ import 'package:schoolmi/widgets/extensions/backgrounds.dart';
 import 'package:schoolmi/widgets/extensions/buttons.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/widgets/lists/base/tableview.dart';
+import 'package:schoolmi/network/params/list.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/network/fetch_result.dart';
 import 'package:schoolmi/network/fetcher.dart';
@@ -80,13 +81,16 @@ abstract class ListActionsDelegate {
 class DefaultFetcherListActionsDelegate extends ListActionsDelegate {
 
   final Fetcher fetcher;
+  final Function preRefresh;
+  final Function preInitialLoad;
 
-  DefaultFetcherListActionsDelegate (ListState listState, BuildContext context, this.fetcher) : super(listState, context);
+  DefaultFetcherListActionsDelegate (ListState listState, BuildContext context, this.fetcher, { this.preRefresh, this.preInitialLoad }) : super(listState, context);
 
   @override
-  Future loadMore() {
+  Future loadMore() async {
+    listState.listRequestParams.offset = listState.fetchResult.objects.length;
     loadFuture(
-      fetcher.download().then((res) {
+      fetcher.download(params: listState.listRequestParams).then((res) {
         this.listState.appendResult(res);
       }).catchError((e) {
         onLoadMoreError(e);
@@ -96,8 +100,11 @@ class DefaultFetcherListActionsDelegate extends ListActionsDelegate {
 
   @override
   Future performInitialLoad() async {
+    if (preInitialLoad != null) {
+      preInitialLoad();
+    }
     loadFuture(
-      fetcher.download().then((res) {
+      fetcher.download(params: listState.listRequestParams).then((res) {
         this.listState.complete(res);
       }).catchError((e) {
         this.listState.failWithError(e);
@@ -107,8 +114,11 @@ class DefaultFetcherListActionsDelegate extends ListActionsDelegate {
 
   @override
   Future performRefresh() async {
+    if (preRefresh != null) {
+      preInitialLoad();
+    }
     loadFuture(
-      fetcher.download().then((res) {
+      fetcher.download(params: listState.listRequestParams).then((res) {
         this.listState.complete(res);
       }).catchError((e) {
         onRefreshError(e);
@@ -124,6 +134,7 @@ class DefaultFetcherListActionsDelegate extends ListActionsDelegate {
 class ListState<T extends ParsableObject> extends Model {
 
   bool alwaysDisableLoadMore = false;
+  ListRequestParams listRequestParams;
 
   bool _isLoading;
   Exception _exception;
@@ -160,6 +171,13 @@ class ListState<T extends ParsableObject> extends Model {
 
   void appendResult(FetchResult<T> fetchResult) {
     _fetchResult.appendResult(fetchResult);
+    notifyListeners();
+  }
+
+  void removeObjects(List<T> objects) {
+    _fetchResult.objects.removeWhere((o) {
+      return objects.contains(o);
+    });
     notifyListeners();
   }
 
@@ -282,22 +300,29 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final ListState<Z> listState = ListState();
   final SearchListState<Z> searchListState = SearchListState();
+  ListActionsDelegate actionsDelegate;
 
   FetcherTableViewProvider _tableViewProvider;
-  ListActionsDelegate _listActionsDelegate;
+
+
 
   @override
   void initState() {
     super.initState();
     searchListState.initialize(listState, refreshIndicatorKey);
+    listState.listRequestParams = listRequestParams();
     _tableViewProvider = tableViewProvider();
-    _listActionsDelegate = listActionsDelegate();
-    _listActionsDelegate.performInitialLoad();
+    actionsDelegate = listActionsDelegate();
+    actionsDelegate.performInitialLoad();
   }
 
   Widget objectCellBuilder(Z object);
 
   ListActionsDelegate listActionsDelegate();
+
+  ListRequestParams listRequestParams() {
+    return ListRequestParams();
+  }
 
   FetcherTableViewProvider tableViewProvider() {
     return FetcherTableViewProvider<Z>(listState, builder: (object) {
@@ -307,7 +332,7 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
         return;
       }
 
-      _listActionsDelegate.loadMore();
+      actionsDelegate.loadMore();
 
     });
   }
@@ -337,7 +362,7 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
   Widget buildRefreshWidget() {
     return RefreshIndicator(
       key: refreshIndicatorKey,
-      onRefresh: _listActionsDelegate.performRefresh,
+      onRefresh: actionsDelegate.performRefresh,
       child: ScopedModel(
         model: this.listState,
         child: ScopedModelDescendant<ListState>(

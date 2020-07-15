@@ -10,13 +10,13 @@ enum ListOrder {
 
 class ListRequestParams extends RequestParams {
 
-  final String search;
-  final ListOrder orderType;
-  final int limit;
-  final int offset;
+  String search;
+  ListOrder orderType;
+  int limit;
+  int offset;
 
-  final List<int> roleIds;
-  final List<String> firebaseUids;
+  List<int> roleIds;
+  List<String> firebaseUids;
 
   ListRequestParams ({
     this.search,

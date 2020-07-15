@@ -18,11 +18,11 @@ class ProfileManager extends BaseManager with UploadInterface<Profile> {
   }
 
   @override
-  Future<Profile> save() async {
+  Future<Profile> saveUploadObject() {
     return executeAsync(
-      UserService().userResult.saveMyProfile(
-        uploadObject
-      )
+        UserService().userResult.saveMyProfile(
+            uploadObject
+        )
     );
   }
 

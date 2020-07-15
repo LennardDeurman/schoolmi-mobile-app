@@ -1,5 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 
 class BaseManager extends Model {
 
@@ -68,10 +69,55 @@ class UserEventsHandler {
 
 }
 
-abstract class UploadInterface<T> {
+abstract class UploadInterface<T extends ParsableObject> {
 
-  T uploadObject;
+  List<T> uploadObjects;
 
-  Future<T> save();
+  List<T> pendingObjects = new List();
+
+  set uploadObject (T object) {
+    uploadObjects = [object];
+  }
+
+  T get uploadObject {
+    if (uploadObjects.length == 0) {
+      return null;
+    }
+    return uploadObjects.first;
+  }
+
+  Future<List<T>> saveUploadObjects() {
+    throw UnimplementedError();
+  }
+
+  Future<T> saveUploadObject() {
+    throw UnimplementedError();
+  }
+
+  Future<List<T>> performMultiUpload(Future<List<T>> Function(List<T> objects) uploadFutureBuilder) async {
+    if (uploadObjects.length == 0) {
+      throw new Exception("At least one upload object required for this request");
+    }
+    var currentUploadObjects = uploadObjects;
+    pendingObjects.addAll(currentUploadObjects);
+    return uploadFutureBuilder(uploadObjects).whenComplete(() {
+      pendingObjects.removeWhere((value) {
+        return currentUploadObjects.contains(value);
+      });
+    });
+  }
+
+  Future<T> performSingleUpload(Future<T> Function(T object) uploadFutureBuilder) async {
+    if (uploadObject == null) {
+      throw new Exception("You need to set a uploadObject");
+    }
+
+    var currentUploadObject = uploadObject;
+    return uploadFutureBuilder(uploadObject).whenComplete(() {
+      pendingObjects.removeWhere((value) {
+        return value == currentUploadObject;
+      });
+    });
+  }
 
 }

@@ -2,7 +2,7 @@ import 'package:schoolmi/network/params/list.dart';
 import 'package:schoolmi/network/keys.dart';
 class AnswersRequestParams extends ListRequestParams {
 
-  final bool showDeletedAnswers;
+  bool showDeletedAnswers;
 
   AnswersRequestParams ({
     this.showDeletedAnswers = false,

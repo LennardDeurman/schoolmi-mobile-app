@@ -15,7 +15,7 @@ enum QuestionsFilterMode {
 
 class QuestionsRequestParams extends ListRequestParams {
 
-  final QuestionsFilterMode filterMode;
+  QuestionsFilterMode filterMode;
 
   QuestionsRequestParams ({
     this.filterMode,

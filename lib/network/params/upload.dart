@@ -4,11 +4,11 @@ import 'dart:io';
 
 class UploadRequestParams extends RequestParams {
 
-  final int width;
-  final int height;
-  final String mode;
-  final bool makeMiniImage;
-  final File file;
+  int width;
+  int height;
+  String mode;
+  bool makeMiniImage;
+  File file;
 
   UploadRequestParams ({
     this.width,
