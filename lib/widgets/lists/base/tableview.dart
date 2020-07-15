@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/extensions/func_utils.dart';
 
 class Section {
@@ -42,6 +43,27 @@ class StaticTableViewSection {
   StaticTableViewSection ({ this.numberOfRows = 1, this.headerBuilder, this.itemBuilder });
 
 }
+
+abstract class TableViewProviderProtocol<T extends ParsableObject>  {
+
+  Widget rowBuilder(BuildContext context, int index, int section);
+
+  Widget objectCellBuilder(T object);
+
+  Widget sectionHeaderBuilder(int section);
+
+  Widget sectionFooterBuilder(int section);
+
+  int numberOfRows (int section);
+
+  int get sectionCount {
+    return 1;
+  }
+
+  TableViewBuilder provide();
+
+}
+
 
 class TableViewBuilder {
 

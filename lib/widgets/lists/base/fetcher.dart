@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/widgets/extensions/messages.dart';
 import 'package:schoolmi/widgets/extensions/backgrounds.dart';
 import 'package:schoolmi/widgets/extensions/buttons.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
-import 'package:schoolmi/widgets/lists/tableview.dart';
+import 'package:schoolmi/widgets/lists/base/tableview.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
-import 'package:schoolmi/network/fetcher.dart';
 import 'package:schoolmi/network/fetch_result.dart';
-import 'package:schoolmi/network/cache_protocol.dart';
+import 'package:schoolmi/network/fetcher.dart';
 
-abstract class FetcherListView<T extends ParsableObject> extends StatefulWidget {
-
-  final Fetcher<T> fetcher;
-  final CacheProtocol<T> cacheProtocol;
-
-  FetcherListView (this.fetcher, { this.cacheProtocol, Key key }) : super(key: key);
-
-  @override
-  FetcherListViewState<FetcherListView, T> createState();
-
-}
 
 class FetchResultBar extends StatelessWidget {
 
   final ListState listState;
-
 
   FetchResultBar (this.listState);
 
@@ -59,7 +47,83 @@ class FetchResultBar extends StatelessWidget {
 
 }
 
-class ListState<T extends ParsableObject> {
+abstract class ListActionsDelegate {
+
+  final ListState listState;
+  final BuildContext context;
+
+  ListActionsDelegate (this.listState, this.context);
+
+  Future loadMore();
+
+  Future performInitialLoad();
+
+  Future performRefresh();
+
+  void onRefreshError(e) {
+    showSnackBar(message: Localization().getValue(Localization().errorUnexpectedShort), isError: true, buildContext: context);
+  }
+
+  void onLoadMoreError(e) {
+    showSnackBar(message: Localization().getValue(Localization().errorUnexpectedShort), isError: true, buildContext: context);
+  }
+
+  void loadFuture(Future future) {
+    listState.isLoading = true;
+    future.whenComplete(() {
+      listState.isLoading = false;
+    });
+  }
+
+}
+
+class DefaultFetcherListActionsDelegate extends ListActionsDelegate {
+
+  final Fetcher fetcher;
+
+  DefaultFetcherListActionsDelegate (ListState listState, BuildContext context, this.fetcher) : super(listState, context);
+
+  @override
+  Future loadMore() {
+    loadFuture(
+      fetcher.download().then((res) {
+        this.listState.appendResult(res);
+      }).catchError((e) {
+        onLoadMoreError(e);
+      })
+    );
+  }
+
+  @override
+  Future performInitialLoad() async {
+    loadFuture(
+      fetcher.download().then((res) {
+        this.listState.complete(res);
+      }).catchError((e) {
+        this.listState.failWithError(e);
+      })
+    );
+  }
+
+  @override
+  Future performRefresh() async {
+    loadFuture(
+      fetcher.download().then((res) {
+        this.listState.complete(res);
+      }).catchError((e) {
+        onRefreshError(e);
+      })
+    );
+  }
+
+
+}
+
+
+
+class ListState<T extends ParsableObject> extends Model {
+
+  bool alwaysDisableLoadMore = false;
 
   bool _isLoading;
   Exception _exception;
@@ -91,10 +155,17 @@ class ListState<T extends ParsableObject> {
 
   void complete(FetchResult<T> fetchResult) {
     _fetchResult = fetchResult;
+    notifyListeners();
+  }
+
+  void appendResult(FetchResult<T> fetchResult) {
+    _fetchResult.appendResult(fetchResult);
+    notifyListeners();
   }
 
   void failWithError(e) {
     _exception = e;
+    notifyListeners();
   }
 
 }
@@ -127,26 +198,6 @@ class SearchListState<T extends ParsableObject> {
 
 }
 
-abstract class TableViewProviderProtocol<T extends ParsableObject>  {
-
-  Widget rowBuilder(BuildContext context, int index, int section);
-
-  Widget objectCellBuilder(T object);
-
-  Widget sectionHeaderBuilder(int section);
-
-  Widget sectionFooterBuilder(int section);
-
-  int numberOfRows (int section);
-
-  int get sectionCount {
-    return 1;
-  }
-
-  TableViewBuilder provide();
-
-}
-
 class FetcherTableViewProvider<T extends ParsableObject> extends TableViewProviderProtocol<T> {
 
   final ListState<T> listState;
@@ -165,7 +216,7 @@ class FetcherTableViewProvider<T extends ParsableObject> extends TableViewProvid
             onPressed: onLoadMorePressed,
           )
       ),
-    ), visible: listState.canLoadMore);
+    ), visible: listState.canLoadMore && !listState.alwaysDisableLoadMore);
   }
 
   Widget buildStatusBar() {
@@ -204,15 +255,27 @@ class FetcherTableViewProvider<T extends ParsableObject> extends TableViewProvid
   @override
   TableViewBuilder provide() {
     return TableViewBuilder(
-      itemBuilder: rowBuilder,
-      sectionHeaderBuilder: sectionHeaderBuilder,
-      sectionFooterBuilder: sectionFooterBuilder,
-      numberOfRows: numberOfRows,
-      sectionCount: sectionCount
+        itemBuilder: rowBuilder,
+        sectionHeaderBuilder: sectionHeaderBuilder,
+        sectionFooterBuilder: sectionFooterBuilder,
+        numberOfRows: numberOfRows,
+        sectionCount: sectionCount
     );
   }
 
 }
+
+abstract class FetcherListView<T extends ParsableObject> extends StatefulWidget {
+
+  FetcherListView ({ Key key }) : super(key: key);
+
+  @override
+  FetcherListViewState<FetcherListView<T>, T> createState();
+
+}
+
+
+
 
 abstract class FetcherListViewState<T extends FetcherListView, Z extends ParsableObject> extends State<T> {
 
@@ -221,47 +284,32 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
   final SearchListState<Z> searchListState = SearchListState();
 
   FetcherTableViewProvider _tableViewProvider;
+  ListActionsDelegate _listActionsDelegate;
 
   @override
   void initState() {
     super.initState();
     searchListState.initialize(listState, refreshIndicatorKey);
     _tableViewProvider = tableViewProvider();
+    _listActionsDelegate = listActionsDelegate();
+    _listActionsDelegate.performInitialLoad();
   }
 
   Widget objectCellBuilder(Z object);
 
+  ListActionsDelegate listActionsDelegate();
+
   FetcherTableViewProvider tableViewProvider() {
     return FetcherTableViewProvider<Z>(listState, builder: (object) {
       return objectCellBuilder(object);
+    }, onLoadMorePressed: () {
+      if (listState.isLoading) {
+        return;
+      }
+
+      _listActionsDelegate.loadMore();
+
     });
-  }
-
-  void loadFuture(Future future) {
-    listState.isLoading = true;
-    future.whenComplete(() {
-      listState.isLoading = false;
-    });
-  }
-
-  void showRefreshError(BuildContext context) {
-    showSnackBar(message: Localization().getValue(Localization().errorUnexpectedShort), isError: true, buildContext: context);
-  }
-
-  Future performInitialLoad() async {
-    loadFuture(widget.fetcher.download().then((value) {
-      listState.complete(value);
-    }).catchError((e) {
-      listState.failWithError(e);
-    }));
-  }
-
-  Future performRefresh() async {
-    loadFuture(widget.fetcher.download().then((value) {
-      listState.complete(value);
-    }).catchError((e) {
-      showRefreshError(context);
-    }));
   }
 
   Widget buildBackground() {
@@ -281,7 +329,7 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
     }
 
     return TableView(
-      _tableViewProvider.provide()
+        _tableViewProvider.provide()
     );
   }
 
@@ -289,12 +337,19 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
   Widget buildRefreshWidget() {
     return RefreshIndicator(
       key: refreshIndicatorKey,
-      onRefresh: performRefresh,
-      child: Stack(
-        children: <Widget>[
-          buildBackground(),
-          buildListView()
-        ],
+      onRefresh: _listActionsDelegate.performRefresh,
+      child: ScopedModel(
+        model: this.listState,
+        child: ScopedModelDescendant<ListState>(
+          builder: (BuildContext context, Widget widget, ListState state) {
+            return Stack(
+              children: <Widget>[
+                buildBackground(),
+                buildListView()
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -304,4 +359,3 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
     return buildRefreshWidget();
   }
 }
-

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:page_view_indicators/page_view_indicators.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/constants/asset_paths.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
+import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/widgets/builders/home_app_bar.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:schoolmi/widgets/lists/my_channels.dart';
+import 'package:schoolmi/widgets/channel_summary.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -72,6 +76,16 @@ class _HomePageState extends State<HomePage> {
 
   }
 
+  void _switchToChannel(Channel channel) {
+    Navigator.pop(context);
+    _homeManager.leaveChannel();
+  }
+
+  void _onLeaveChannelPressed(Channel channel) {
+    Navigator.pop(context);
+    _homeManager.switchToChannel(channel);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,17 +100,32 @@ class _HomePageState extends State<HomePage> {
                   List<Widget> children = [];
                   if (UserService().userResult.activeChannel != null) {
                     children.add(
-                        ChannelDetailsWidget(UserService().userResult.activeChannel,
-                          onEditChannelPressed: _onEditChannelPressed,
-                          onInvitePressed: _onInvitePressed,
-                          onMembersPressed: _onMembersPressed,
-                          onNotificationSettingsPressed: _onNotificationSettingsPressed,
-                          onTagsPressed: _onTagsPressed,
+                        ChannelSummary(
+                          onEditChannelPressed: () {
+                            //TODO: !!
+                          },
+                          onInvitePressed: () {
+                            //TODO: !!
+                          },
+                          onMembersPressed: () {
+                            //TODO: !!
+                          },
+                          onNotificationSettingsPressed: () {
+                            //TODO: !!
+                          },
+                          onTagsPressed: () {
+                            //TODO: !!
+                          },
                           onLeaveChannelPressed: _onLeaveChannelPressed,
                         )
                     );
                   }
-                  children.add(MyChannelsListView(UserService().myChannelsParser, onAddChannelPressed: _onAddChannelPressed, onChannelPressed: _onChannelPressed));
+                  children.add(MyChannelsListView(
+                      onAddChannelPressed: () {
+
+                      },
+                      onChannelPressed: _switchToChannel
+                  ));
                   return children;
                 }(),
                 onPageChanged: (int index) {
