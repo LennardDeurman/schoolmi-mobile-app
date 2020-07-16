@@ -20,6 +20,7 @@ class FetchResultBar extends StatelessWidget {
 
   FetchResultBar (this.listState);
 
+
   static String formatDate(DateTime dateTime) {
     DateFormat dateFormat = new DateFormat("d-MM-y HH:mm:ss", "nl");
     return dateFormat.format(dateTime);
@@ -184,6 +185,13 @@ class ListState<T extends ParsableObject> extends Model {
   void failWithError(e) {
     _exception = e;
     notifyListeners();
+  }
+
+  ListState();
+
+  ListState.static({ bool isLoading, FetchResult<T> fetchResult }) {
+    _isLoading = isLoading;
+    _fetchResult = fetchResult;
   }
 
 }

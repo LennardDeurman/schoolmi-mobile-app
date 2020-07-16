@@ -1,8 +1,8 @@
-
 import 'package:schoolmi/managers/abstract.dart';
 import 'package:schoolmi/managers/file_upload.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/models/profile.dart';
+import 'package:schoolmi/network/requests/username.dart';
 
 class ProfileManager extends BaseManager with UploadInterface<Profile> {
 
@@ -26,4 +26,13 @@ class ProfileManager extends BaseManager with UploadInterface<Profile> {
     );
   }
 
+  Future<bool> isUsernameValid(String username) async {
+    return UsernameRequest().usernameValid(username);
+  }
+
+  Future<Profile> refresh() {
+    return executeAsync(
+      UserService().userResult.refreshMyProfile()
+    );
+  }
 }
