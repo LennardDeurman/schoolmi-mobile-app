@@ -94,7 +94,7 @@ abstract class UploadInterface<T extends ParsableObject> {
     throw UnimplementedError();
   }
 
-  Future<List<T>> performMultiUpload(Future<List<T>> Function(List<T> objects) uploadFutureBuilder) async {
+  Future<List<T>> performMultiUpload({ Future<List<T>> Function(List<T> objects) uploadFutureBuilder }) async {
     if (uploadObjects.length == 0) {
       throw new Exception("At least one upload object required for this request");
     }
@@ -107,7 +107,7 @@ abstract class UploadInterface<T extends ParsableObject> {
     });
   }
 
-  Future<T> performSingleUpload(Future<T> Function(T object) uploadFutureBuilder) async {
+  Future<T> performSingleUpload({ Future<T> Function(T object) uploadFutureBuilder }) async {
     if (uploadObject == null) {
       throw new Exception("You need to set a uploadObject");
     }

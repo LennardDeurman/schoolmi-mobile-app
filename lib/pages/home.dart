@@ -14,14 +14,14 @@ class HomePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _HomePageState();
+    return HomePageState();
   }
 
 }
 
 
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
 
 
   HomeManager _homeManager = HomeManager();

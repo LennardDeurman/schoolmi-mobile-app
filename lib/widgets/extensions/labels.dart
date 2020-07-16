@@ -36,12 +36,14 @@ class RegularLabel extends StatelessWidget {
   final LabelSize size;
   final LabelFont font;
   final TextAlign textAlign;
+  final double customSize;
 
   RegularLabel({
     @required this.title,
     this.color = BrandColors.black,
     this.fontWeight = FontWeight.w400,
     this.size = LabelSize.regular,
+    this.customSize,
     this.font = LabelFont.lato,
     this.textAlign = TextAlign.left,
   });
@@ -61,6 +63,9 @@ class RegularLabel extends StatelessWidget {
   }
 
   double get fontSize {
+    if (customSize != null) {
+      return customSize;
+    }
     switch (this.size) {
       case LabelSize.large:
         return 21.0;

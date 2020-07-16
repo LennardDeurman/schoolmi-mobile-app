@@ -30,11 +30,11 @@ class AuthPage extends StatefulWidget {
   AuthPage();
   @override
   State<StatefulWidget> createState() {
-    return _AuthPageState();
+    return AuthPageState();
   }
 }
 
-class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin {
+class AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin {
   AuthManager _authManager;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

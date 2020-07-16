@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/widgets/lists/base/search.dart';
 import 'package:schoolmi/widgets/lists/base/fetcher.dart';
 import 'package:schoolmi/widgets/cells/tag.dart';
 import 'package:schoolmi/network/models/tag.dart';
 import 'package:schoolmi/network/fetch_result.dart';
+import 'package:schoolmi/network/fetcher.dart';
+import 'package:schoolmi/network/requests/abstract/rest.dart';
+import 'package:schoolmi/network/routes/channel.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/managers/channels/tags.dart';
 import 'package:schoolmi/managers/selection.dart';
 
 class TagsListView extends FetcherListView<Tag> {
 
-  final TagsManager manager;
+  final TagsManager tagsManager;
 
   final SelectionManager<Tag> selectionManager;
 
-  TagsListView (this.manager, { this.selectionManager });
+  TagsListView (this.tagsManager, { this.selectionManager });
 
   @override
   FetcherListViewState<FetcherListView<Tag>, Tag> createState() {
@@ -71,32 +77,81 @@ class TagsPickerListViewState extends TagsListViewState {
 
 }
 
-class TagsListViewState extends SearchListViewState<TagsListView, Tag> {
+class TagsTableViewProvider extends FetcherTableViewProvider<Tag> {
+
+  TagsManager manager;
+  Function(Tag) onNewTagPressed;
+
+  TagsTableViewProvider (this.manager, ListState<Tag> listState, { Function builder, this.onNewTagPressed }) : super(listState, builder: builder);
 
   bool shouldShowCreate(Tag newTag) {
-    return widget.manager.channel.canAddTags && !listState.fetchResult.objects.contains(newTag) && listState.listRequestParams.hasSearch;
+    return manager.channel.canAddTags && !listState.fetchResult.objects.contains(newTag) && listState.listRequestParams.hasSearch;
   }
 
+  @override
+  Widget sectionFooterBuilder(int section) {
+    if (listState.listRequestParams.hasSearch) {
+      Tag tag = Tag.create(name: listState.listRequestParams.search);
+
+      if (shouldShowCreate(tag)) {
+        return TagCell(
+          tag,
+          leading: manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : IconButton(icon: Icon(FontAwesomeIcons.plus, color: BrandColors.lightGrey), onPressed: () {
+            onNewTagPressed(tag);
+          }),
+        );
+      }
+    }
+
+    return Container();
+  }
+
+}
+
+class TagsListViewState extends SearchListViewState<TagsListView, Tag> {
+
+
   void onNewTagPressed(Tag tag) async {
-    widget.manager.uploadObject = tag;
-    var objects = await widget.manager.saveUploadObjects();
+    widget.tagsManager.uploadObject = tag;
+    var objects = await widget.tagsManager.saveUploadObjects();
     listState.appendResult(FetchResult<Tag>(objects));
   }
 
   void onDeleteTagPressed(Tag tag) async {
     tag.isDeleted = true;
-    widget.manager.uploadObject = tag;
-    var objects = await widget.manager.saveUploadObjects();
+    widget.tagsManager.uploadObject = tag;
+    var objects = await widget.tagsManager.saveUploadObjects();
     listState.removeObjects(objects);
   }
+  
+  
 
+  FetcherTableViewProvider tableViewProvider() {
+    return TagsTableViewProvider(widget.tagsManager, listState, builder: (object) {
+      return objectCellBuilder(object);
+    }, onNewTagPressed: onNewTagPressed);
+  }
+  
+  @override
+  Fetcher<Tag> fetcher() {
+    return Fetcher<Tag>(
+        RestRequest(
+            ChannelRoute(
+                channelId: widget.tagsManager.channel.id
+            ).tags,
+            objectCreator: (json) {
+              return Tag(json);
+            }
+        )
+    );
+  }
 
 
   @override
   Widget objectCellBuilder(Tag tag) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
-      child: TagCell(tag, leading: widget.manager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Container() ),
+      child: TagCell(tag, leading: widget.tagsManager.pendingObjects.contains(tag) ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Container() ),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: Localization().getValue(Localization().delete),

@@ -18,10 +18,13 @@ abstract class SearchListViewState<T extends FetcherListView<Z>, Z extends Parsa
     return Localization().getValue(Localization().search);
   }
 
+  Fetcher<Z> fetcher();
+
   @override
   void initState() {
     super.initState();
     listState.alwaysDisableLoadMore = true;
+    _fetcher = fetcher();
   }
 
   //ListActionsDelegate

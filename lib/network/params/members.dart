@@ -3,7 +3,7 @@ import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/extensions/enum_utils.dart';
 
 enum MembersFilterMode {
-  showAll,
+  showActive,
   showBlocked,
   showDeleted
 }
