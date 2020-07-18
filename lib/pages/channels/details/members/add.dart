@@ -4,7 +4,7 @@ import 'package:schoolmi/managers/channels/members.dart';
 import 'package:schoolmi/widgets/forms/add_members.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/widgets/extensions/messages.dart';
-import 'package:schoolmi/widgets/lists/add_members.dart';
+import 'package:schoolmi/widgets/lists/channels/details/members/add.dart';
 import 'package:schoolmi/localization/localization.dart';
 
 

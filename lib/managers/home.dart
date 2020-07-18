@@ -1,4 +1,6 @@
 import 'package:schoolmi/managers/abstract.dart';
+import 'package:schoolmi/managers/channels/members.dart';
+import 'package:schoolmi/managers/channels/tags.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/network/requests/channel_details.dart';
@@ -14,9 +16,13 @@ class HomeManager extends BaseManager {
 
   UserEventsHandler userEventsHandler;
 
+  TagsManager tagsManager;
+  MembersManager membersManager;
+
   HomeManager () {
     userEventsHandler = UserEventsHandler(
       onActiveChannelChange: () {
+        initializeChannelManagers();
         notifyListeners();
       },
       onProfileChange: () {
@@ -25,8 +31,13 @@ class HomeManager extends BaseManager {
     );
   }
 
+  void initializeChannelManagers() {
+    membersManager = MembersManager(UserService().userResult.activeChannel);
+    tagsManager = TagsManager(UserService().userResult.activeChannel);
+  }
 
   InitializationResult initialize()  {
+    initializeChannelManagers();
     bool hasActiveChannel = UserService().userResult.activeChannel != null;
     bool isOnline = UserService().userResult.myChannelsResult.retrievedOnline;
     if (hasActiveChannel) {
@@ -51,6 +62,12 @@ class HomeManager extends BaseManager {
     Future leaveChannelFuture = ChannelDetailsRequest(UserService().userResult.activeChannel.id).leave();
     Future switchChannelFuture = switchToChannel(newActiveChannel);
     return Future.wait([leaveChannelFuture, switchChannelFuture]);
+  }
+
+  Future joinChannel(Channel channel) {
+    return ChannelDetailsRequest(channel.id).join().then((member) {
+      switchToChannel(channel);
+    });
   }
 
   Future switchToChannel(Channel channel) {

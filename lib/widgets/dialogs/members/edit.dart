@@ -6,7 +6,7 @@ import 'package:schoolmi/widgets/extensions/messages.dart';
 import 'package:schoolmi/managers/channels/members.dart';
 import 'package:schoolmi/network/models/role.dart';
 import 'package:schoolmi/network/models/member.dart';
-import 'package:schoolmi/pages/roles.dart';
+import 'package:schoolmi/pages/channels/details/roles.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/network/params/members.dart';
 import 'package:schoolmi/widgets/dialogs/members/filter.dart';
-import 'package:schoolmi/widgets/lists/members.dart';
+import 'package:schoolmi/widgets/lists/channels/details/members/overview.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/managers/channels/members.dart';
-import 'package:schoolmi/pages/add_members.dart';
+import 'package:schoolmi/pages/channels/details/members/add.dart';
 import 'package:schoolmi/localization/localization.dart';
 
 class MembersPage extends StatefulWidget {

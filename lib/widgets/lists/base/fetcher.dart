@@ -165,6 +165,16 @@ class ListState<T extends ParsableObject> extends Model {
     _isLoading = value;
   }
 
+  int resolveIndexAndRemove(T object) {
+    int indexOf = _fetchResult.objects.indexOf(object);
+    _fetchResult.objects.removeAt(indexOf);
+    return indexOf;
+  }
+
+  void restoreObjectAtIndex(int index, T object) {
+    _fetchResult.objects.insert(index, object);
+  }
+
   void complete(FetchResult<T> fetchResult) {
     _fetchResult = fetchResult;
     notifyListeners();

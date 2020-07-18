@@ -3,7 +3,7 @@ import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/managers/channels/roles.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/network/models/role.dart';
-import 'package:schoolmi/widgets/lists/roles.dart';
+import 'package:schoolmi/widgets/lists/channels/details/roles.dart';
 
 class PickRolesPage extends StatelessWidget {
 

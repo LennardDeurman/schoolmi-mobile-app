@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:schoolmi/managers/channels/tags.dart';
 import 'package:schoolmi/managers/selection.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
-import 'package:schoolmi/widgets/lists/tags.dart';
+import 'package:schoolmi/widgets/lists/channels/details/tags.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/network/models/tag.dart';
 

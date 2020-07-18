@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
+import 'package:schoolmi/extensions/presenter.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/constants/asset_paths.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/managers/home.dart';
+import 'package:schoolmi/managers/profile.dart';
+import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/widgets/extensions/messages.dart';
 import 'package:schoolmi/widgets/builders/home_app_bar.dart';
-import 'package:schoolmi/widgets/lists/my_channels.dart';
+import 'package:schoolmi/widgets/lists/channels/my_channels.dart';
 import 'package:schoolmi/widgets/channel_summary.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,12 +33,16 @@ class HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   PageController _pageController = PageController();
   ValueNotifier _currentPageNotifier = ValueNotifier<int>(0);
+  Presenter _presenter;
+
 
   @override
   void initState() {
     super.initState();
 
     _homeManager.userEventsHandler.registerAllEventListeners();
+
+    _presenter = Presenter(context);
 
     InitializationResult initializationResult = _homeManager.initialize();
     if (initializationResult == InitializationResult.serverConnectionError) {
@@ -69,7 +77,9 @@ class HomePageState extends State<HomePage> {
   }
 
   void _onMyProfilePressed() {
-
+    _presenter.showMyProfile(
+      ProfileManager()
+    );
   }
 
   void _onFabPressed() {
@@ -78,12 +88,12 @@ class HomePageState extends State<HomePage> {
 
   void _switchToChannel(Channel channel) {
     Navigator.pop(context);
-    _homeManager.leaveChannel();
+    _homeManager.switchToChannel(channel);
   }
 
   void _onLeaveChannelPressed(Channel channel) {
     Navigator.pop(context);
-    _homeManager.switchToChannel(channel);
+    _homeManager.leaveChannel();
   }
 
   @override
@@ -102,19 +112,22 @@ class HomePageState extends State<HomePage> {
                     children.add(
                         ChannelSummary(
                           onEditChannelPressed: () {
-                            //TODO: !!
+                            _presenter.showChannelEdit(
+                              channel: UserService().userResult.activeChannel,
+                              onChannelEdit: _homeManager.switchToChannel
+                            );
                           },
                           onInvitePressed: () {
                             //TODO: !!
                           },
                           onMembersPressed: () {
-                            //TODO: !!
+                            _presenter.showMembers(_homeManager.membersManager);
                           },
                           onNotificationSettingsPressed: () {
                             //TODO: !!
                           },
                           onTagsPressed: () {
-                            //TODO: !!
+                            _presenter.showTags(_homeManager.tagsManager);
                           },
                           onLeaveChannelPressed: _onLeaveChannelPressed,
                         )
@@ -122,7 +135,14 @@ class HomePageState extends State<HomePage> {
                   }
                   children.add(MyChannelsListView(
                       onAddChannelPressed: () {
-
+                        _presenter.showNewChannel(
+                          onChannelEdit: _homeManager.switchToChannel,
+                          joinChannelFutureBuilder: (Channel channel) {
+                            return _homeManager.joinChannel(channel).then((channel) {
+                              showSnackBar(message: Localization().getValue(Localization().youAreMember), isError: true, buildContext: context);
+                            });
+                          }
+                        );
                       },
                       onChannelPressed: _switchToChannel
                   ));
