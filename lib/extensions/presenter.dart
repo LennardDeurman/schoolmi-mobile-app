@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/pages/profile.dart';
 import 'package:schoolmi/pages/channels/details/members/overview.dart';
 import 'package:schoolmi/pages/channels/details/tags.dart';
 import 'package:schoolmi/pages/channels/edit.dart';
 import 'package:schoolmi/pages/channels/suggestions.dart';
+import 'package:schoolmi/widgets/dialogs/connection_error.dart';
 import 'package:schoolmi/managers/channels/tags.dart';
 import 'package:schoolmi/managers/channels/members.dart';
 import 'package:schoolmi/managers/profile.dart';
+import 'package:schoolmi/managers/home.dart';
 import 'package:schoolmi/network/models/channel.dart';
 
 class Presenter {
@@ -44,6 +47,31 @@ class Presenter {
           );
         }
     ));
+  }
+
+  void showConnectionError(HomeManager homeManager, GlobalKey<ScaffoldState> scaffoldKey) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ScopedModel(
+              model: homeManager,
+              child: ScopedModelDescendant<HomeManager>(
+                builder: (BuildContext context, Widget widget, HomeManager model)
+                {
+                  return ConnectionErrorDialog(
+                    homeManager,
+                    scaffoldKey: scaffoldKey,
+                    presenter: this,
+                  );
+                },
+              )
+          );
+        });
+  }
+
+  void showChannelsIntro() {
+
   }
 
   void showNotifications(Channel channel) {

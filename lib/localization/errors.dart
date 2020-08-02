@@ -13,5 +13,6 @@ class ErrorsLocalization {
   final LocalizationObject errorAccountNotFound = LocalizationObject({ Languages.NL: "Geen account gevonden bij dit emailadres"});
   final LocalizationObject couldNotDeleteQuestion = LocalizationObject({ Languages.NL: "Vraag kon niet worden verwijderd" });
   final LocalizationObject unableToLeave = LocalizationObject({ Languages.NL: "Kon het channel niet verlaten" });
+  final LocalizationObject stillNoConnection = LocalizationObject({ Languages.NL: "Er is nog steeds geen verbinding" });
 }
 

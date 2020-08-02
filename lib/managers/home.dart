@@ -77,4 +77,7 @@ class HomeManager extends BaseManager {
     return UserService().userResult.saveMyProfile(newProfile);
   }
 
+  Future refreshData() {
+    return executeAsync(UserService().userResult.refreshAll());
+  }
 }
