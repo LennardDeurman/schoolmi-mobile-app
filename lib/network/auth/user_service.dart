@@ -117,7 +117,7 @@ class UserResult {
 
 class UserService {
 
-  final Fetcher<Profile> profileFetcher = Fetcher<Profile>(ProfileRequest());
+  final Fetcher<Profile> profileFetcher = Fetcher<Profile>(ProfileRequest(), singleMode: true);
   final Fetcher<Channel> myChannelsFetcher = Fetcher<Channel>(MyChannelsRequest());
 
   final MyChannelsCacheProtocol myChannelsCacheProtocol = MyChannelsCacheProtocol();
@@ -166,19 +166,26 @@ class UserService {
   }
 
   Future<CombinedResult<Channel>> loadMyChannels() async {
+    var onlineResult = await FutureUtils.safeLoad(myChannelsFetcher.download(
+        cacheProtocol: myChannelsCacheProtocol
+    ));
+
+    var offlineResult = await myChannelsCacheProtocol.load();
+
     return CombinedResult<Channel>(
-      onlineResult: await FutureUtils.safeLoad(myChannelsFetcher.download(
-          cacheProtocol: myChannelsCacheProtocol
-      )),
-      offlineResult: await myChannelsCacheProtocol.load()
+      onlineResult: onlineResult,
+      offlineResult: offlineResult
     );
   }
 
   Future<CombinedResult<Profile>> loadMyProfile(FirebaseUser firebaseUser) async {
+    var profileLoadFuture = createProfile(firebaseUser).then((e) {
+      return FetchResult([e]);
+    });
+    var onlineResult = await FutureUtils.safeLoad(profileLoadFuture);
+
     return CombinedResult<Profile>(
-      onlineResult: await FutureUtils.safeLoad(createProfile(firebaseUser).then((e) {
-        return FetchResult([e]);
-      })),
+      onlineResult: onlineResult,
       offlineResult: await profileCacheProtocol.load()
     );
   }
@@ -227,7 +234,8 @@ class UserService {
   }
 
   Future login({ String email, String password }) async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    var firebaseUser = result.user;
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
     if (profileResult.object == null) {
       throw new InvalidOperationException("No profile could be created");
@@ -249,7 +257,8 @@ class UserService {
   }
 
   Future register({ String email, String password }) async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    var firebaseUser = result.user;
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
     if (profileResult.object == null) {
       throw new InvalidOperationException("No profile could be created");

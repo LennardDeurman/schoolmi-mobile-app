@@ -11,26 +11,44 @@ class Fetcher<T extends ParsableObject>  {
 
   final RestRequest<T> restRequest;
 
+  final bool singleMode;
+
   final DownloadStatusInfo downloadStatusInfo = new DownloadStatusInfo();
 
   bool get isLoading {
     return downloadStatusInfo.downloadStatus == DownloadStatus.downloading;
   }
 
-  Fetcher ( this.restRequest );
+  Fetcher ( this.restRequest, { this.singleMode = false } );
 
-  Future<FetchResult<T>> download( { ListRequestParams params, CacheProtocol cacheProtocol } ) {
-    Completer<FetchResult<T>> completer = new Completer();
-    restRequest.getAll(params: params, downloadStatusListener: downloadStatusInfo).then((objects) {
-      var result = FetchResult<T>(objects);
-      if (cacheProtocol != null) {
-        cacheProtocol.save(objects);
-      }
-      completer.complete(result);
+
+  Future<FetchResult<T>> downloadAll(Future<List<T>> downloadFuture, Completer<FetchResult<T>> completer) {
+    downloadFuture.then((value) {
+      completer.complete(FetchResult<T>(value));
     }).catchError((e) {
       completer.completeError(e);
     });
     return completer.future;
+  }
+
+  Future<FetchResult<T>> downloadSingle(Future<T> downloadFuture, Completer<FetchResult<T>> completer) {
+
+    downloadFuture.then((value) {
+      completer.complete(FetchResult<T>([value]));
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+
+    return completer.future;
+  }
+
+  Future<FetchResult<T>> download( { ListRequestParams params, CacheProtocol cacheProtocol } ) {
+    Completer<FetchResult<T>> completer = new Completer();
+    if (this.singleMode) {
+      return downloadSingle(restRequest.getSingle(downloadStatusListener: downloadStatusInfo), completer);
+    } else {
+      return downloadAll(restRequest.getAll(params: params, downloadStatusListener: downloadStatusInfo), completer);
+    }
   }
 
 

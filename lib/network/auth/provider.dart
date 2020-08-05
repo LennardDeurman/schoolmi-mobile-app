@@ -9,8 +9,8 @@ class AuthorizationProvider {
       return dummyToken;
     }
 
-    String firebaseToken = await (await FirebaseAuth.instance.currentUser()).getIdToken();
-    return firebaseToken;
+    var result = await (await FirebaseAuth.instance.currentUser()).getIdToken();
+    return result.token;
   }
 
   static Future<String> getMyUid() async {
