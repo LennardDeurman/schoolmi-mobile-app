@@ -46,4 +46,8 @@ class ChannelsLocalization {
   final LocalizationObject introSubtitle2 = LocalizationObject({ Languages.NL: "Word lid van een openbaar netwerk of creeer zelf een nieuw netwerk!" });
   final LocalizationObject introSubtitle3 = LocalizationObject({ Languages.NL: "Je kunt deel nemen aan een bestaand netwerk door een uitnodigingslink van een van de beheerders van het netwerk te ontvangen." });
 
+  final LocalizationObject selectAChannel = LocalizationObject({ Languages.NL: "Selecteer een netwerk" });
+  final LocalizationObject selectAChannelSubtitle = LocalizationObject({ Languages.NL: "Om vragen te kunnen bekijken moet eerst een netwerk geselecteerd zijn. \n\n Maak een nieuw netwerk aan, word lid van een openbaar netwerk of accepteer een ontvangen uitnodigingslink." });
+
+
 }

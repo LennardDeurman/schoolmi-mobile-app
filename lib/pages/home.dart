@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schoolmi/widgets/dialogs/userinfo.dart';
+import 'package:schoolmi/widgets/extensions/backgrounds.dart';
 import 'package:schoolmi/widgets/forms/userinfo.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -72,12 +73,12 @@ class HomePageState extends State<HomePage> {
         });
       });
     } else {
-      initialize();
+      _initialize();
     }
 
   }
 
-  void initialize() {
+  void _initialize() {
     InitializationResult initializationResult = _homeManager.initialize();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (initializationResult == InitializationResult.serverConnectionError) {
@@ -113,6 +114,23 @@ class HomePageState extends State<HomePage> {
     _homeManager.leaveChannel();
   }
 
+  Widget _body() {
+    if (UserService().userResult.activeChannel == null) {
+      return MessageContainer(
+        title: Localization().getValue(Localization().selectAChannel),
+        subtitle: Localization().getValue(Localization().selectAChannelSubtitle),
+        customSubtitleSize: 16,
+        topWidget: SvgPicture.asset(
+          AssetPaths.classRoom,
+          width: 150,
+          height: 150,
+        ),
+      );
+    } else {
+      return Container(); //TODO: !! Implement the questions view
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModel<HomeManager>(
@@ -122,6 +140,7 @@ class HomePageState extends State<HomePage> {
           return Scaffold(
             key: _scaffoldKey,
             appBar: _homeAppBarBuilder.build(),
+            body: _body(),
             drawer: Drawer(
                 child: Stack(
                   children: <Widget>[

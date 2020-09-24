@@ -10,8 +10,9 @@ class MessageContainer extends StatelessWidget {
   final String title;
   final String subtitle;
   final Widget topWidget;
+  final double customSubtitleSize;
 
-  MessageContainer ({this.title, this.subtitle, this.topWidget});
+  MessageContainer ({this.title, this.subtitle, this.topWidget, this.customSubtitleSize });
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,7 @@ class MessageContainer extends StatelessWidget {
               child: RegularLabel(
                 title: subtitle ?? "",
                 textAlign: TextAlign.center,
+                customSize: customSubtitleSize,
               ),
               padding: EdgeInsets.all(10)
           ),
