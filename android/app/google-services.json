@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "871081290080",
+    "firebase_url": "https://schoolmi-4c5ac.firebaseio.com",
+    "project_id": "schoolmi-4c5ac",
+    "storage_bucket": "schoolmi-4c5ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871081290080:android:a9395d09b958454ce1d605",
+        "android_client_info": {
+          "package_name": "com.deurman.schoolmi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871081290080-rgq906d1noc3md9cgudg058hin8djf9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhqZGoj90slsR8bsRt2LjL6WNKmksrcYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871081290080-rgq906d1noc3md9cgudg058hin8djf9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "871081290080-4j7a7nn7rb84p4m0l1245vkbkptmm4i8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.deurman.schoolmi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

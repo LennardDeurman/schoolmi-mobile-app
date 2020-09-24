@@ -31,7 +31,7 @@ abstract class CacheProtocol<T extends ParsableObject> {
     String jsonStr = sharedPreferences.get(this.key);
     if (jsonStr != null) {
       Map<String, dynamic> cacheObject = json.decode(jsonStr);
-      FetchResult fetchResult = FetchResult.fromCacheDictionary(cacheObject, toObject: toObject);
+      FetchResult<T> fetchResult = FetchResult<T>.fromCacheDictionary(cacheObject, toObject: toObject);
       return fetchResult;
     }
     return null;

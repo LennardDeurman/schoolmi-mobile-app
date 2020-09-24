@@ -74,7 +74,7 @@ class DefaultTextField extends StatelessWidget {
         onSaved: onSaved,
         controller: controller,
         validator: validator,
-        maxLines: maxLines,
+        maxLines: obscureText ? 1 : maxLines,
         keyboardType: textInputType,
         focusNode: focusNode,
         textCapitalization: TextCapitalization.sentences,

@@ -33,7 +33,7 @@ class FetchResult<T extends ParsableObject> {
 
   FetchResult (this.objects);
 
-  FetchResult.fromCacheDictionary(Map<String, dynamic> dictionary, { toObject}) {
+  FetchResult.fromCacheDictionary(Map<String, dynamic> dictionary, { T Function(Map<String, dynamic> map) toObject}) {
     var results = dictionary[Keys().results];
     if (results != null) {
       List resultList = results;

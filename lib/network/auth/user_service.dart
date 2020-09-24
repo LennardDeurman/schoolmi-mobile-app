@@ -227,7 +227,7 @@ class UserService {
   }
 
   Future login({ String email, String password }) async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password);
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
     if (profileResult.object == null) {
       throw new InvalidOperationException("No profile could be created");
