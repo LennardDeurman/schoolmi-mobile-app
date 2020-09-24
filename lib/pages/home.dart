@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:schoolmi/widgets/dialogs/userinfo.dart';
+import 'package:schoolmi/widgets/forms/userinfo.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
@@ -44,13 +46,6 @@ class HomePageState extends State<HomePage> {
 
     _presenter = Presenter(context);
 
-    InitializationResult initializationResult = _homeManager.initialize();
-    if (initializationResult == InitializationResult.serverConnectionError) {
-      _presenter.showConnectionError(_homeManager, _scaffoldKey);
-    } else if (initializationResult == InitializationResult.noChannelAvailable) {
-      _presenter.showChannelsIntro();
-    }
-
     _homeAppBarBuilder = new HomeAppBarBuilder(
         onDrawerButtonPressed: () {
           _scaffoldKey.currentState.openDrawer();
@@ -69,7 +64,25 @@ class HomePageState extends State<HomePage> {
         }
     );
 
+    if (UserService().userResult.myProfile == null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showDialog(context: context, builder: (context) {
+          return UserInfoDialog();
+        });
+      });
+    } else {
+      initialize();
+    }
 
+  }
+
+  void initialize() {
+    InitializationResult initializationResult = _homeManager.initialize();
+    if (initializationResult == InitializationResult.serverConnectionError) {
+      _presenter.showConnectionError(_homeManager, _scaffoldKey);
+    } else if (initializationResult == InitializationResult.noChannelAvailable) {
+      _presenter.showChannelsIntro();
+    }
   }
 
   void _onPerformSearchPressed(String search) async {

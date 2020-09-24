@@ -24,8 +24,18 @@ class UserResult {
 
 
   UserResult ({ CombinedResult<Channel> myChannelsResult, CombinedResult<Profile> myProfileResult, this.firebaseUser }) {
-    _activeChannelNotifier = ValueNotifier<Channel>(myChannelsResult.result.objects.first);
-    _profileNotifier = ValueNotifier<Profile>(myProfileResult.result.object);
+    if (myChannelsResult.result != null) {
+      _activeChannelNotifier = ValueNotifier<Channel>(myChannelsResult.result.objects.first);
+    } else {
+      _activeChannelNotifier = ValueNotifier<Channel>(null);
+    }
+
+    if (myProfileResult.result != null) {
+      _profileNotifier = ValueNotifier<Profile>(myProfileResult.result.object);
+    } else {
+      _profileNotifier = ValueNotifier<Profile>(null);
+    }
+
     _myChannelsResult = myChannelsResult;
     _myProfileResult = myProfileResult;
   }
@@ -135,7 +145,13 @@ class UserService {
 
   UserService._internal () {
 
+    _userResultStreamController.onCancel = () {
+      _userResultStreamController.close();
+    };
 
+  }
+
+  void initializeAuthListener() { //Not to be called in unit tests
     FirebaseAuth.instance.onAuthStateChanged.listen((FirebaseUser firebaseUser) async {
       if (firebaseUser != null) {
         if (firebaseUser.isEmailVerified) {
@@ -149,12 +165,6 @@ class UserService {
       }
       _sendResult(null);
     });
-
-    _userResultStreamController.onCancel = () {
-      _userResultStreamController.close();
-    };
-
-
   }
 
   Stream get userResultStream {
@@ -166,6 +176,8 @@ class UserService {
   }
 
   Future<CombinedResult<Channel>> loadMyChannels() async {
+
+
     var onlineResult = await FutureUtils.safeLoad(myChannelsFetcher.download(
         cacheProtocol: myChannelsCacheProtocol
     ));
@@ -197,20 +209,16 @@ class UserService {
       CombinedResult<Channel> myChannelsResult = await loadMyChannels();
       CombinedResult<Profile> myProfileResult = await loadMyProfile(firebaseUser);
       //Validate the profile result
-      if (myProfileResult.result == null) {
-        await FirebaseAuth.instance.signOut();
-        return null;
-      }
-
       return _sendResult(UserResult(
           myChannelsResult: myChannelsResult,
           myProfileResult: myProfileResult,
           firebaseUser: firebaseUser
       ));
+
     } catch (e) {
       print("Something went wrong in login loadData();" + e.toString());
       print("Forcing relogin");
-      return _sendResult(null);
+      return null;
     }
 
   }
@@ -237,9 +245,7 @@ class UserService {
     var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
     var firebaseUser = result.user;
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
-    if (profileResult.object == null) {
-      throw new InvalidOperationException("No profile could be created");
-    }
+
     FetchResult<Channel> myChannelsResult = await myChannelsFetcher.download(
       cacheProtocol: myChannelsCacheProtocol
     );
@@ -257,14 +263,14 @@ class UserService {
   }
 
   Future register({ String email, String password }) async {
+
     var result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
     var firebaseUser = result.user;
+
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
-    if (profileResult.object == null) {
-      throw new InvalidOperationException("No profile could be created");
-    }
+
     FetchResult myChannelsResult = await myChannelsFetcher.download(
-      cacheProtocol: myChannelsCacheProtocol
+        cacheProtocol: myChannelsCacheProtocol
     );
     return _sendResult(
         UserResult(
@@ -277,6 +283,8 @@ class UserService {
             firebaseUser: firebaseUser
         )
     );
+
+
   }
 
   Future sendPasswordForgotEmail({ String email }) async {

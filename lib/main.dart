@@ -12,6 +12,7 @@ void main() {
   Localization localization = Localization();
   initializeDateFormatting(localization.locale);
   runApp(MainApp());
+  UserService().initializeAuthListener();
 }
 
 class MainApp extends StatelessWidget {

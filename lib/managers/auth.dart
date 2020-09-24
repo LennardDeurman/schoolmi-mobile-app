@@ -3,6 +3,7 @@ import 'package:schoolmi/managers/abstract.dart';
 import 'package:schoolmi/network/models/profile.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/extensions/exceptions.dart';
+import 'package:schoolmi/network/requests/username.dart';
 
 enum AuthActionState {
   login,
@@ -11,6 +12,10 @@ enum AuthActionState {
   verifyEmail,
   passwordResetSent,
   loggedIn
+}
+
+class InvalidUsernameError implements Exception {
+
 }
 
 class AuthManager extends BaseManager {
@@ -39,6 +44,15 @@ class AuthManager extends BaseManager {
     Profile.setCachedInfo(email: email, firstName: firstName, lastName: lastName, username: username);
   }
 
+  Future saveUserInfo() async {
+    bool isValid = await UsernameRequest().usernameValid(username);
+    if (!isValid) {
+      throw InvalidUsernameError();
+    }
+    saveCachedProfileInfo();
+
+  }
+
   Future initialize() async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
     if (firebaseUser != null) {
@@ -55,6 +69,10 @@ class AuthManager extends BaseManager {
 
   Future register() async {
     saveCachedProfileInfo();
+    bool isValid = await UsernameRequest().usernameValid(username);
+    if (!isValid) {
+      throw InvalidUsernameError();
+    }
     await UserService().register(email: email, password: password);
   }
 
