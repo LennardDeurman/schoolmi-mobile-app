@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:schoolmi/localization/localization.dart';
+import 'package:schoolmi/managers/auth.dart';
 class ErrorCode {
 
   String firebaseCode;
@@ -13,6 +14,8 @@ class ErrorCode {
     if (e is PlatformException) {
       PlatformException platformException = e;
       this.firebaseCode = platformException.code;
+    } else if (e is InvalidUsernameError) {
+      this.firebaseCode = errorUserNameExists;
     }
   }
 

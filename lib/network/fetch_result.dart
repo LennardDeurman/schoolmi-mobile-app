@@ -3,6 +3,7 @@ import 'package:schoolmi/network/models/abstract/base.dart';
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/fetch_result.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/models/channel.dart';
 
 class CombinedResult<T extends ParsableObject> {
 
@@ -33,7 +34,7 @@ class FetchResult<T extends ParsableObject> {
 
   FetchResult (this.objects);
 
-  FetchResult.fromCacheDictionary(Map<String, dynamic> dictionary, { T Function(Map<String, dynamic> map) toObject}) {
+  FetchResult.fromCacheDictionary(Map<String, dynamic> dictionary, { T Function(Map<String, dynamic> dict) toObject }) {
     var results = dictionary[Keys().results];
     if (results != null) {
       List resultList = results;

@@ -9,4 +9,7 @@ class ProfileLocalization {
   final LocalizationObject myProfile = LocalizationObject({ Languages.NL: "Mijn profiel"});
   final LocalizationObject errorUsernameExists = LocalizationObject({ Languages.NL: "De opgegeven gebruikersnaam bestaat al"});
   final LocalizationObject changeProfilePicture = LocalizationObject({ Languages.NL: "Verander profielfoto"});
+  final LocalizationObject userInfoWelcomeTitle = LocalizationObject( { Languages.NL: "Welkom bij SchoolMi!" });
+  final LocalizationObject userInfoWelcomeDescription = LocalizationObject( { Languages.NL: "Voordat je de app geheel kunt gebruiken, hebben we nog wat basisgegevens van je nodig." });
+
 }

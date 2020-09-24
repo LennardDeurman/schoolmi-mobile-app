@@ -12,10 +12,6 @@ class ProfileRequest extends RestRequest<Profile> {
       }
   );
 
-  @override
-  Future<List<Profile>> getAll({RequestParams params, downloadStatusListener}) {
-    throw UnimplementedError();
-  }
 
   @override
   Future delete() {

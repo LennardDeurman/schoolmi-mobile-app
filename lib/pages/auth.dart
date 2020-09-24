@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:schoolmi/widgets/forms/auth.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/extensions/errorcodes.dart';
@@ -21,9 +22,6 @@ class AuthPage extends StatefulWidget {
 
 
   //Used for testing
-
-  static Key passwordKey = Key("password");
-  static Key emailKey = Key("email");
   static Key authButtonKey = Key("authButton");
 
 
@@ -49,188 +47,24 @@ class AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin 
     super.initState();
   }
 
-  Widget _buildFirstNameTextField() {
-    return DefaultTextField(
-      title: Localization().getValue(Localization().firstName),
-      hint: Localization().getValue(Localization().firstNameHint),
-      textCapitalization: TextCapitalization.words,
-      onSaved: (String value) {
-        _authManager.firstName = value;
-      },
-      validator: Validators.notEmptyValidator,
-    );
+  void onEmailSaved(String value) {
+    _authManager.email = value;
   }
 
-  Widget _buildLastNameTextField() {
-    return DefaultTextField(
-      title:  Localization().getValue(Localization().lastName),
-      hint: Localization().getValue(Localization().lastNameHint),
-      textCapitalization: TextCapitalization.words,
-      onSaved: (String value) {
-        _authManager.lastName = value;
-      },
-      validator: Validators.notEmptyValidator,
-    );
+  void onPasswordSaved(String value) {
+    _authManager.password = value;
   }
 
-  Widget _buildEmailTextField() {
-    return  DefaultTextField(
-      title: Localization().getValue(Localization().email),
-      key: AuthPage.emailKey,
-      hint: Localization().getValue(Localization().emailHint),
-      textInputType: TextInputType.emailAddress,
-      onSaved: (String value) {
-        _authManager.email = value;
-      },
-      validator: Validators.emailValidator,
-    );
+  void onFirstNameSaved(String value) {
+    _authManager.firstName = value;
   }
 
-  Widget _buildPasswordTextField() {
-    return  DefaultTextField(
-      title: Localization().getValue(Localization().password),
-      key: AuthPage.passwordKey,
-      hint: Localization().getValue(Localization().passwordHint),
-      obscureText: true,
-      onSaved: (String value) {
-        _authManager.password = value;
-      },
-      validator: Validators.passwordValidator,
-    );
+  void onLastNameSaved(String value) {
+    _authManager.lastName = value;
   }
 
-  Widget _buildUsernameTextField() {
-    return  DefaultTextField(
-      title: Localization().getValue(Localization().username),
-      hint: Localization().getValue(Localization().usernameHint),
-      onSaved: (String value) {
-        _authManager.username = value;
-      },
-      validator: Validators.usernameValidator,
-    );
-  }
-
-  Widget _buildForgotPasswordLabel() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Hyperlink(onPressed: () {
-        _authManager.authActionState = AuthActionState.forgotPassword;
-      }, builder: (bool isHighlighted, Color currentColor) {
-        return RegularLabel(
-          title: Localization().getValue(Localization().forgotPassword),
-          size: LabelSize.small,
-          color: currentColor,
-        );
-      }),
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return Form(
-      key: _loginFormKey,
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          _buildEmailTextField(),
-          SizedBox(height: 20.0),
-          _buildPasswordTextField(),
-          SizedBox(height: 30.0),
-          _buildForgotPasswordLabel(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildForgotPasswordForm() {
-    return Form(
-      key: _forgotPasswordFormKey,
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          _buildEmailTextField()
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRegisterForm() {
-    return Form(
-      key: _registerFormKey,
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          _buildFirstNameTextField(),
-          SizedBox(height: 20.0),
-          _buildLastNameTextField(),
-          SizedBox(height: 20.0),
-          _buildUsernameTextField(),
-          SizedBox(height: 20.0),
-          _buildEmailTextField(),
-          SizedBox(height: 20.0),
-          _buildPasswordTextField(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPasswordResetSentForm() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          RegularLabel(title: Localization().getValue(Localization().resetEmailDescription)),
-          SizedBox(height: 10.0),
-          FlatButton(
-            padding: EdgeInsets.all(0.0),
-            child: TitleLabel(
-              title: Localization().getValue(Localization().login),
-              size: TitleSize.regular,
-              color: BrandColors.green,
-            ),
-            onPressed: () {
-              _authManager.authActionState = AuthActionState.login;
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVerifyEmailForm() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          RegularLabel(title: Localization().getValue(Localization().verifyEmailDescription)),
-          SizedBox(height: 10.0),
-          FlatButton(
-            padding: EdgeInsets.all(0.0),
-            child: TitleLabel(
-              title: Localization().getValue(Localization().login),
-              size: TitleSize.regular,
-              color: BrandColors.green,
-            ),
-            onPressed: () {
-              _authManager.refreshLoginState().catchError((e) {
-                if (e is LoginException) {
-                  LoginException loginException = e;
-                  switch (loginException.loginError) {
-                    case LoginError.noUserActive:
-                      _authManager.authActionState = AuthActionState.login;
-                      break;
-                    case LoginError.emailNotVerified:
-                      showSnackBar(message:  Localization().getValue(Localization().verifyEmail), isError: true, scaffoldKey: _scaffoldKey);
-                      break;
-                  }
-                }
-              });
-            },
-          ),
-        ],
-      ),
-    );
+  void onUsernameSaved(String value) {
+    _authManager.username = value;
   }
 
   String _getActionTitle() {
@@ -257,15 +91,49 @@ class AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin 
 
   Widget _buildAuthBody() {
     if (_authManager.authActionState == AuthActionState.login) {
-      return _buildLoginForm();
+      return LoginForm(
+          formKey: _loginFormKey,
+          onEmailSaved: onEmailSaved,
+          onPasswordSaved: onPasswordSaved
+      );
     } else if (_authManager.authActionState == AuthActionState.register) {
-      return _buildRegisterForm();
+      return RegistrationForm(
+          formKey: _registerFormKey,
+          onEmailSaved: onEmailSaved,
+          onPasswordSaved: onPasswordSaved,
+          onFirstNameSaved: onFirstNameSaved,
+          onLastNameSaved: onLastNameSaved,
+          onUsernameSaved: onUsernameSaved
+      );
     } else if (_authManager.authActionState == AuthActionState.verifyEmail) {
-      return _buildVerifyEmailForm();
+      return VerifyEmailForm(
+        onLoginPressed: () {
+          _authManager.refreshLoginState().catchError((e) {
+            if (e is LoginException) {
+              LoginException loginException = e;
+              switch (loginException.loginError) {
+                case LoginError.noUserActive:
+                  _authManager.authActionState = AuthActionState.login;
+                  break;
+                case LoginError.emailNotVerified:
+                  showSnackBar(message:  Localization().getValue(Localization().verifyEmail), isError: true, scaffoldKey: _scaffoldKey);
+                  break;
+              }
+            }
+          });
+        },
+      );
     } else if (_authManager.authActionState == AuthActionState.forgotPassword) {
-      return _buildForgotPasswordForm();
+      return ForgotPasswordForm(
+          formKey: _forgotPasswordFormKey,
+          onEmailSaved: onEmailSaved
+      );
     } else if (_authManager.authActionState == AuthActionState.passwordResetSent) {
-      return _buildPasswordResetSentForm();
+      return PasswordResetSentForm(
+        onLoginPressed: () {
+          _authManager.authActionState = AuthActionState.login;
+        },
+      );
     }
     return Container(
       child: Center(

@@ -13,7 +13,7 @@ class Headers {
 
 class Urls {
 
-  static const String baseUrl = "https://api-server-dot-schoolmi-4c5ac.appspot.com";
+  static const String baseUrl = "https://api-server-v2-dot-schoolmi-4c5ac.ew.r.appspot.com";
 
   static String urlWithQueryParams(String url, Map<String, String> queryMap) {
     Uri oldUri = Uri.parse(url);
