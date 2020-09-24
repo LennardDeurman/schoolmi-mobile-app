@@ -6,18 +6,19 @@ class Dates {
   static const String dateTimeFormat = "d-MM-y HH:mm:ss";
   static const String friendlyFormat = "EEEE d MMMM y HH:mm";
 
-  static DateTime parse(String sqlDateString) {
+  static DateTime parse(dynamic input) {
     try {
-      if (sqlDateString != null) {
-        return new DateFormat(sqlDateFormat).parse(sqlDateString);
-      }
+      return DateTime.fromMillisecondsSinceEpoch(input);
     } catch (e) {
+      return null;
     }
-    return null;
   }
 
+  static int format(DateTime dateTime) {
+    return dateTime.millisecondsSinceEpoch;
+  }
 
-  static String format(DateTime sqlDateTime, {String format = sqlDateFormat}) {
+  static String formatAsString(DateTime sqlDateTime, {String format = sqlDateFormat}) {
     if (sqlDateTime != null) {
       DateFormat dateFormat = new DateFormat(format, "nl");
       return dateFormat.format(sqlDateTime);

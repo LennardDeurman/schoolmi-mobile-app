@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:schoolmi/widgets/dialogs/intro.dart';
+import 'package:schoolmi/widgets/extensions/buttons.dart';
+import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/pages/profile.dart';
 import 'package:schoolmi/pages/channels/details/members/overview.dart';
@@ -71,7 +74,12 @@ class Presenter {
   }
 
   void showChannelsIntro() {
-
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return IntroDialog();
+      }
+    );
   }
 
   void showNotifications(Channel channel) {

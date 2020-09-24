@@ -47,6 +47,7 @@ class HomePageState extends State<HomePage> {
     _presenter = Presenter(context);
 
     _homeAppBarBuilder = new HomeAppBarBuilder(
+        homeManager: _homeManager,
         onDrawerButtonPressed: () {
           _scaffoldKey.currentState.openDrawer();
         },
@@ -78,11 +79,14 @@ class HomePageState extends State<HomePage> {
 
   void initialize() {
     InitializationResult initializationResult = _homeManager.initialize();
-    if (initializationResult == InitializationResult.serverConnectionError) {
-      _presenter.showConnectionError(_homeManager, _scaffoldKey);
-    } else if (initializationResult == InitializationResult.noChannelAvailable) {
-      _presenter.showChannelsIntro();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (initializationResult == InitializationResult.serverConnectionError) {
+        _presenter.showConnectionError(_homeManager, _scaffoldKey);
+      } else if (initializationResult == InitializationResult.noChannelAvailable) {
+        _presenter.showChannelsIntro();
+      }
+    });
+
   }
 
   void _onPerformSearchPressed(String search) async {
@@ -169,14 +173,17 @@ class HomePageState extends State<HomePage> {
                           _currentPageNotifier.value = index;
                         }
                     ),
-                    Positioned(
-                      left: 0.0,
-                      right: 0.0,
-                      bottom: 0.0,
-                      child: SafeArea(child: CirclePageIndicator(
-                        itemCount: 2,
-                        currentPageNotifier: _currentPageNotifier,
-                      )),
+                    Visibility(
+                      child: Positioned(
+                        left: 0.0,
+                        right: 0.0,
+                        bottom: 20,
+                        child: SafeArea(child: CirclePageIndicator(
+                          itemCount: 2,
+                          currentPageNotifier: _currentPageNotifier,
+                        )),
+                      ),
+                      visible: UserService().userResult.activeChannel != null,
                     )
                   ],
                 )

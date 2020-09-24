@@ -137,7 +137,7 @@ class ListState<T extends ParsableObject> extends Model {
   bool alwaysDisableLoadMore = false;
   ListRequestParams listRequestParams;
 
-  bool _isLoading;
+  bool _isLoading = false;
   Exception _exception;
   FetchResult<T> _fetchResult;
 
@@ -381,7 +381,7 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
     return RefreshIndicator(
       key: refreshIndicatorKey,
       onRefresh: actionsDelegate.performRefresh,
-      child: ScopedModel(
+      child: ScopedModel<ListState>(
         model: this.listState,
         child: ScopedModelDescendant<ListState>(
           builder: (BuildContext context, Widget widget, ListState state) {

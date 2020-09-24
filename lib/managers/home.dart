@@ -32,8 +32,10 @@ class HomeManager extends BaseManager {
   }
 
   void initializeChannelManagers() {
-    membersManager = MembersManager(UserService().userResult.activeChannel);
-    tagsManager = TagsManager(UserService().userResult.activeChannel);
+    if (UserService().userResult.activeChannel != null) {
+      membersManager = MembersManager(UserService().userResult.activeChannel);
+      tagsManager = TagsManager(UserService().userResult.activeChannel);
+    }
   }
 
   InitializationResult initialize()  {
@@ -44,7 +46,7 @@ class HomeManager extends BaseManager {
       return InitializationResult.ready;
     } else if (isOnline && !hasActiveChannel) {
       return InitializationResult.noChannelAvailable;
-    } else if (isOnline && hasActiveChannel) {
+    } else if (!isOnline && !hasActiveChannel) {
       return InitializationResult.serverConnectionError;
     }
     return InitializationResult.idle;

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:schoolmi/extensions/exceptions.dart';
 import 'package:schoolmi/extensions/future_utils.dart';
 import 'package:schoolmi/network/fetcher.dart';
 import 'package:schoolmi/network/fetch_result.dart';
@@ -24,7 +23,7 @@ class UserResult {
 
 
   UserResult ({ CombinedResult<Channel> myChannelsResult, CombinedResult<Profile> myProfileResult, this.firebaseUser }) {
-    if (myChannelsResult.result != null) {
+    if (myChannelsResult.result != null && myChannelsResult.result.objects.length > 0) {
       _activeChannelNotifier = ValueNotifier<Channel>(myChannelsResult.result.objects.first);
     } else {
       _activeChannelNotifier = ValueNotifier<Channel>(null);
@@ -74,8 +73,12 @@ class UserResult {
   Future refreshMyChannels() {
     return UserService().loadMyChannels().then((result) {
       this._myChannelsResult = result;
-      if (!isAuthorizedChannel(activeChannel)) {
-        _activeChannelNotifier.value = this._myChannelsResult.result.objects.first;
+      if (activeChannel != null && !isAuthorizedChannel(activeChannel)) {
+        if (this._myChannelsResult.result.objects.length > 0) {
+          _activeChannelNotifier.value = this._myChannelsResult.result.objects.first;
+        } else {
+          _activeChannelNotifier.value = null;
+        }
       }
     });
   }

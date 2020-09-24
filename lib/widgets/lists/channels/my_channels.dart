@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
@@ -27,16 +29,17 @@ class MyChannelsListActions extends ListActionsDelegate {
 
   @override
   Future performInitialLoad() {
-    return Future.value(() {
-      return listState.complete(UserService().userResult.myChannelsResult);
-    });
+    var value = UserService().userResult.myChannelsResult;
+    listState.complete(value);
+    Completer completer = Completer();
+    return completer.future;
   }
 
   @override
   Future performRefresh() async {
     loadFuture(
         UserService().userResult.refreshMyChannels().then((res) {
-          listState.complete(res);
+          listState.complete(UserService().userResult.myChannelsResult);
         }).catchError((e) {
           onRefreshError(e);
         })
@@ -92,6 +95,11 @@ class MyChannelsListViewState extends FetcherListViewState<MyChannelsListView, C
   @override
   ListActionsDelegate listActionsDelegate() {
     return MyChannelsListActions(this.listState, context);
+  }
+
+  @override
+  Widget buildBackground() {
+    return Container();
   }
 
   @override

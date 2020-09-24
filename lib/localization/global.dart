@@ -19,5 +19,6 @@ class GlobalLocalization {
   final LocalizationObject delete = LocalizationObject({ Languages.NL: "Verwijder" });
   final LocalizationObject loadMore = LocalizationObject({ Languages.NL: "Meer laden" });
   final LocalizationObject nextContinue = LocalizationObject( { Languages.NL: "Doorgaan" });
+  final LocalizationObject successSaved = LocalizationObject( { Languages.NL: "Successvol opgeslagen"});
 
 }

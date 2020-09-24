@@ -21,7 +21,7 @@ class BrandColors {
   static const Color darkBlueGrey = Color(0xffA3CBF2);
   static const Color black = Color(0xff3B3B3B);
 
-  static const List avatarColors = [blue, red, green, orange, purple, yellow, darkRed, cyan, darkBlue, darkGreen, darkGrey];
+  static const List avatarColors = [red, green, orange, purple, yellow, darkRed, cyan, darkBlue, darkGreen, darkGrey];
 
   static Color avatarColor({int index}) {
     if (index != null) {

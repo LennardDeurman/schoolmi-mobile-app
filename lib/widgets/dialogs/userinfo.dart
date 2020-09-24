@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:schoolmi/extensions/errorcodes.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/managers/auth.dart';
-import 'package:schoolmi/network/requests/username.dart';
+import 'package:schoolmi/network/auth/user_service.dart';
 import 'package:schoolmi/widgets/extensions/buttons.dart';
 import 'package:schoolmi/widgets/extensions/labels.dart';
 import 'package:schoolmi/widgets/extensions/messages.dart';
@@ -29,12 +31,39 @@ class _UserInfoDialogState extends State<UserInfoDialog> {
 
   void onSavePressed() {
     if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+      Completer completer = Completer();
+      authManager.saveUserInfo().then((v) {
+        UserService().userResult.refreshMyProfile().then((_) {
+          if (UserService().userResult.myProfile != null) {
+            completer.complete();
+          } else {
+            completer.completeError(Exception("No user found"));
+          }
+        }).catchError((e) {
+          completer.completeError(e);
+        });
+      }).catchError((e) {
+        completer.completeError(e);
+      });
+
       authManager.executeAsync(
-          authManager.saveUserInfo().catchError((e) {
-            if (e is Exception) {
-              showSnackBar(scaffoldKey: widget.scaffoldKey, message: ErrorCode.fromException(e).toString(), isError: true);
-            }
-          })
+        completer.future.then((v) {
+          Navigator.pop(context);
+          showSnackBar(
+            scaffoldKey: widget.scaffoldKey,
+            message: Localization().getValue(Localization().successSaved),
+            isError: false
+          );
+        }).catchError((e) {
+          if (e is Exception) {
+            showSnackBar(
+                scaffoldKey: widget.scaffoldKey,
+                message: ErrorCode.fromException(e).toString(),
+                isError: true
+            );
+          }
+        })
       );
     }
 
@@ -43,7 +72,7 @@ class _UserInfoDialogState extends State<UserInfoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        content: ScopedModel(
+        content: ScopedModel<AuthManager>(
           model: authManager,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -68,7 +97,7 @@ class _UserInfoDialogState extends State<UserInfoDialog> {
                   }
               ),
               SizedBox(height: 20),
-              ScopedModelDescendant(
+              ScopedModelDescendant<AuthManager>(
                 builder: (context, widget, model) {
                   return DefaultButton(
                     isLoading: authManager.isLoading,

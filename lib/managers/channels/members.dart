@@ -3,6 +3,7 @@ import 'package:schoolmi/managers/channels/roles.dart';
 import 'package:schoolmi/network/models/member.dart';
 import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/network/requests/members.dart';
+import 'package:schoolmi/network/routes/channel.dart';
 
 
 class MembersManager extends BaseManager with UploadInterface<Member> {
@@ -16,6 +17,11 @@ class MembersManager extends BaseManager with UploadInterface<Member> {
 
   MembersManager (this.channel) {
     this.rolesManager = RolesManager(this.channel);
+    this._membersRequest = MembersRequest(
+      ChannelRoute(
+        channelId: this.channel.id
+      ).members
+    ); 
   }
 
   @override

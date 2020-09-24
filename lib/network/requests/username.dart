@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:schoolmi/network/requests/abstract/base.dart';
 import 'package:schoolmi/network/routes/global.dart';
 import 'package:schoolmi/network/keys.dart';
+import 'package:schoolmi/network/urls.dart';
 
 class UsernameRequest extends Request {
 
@@ -13,7 +14,9 @@ class UsernameRequest extends Request {
       Keys().username: username
     };
 
-    executeJsonRequest(GlobalRoute().usernameCheck, completer, (http.Response response) {
+    executeJsonRequest(Urls.urlForPath(
+      path: GlobalRoute().usernameCheck
+    ), completer, (http.Response response) {
       final body = json.decode(response.body)[Keys().object];
       bool valid = body[Keys().valid];
       completer.complete(valid);

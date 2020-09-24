@@ -14,7 +14,7 @@ class CircleImage extends StatefulWidget {
   CircleImage ({this.imageUrl, this.firstLetter, this.avatarColor});
 
   static CircleImage withAvatarObject(dynamic avatar) {
-    if (avatar is ObjectWithAvatar && avatar is ObjectWithColor)
+    if (!(avatar is ObjectWithAvatar && avatar is ObjectWithColor))
       throw UnimplementedError("Avatar object must be both an ObjectWithAvatar and an ObjectWithColor");
     return CircleImage(
       imageUrl: avatar.imageUrl,
