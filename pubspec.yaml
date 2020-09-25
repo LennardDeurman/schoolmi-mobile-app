@@ -38,6 +38,7 @@ dependencies:
   font_awesome_flutter: ^8.4.0
   image_picker: ^0.6.0+17
   firebase_auth_mocks: ^0.2.1
+  flutter_stetho: ^0.5.2
 
 
 dev_dependencies:

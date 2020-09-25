@@ -12,6 +12,8 @@ abstract class RequestParams {
   }
 
   String listQueryParam(List values) {
+    if (values == null)
+      return "";
     return values.map((e) => e.toString()).join(
         ","
     );

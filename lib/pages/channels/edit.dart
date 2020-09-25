@@ -131,10 +131,10 @@ class ChannelEditPageState extends State<ChannelEditPage> {
                   children: <Widget>[
                     Expanded(
                         child: Container(
-                            padding: EdgeInsets.all(20),
                             child: Form(
                               key: _channelFormKey,
                               child: ListView(
+                                padding: EdgeInsets.all(20),
                                 children: <Widget>[
                                   _buildTextBox(
                                       title: Localization().getValue(Localization().chooseChannelName),
@@ -220,7 +220,9 @@ class ChannelEditPageState extends State<ChannelEditPage> {
                                       Switch(
                                           value: _channelEditManager.uploadObject.canAddTags,
                                           onChanged: (bool value) {
-                                            _channelEditManager.uploadObject.canAddTags = value;
+                                            setState(() {
+                                              _channelEditManager.uploadObject.canAddTags = value;
+                                            });
                                           }
                                       )
                                     ],
@@ -233,7 +235,9 @@ class ChannelEditPageState extends State<ChannelEditPage> {
                                       Switch(
                                           value: _channelEditManager.uploadObject.canPublicJoin,
                                           onChanged: (bool value) {
-                                            _channelEditManager.uploadObject.canPublicJoin = value;
+                                            setState(() {
+                                              _channelEditManager.uploadObject.canPublicJoin = value;
+                                            });
                                           }
                                       )
                                     ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:schoolmi/localization/localization.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/constants/fonts.dart';
@@ -11,6 +12,7 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() {
   Localization localization = Localization();
   initializeDateFormatting(localization.locale);
+  Stetho.initialize();
   runApp(MainApp());
   UserService().initializeAuthListener();
 }

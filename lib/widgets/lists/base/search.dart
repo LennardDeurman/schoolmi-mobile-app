@@ -22,9 +22,9 @@ abstract class SearchListViewState<T extends FetcherListView<Z>, Z extends Parsa
 
   @override
   void initState() {
-    super.initState();
     listState.alwaysDisableLoadMore = true;
     _fetcher = fetcher();
+    super.initState();
   }
 
   //ListActionsDelegate

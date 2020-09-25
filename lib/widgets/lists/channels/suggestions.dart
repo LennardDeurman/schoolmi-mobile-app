@@ -115,13 +115,13 @@ class SuggestedChannelsListViewState extends FetcherListViewState<SuggestedChann
 
   @override
   void initState() {
-    super.initState();
     listState.alwaysDisableLoadMore = true;
     _fetcher = Fetcher(
       RestRequest<Channel>(
         GlobalRoute().publicChannels
       )
     );
+    super.initState();
   }
 
   @override
@@ -154,6 +154,11 @@ class SuggestedChannelsListViewState extends FetcherListViewState<SuggestedChann
 
       },
     );
+  }
+
+  @override
+  Widget buildBackground() {
+    return Container();
   }
 
 }

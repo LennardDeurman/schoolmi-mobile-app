@@ -30,8 +30,9 @@ class UploadRequest extends Request {
     ));
 
     http.MultipartRequest multipartRequest = http.MultipartRequest(
-        HttpMethod.post.toString(), url
+        "POST", url
     );
+
     multipartRequest.headers.addAll(headers);
     multipartRequest.files.add(http.MultipartFile.fromBytes(
       Keys().file,
