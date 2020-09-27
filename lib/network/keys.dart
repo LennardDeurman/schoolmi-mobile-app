@@ -144,6 +144,7 @@ class ChannelKeys {
   final String canPublicJoin = "can_public_join";
   final String joinCode = "join_code";
   final String membersCanInvite = "members_can_invite";
+  final String isCurrentUserAdmin = "is_current_user_admin";
 
 }
 

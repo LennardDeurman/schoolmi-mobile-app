@@ -66,7 +66,7 @@ class MembersListViewState extends SearchListViewState<MembersListView, Member> 
         member: member,
         channel: widget.membersManager.channel,
         onPressed: (Member member) {
-          if (widget.membersManager.channel.isUserAdmin) {
+          if (widget.membersManager.channel.isCurrentUserAdmin) {
             MembersEditingDialog(member: member, manager: widget.membersManager, scaffoldKey: widget.scaffoldKey, onModified: (Member member){
               if (shouldRemoveMember(member)) {
                 listState.removeObjects([member]);

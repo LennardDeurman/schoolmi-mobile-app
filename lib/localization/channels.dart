@@ -48,6 +48,6 @@ class ChannelsLocalization {
 
   final LocalizationObject selectAChannel = LocalizationObject({ Languages.NL: "Selecteer een netwerk" });
   final LocalizationObject selectAChannelSubtitle = LocalizationObject({ Languages.NL: "Om vragen te kunnen bekijken moet eerst een netwerk geselecteerd zijn. \n\n Maak een nieuw netwerk aan, word lid van een openbaar netwerk of accepteer een ontvangen uitnodigingslink." });
-
+  final LocalizationObject anonymous = LocalizationObject({ Languages.NL: "Anoniem" });
 
 }

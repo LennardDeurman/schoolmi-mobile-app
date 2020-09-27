@@ -28,7 +28,7 @@ class MembersPageState extends State<MembersPage> {
   GlobalKey<MembersListViewState> _listViewKey = GlobalKey<MembersListViewState>();
 
   Widget buildFloatingActionButton() {
-    if (widget.membersManager.channel.isUserAdmin) {
+    if (widget.membersManager.channel.isCurrentUserAdmin) {
       return FloatingActionButton(
           child: Icon(Icons.add, color: Colors.white),
           onPressed: () {
@@ -90,7 +90,7 @@ class MembersPageState extends State<MembersPage> {
                     changeFilterMode(option);
                   }, selectedOption: filterMode).show(context);
                 },
-              ), visible: widget.membersManager.channel.isUserAdmin)
+              ), visible: widget.membersManager.channel.isCurrentUserAdmin)
             ]
         ),
         floatingActionButton: Visibility(

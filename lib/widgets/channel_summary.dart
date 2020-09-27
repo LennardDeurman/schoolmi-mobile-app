@@ -61,7 +61,7 @@ class ChannelSummary extends StatelessWidget {
     Function onPressed, bool showBottomBorder = false, bool showTopBorder = true, bool requiresAdmin = false
   }) {
 
-    return Visibility(visible: requiresAdmin ? activeChannel.isUserAdmin : true, child: Container(child: Cell(
+    return Visibility(visible: requiresAdmin ? activeChannel.isCurrentUserAdmin : true, child: Container(child: Cell(
       leading: leading,
       columnWidgets: <Widget>[
         RegularLabel(
@@ -129,14 +129,14 @@ class ChannelSummary extends StatelessWidget {
               title: Localization().getValue(Localization().sendInviteLink),
               subtitle: Localization().getValue(Localization().sendInviteLinkExtra),
               leading: SvgPicture.asset(AssetPaths.paperPlane, width: 20),
-              requiresAdmin: !activeChannel.isUserAdmin,
+              requiresAdmin: !activeChannel.isCurrentUserAdmin,
               hasChevron: true,
               onPressed: onInvitePressed
           ),
           _buildCell(
               title: Localization().getValue(Localization().changeGroupInformation),
               subtitle: Localization().getValue(Localization().changeGroupInformationExtra),
-              requiresAdmin: !activeChannel.isUserAdmin,
+              requiresAdmin: !activeChannel.isCurrentUserAdmin,
               leading: SvgPicture.asset(AssetPaths.document, width: 20),
               hasChevron: true,
               onPressed: onEditChannelPressed
@@ -144,7 +144,7 @@ class ChannelSummary extends StatelessWidget {
           _buildCell(
               title: Localization().getValue(Localization().tags),
               subtitle: Localization().getValue(Localization().tagsInformationExtra),
-              requiresAdmin: !activeChannel.isUserAdmin,
+              requiresAdmin: !activeChannel.isCurrentUserAdmin,
               leading: SvgPicture.asset(AssetPaths.tag, width: 20),
               hasChevron: true,
               onPressed: onTagsPressed
@@ -160,7 +160,7 @@ class ChannelSummary extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(15),
             child: RegularLabel(
-              title: Localization().getValue(activeChannel.isUserAdmin ? Localization().youAreAdmin : Localization().youAreNotAdmin),
+              title: Localization().getValue(activeChannel.isCurrentUserAdmin ? Localization().youAreAdmin : Localization().youAreNotAdmin),
               size: LabelSize.small,
             ),
           ),

@@ -11,7 +11,7 @@ class Channel extends BaseObject with ObjectWithColor, ObjectWithName, ObjectWit
   String imageUrl;
   int membersCount;
   int updatesCount;
-  bool isUserAdmin;
+  bool isCurrentUserAdmin;
   bool canAddTags;
   bool canPublicJoin;
   bool isActiveChannel;
@@ -37,7 +37,7 @@ class Channel extends BaseObject with ObjectWithColor, ObjectWithName, ObjectWit
     imageUrl = dictionary[Keys().imageUrl];
     membersCount = ParsableObject.parseIntOrZero(dictionary[Keys().membersCount]);
     updatesCount = ParsableObject.parseIntOrZero(dictionary[Keys().updatesCount]);
-    isUserAdmin = ParsableObject.parseBool(dictionary[Keys().isAdmin]);
+    isCurrentUserAdmin = ParsableObject.parseBool(dictionary[Keys().isCurrentUserAdmin]);
     isActiveChannel = ParsableObject.parseBool(dictionary[Keys().isActiveChannel]);
     canAddTags = ParsableObject.parseBool(dictionary[Keys().canAddTags]);
     canPublicJoin = ParsableObject.parseBool(dictionary[Keys().canPublicJoin]);
@@ -54,7 +54,7 @@ class Channel extends BaseObject with ObjectWithColor, ObjectWithName, ObjectWit
     superDict[Keys().description] = description;
     superDict[Keys().imageUrl] = imageUrl;
     superDict[Keys().membersCount] = membersCount;
-    superDict[Keys().isAdmin] = isUserAdmin;
+    superDict[Keys().isCurrentUserAdmin] = isCurrentUserAdmin;
     superDict[Keys().isActiveChannel] = isActiveChannel;
     superDict[Keys().canAddTags] = canAddTags;
     superDict[Keys().canPublicJoin] = canPublicJoin;

@@ -35,7 +35,7 @@ class MemberCell extends StatelessWidget {
           title: member.email,
           size: LabelSize.small,
           fontWeight: FontWeight.w300,
-        ), visible: channel.isUserAdmin),
+        ), visible: channel.isCurrentUserAdmin),
         Visibility(
           visible: member.hasRole,
           child: RegularLabel(
@@ -64,11 +64,11 @@ class MemberCell extends StatelessWidget {
   }
 
   Widget _buildAnonymousCell() {
-    return Visibility(visible: channel.isUserAdmin, child: Cell(
+    return Visibility(visible: channel.isCurrentUserAdmin, child: Cell(
       leading: CircleImage.withAvatarObject(member),
       columnWidgets: <Widget>[
         RegularLabel(
-          title: member.email,
+          title: member.email ?? Localization().getValue(Localization().anonymous),
           size: LabelSize.medium,
         ),
         RegularLabel(

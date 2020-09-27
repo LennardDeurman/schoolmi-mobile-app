@@ -46,7 +46,7 @@ class Member extends BaseObject with ObjectWithAvatar, ObjectWithColor, ChannelL
 
   @override
   String get firstLetter {
-    return firstLetterOrEmpty(email);
+    return firstLetterOrEmpty(profile != null ? profile.firstLetter : "?");
   }
 
 
