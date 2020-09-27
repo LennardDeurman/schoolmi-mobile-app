@@ -44,8 +44,12 @@ class MembersPageState extends State<MembersPage> {
   }
 
   MembersFilterMode get filterMode {
-    MembersRequestParams params = _listViewKey.currentState.listState.listRequestParams;
-    return params.filterMode;
+    var state = _listViewKey.currentState;
+    if (state != null) {
+      MembersRequestParams params = state.listState.listRequestParams;
+      return params.filterMode ?? MembersFilterMode.showActive;
+    }
+    return MembersFilterMode.showActive;
   }
 
   void changeFilterMode(MembersFilterMode filterMode) {

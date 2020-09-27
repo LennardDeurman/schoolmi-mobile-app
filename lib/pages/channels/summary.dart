@@ -21,7 +21,7 @@ class ChannelSummaryPage extends StatefulWidget {
   
   @override
   State<StatefulWidget> createState() {
-    throw UnimplementedError();
+    return ChannelSummaryPageState();
   }
   
 }
@@ -44,7 +44,6 @@ class ChannelSummaryPageState extends State<ChannelSummaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Container(),
         title: TitleLabel(title: widget.channelEditManager.uploadObject.name, color: Colors.white),
       ),
       floatingActionButton: FloatingActionButton(

@@ -15,6 +15,8 @@ class Dates {
   }
 
   static int format(DateTime dateTime) {
+    if (dateTime == null)
+      return null;
     return dateTime.millisecondsSinceEpoch;
   }
 

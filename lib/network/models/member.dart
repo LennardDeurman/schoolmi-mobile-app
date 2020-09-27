@@ -1,6 +1,7 @@
 
 import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/abstract/base.dart';
+import 'package:schoolmi/network/models/extensions/object_with_color.dart';
 import 'package:schoolmi/network/models/linkages/channel_linked_object.dart';
 import 'package:schoolmi/network/models/linkages/profile_linked_object.dart';
 import 'package:schoolmi/network/models/extensions/object_with_avatar.dart';
@@ -8,7 +9,7 @@ import 'package:schoolmi/network/models/role.dart';
 import 'package:schoolmi/network/auth/user_service.dart';
 
 
-class Member extends BaseObject with ObjectWithAvatar, ChannelLinkedObject, ProfileLinkedObject  {
+class Member extends BaseObject with ObjectWithAvatar, ObjectWithColor, ChannelLinkedObject, ProfileLinkedObject  {
 
   String email;
   bool isAdmin;
@@ -58,7 +59,7 @@ class Member extends BaseObject with ObjectWithAvatar, ChannelLinkedObject, Prof
     channelId = dictionary[Keys().channelId];
     blocked = ParsableObject.parseBool(dictionary[Keys().blocked]);
     isAdmin = ParsableObject.parseBool(dictionary[Keys().isAdmin]);
-
+    colorIndex = 0;
 
     roleId = dictionary[Keys().roleId];
     Map<String, dynamic> roleDictionary = dictionary[Keys().role];
@@ -70,6 +71,7 @@ class Member extends BaseObject with ObjectWithAvatar, ChannelLinkedObject, Prof
 
     if (profile != null) {
       imageUrl = profile.imageUrl;
+      colorIndex = profile.colorIndex;
     }
 
   }

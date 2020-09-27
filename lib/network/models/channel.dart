@@ -33,7 +33,6 @@ class Channel extends BaseObject with ObjectWithColor, ObjectWithName, ObjectWit
     parseNameInfo(dictionary);
     parseProfileLink(dictionary);
 
-    id = dictionary[Keys().channelId];
     description = dictionary[Keys().description];
     imageUrl = dictionary[Keys().imageUrl];
     membersCount = ParsableObject.parseIntOrZero(dictionary[Keys().membersCount]);

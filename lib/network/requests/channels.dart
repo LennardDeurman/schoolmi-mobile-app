@@ -46,15 +46,11 @@ class MyChannelsRequest extends RestRequest<Channel> {
   Future<Channel> getSingle({downloadStatusListener}) {
     throw UnimplementedError();
   }
-
+  
   @override
   Future delete() {
     throw UnimplementedError();
   }
 
-  @override
-  Future<List<Channel>> postAll(List<Channel> objectsToPost, {singleObjectFormat = false}) {
-    throw UnimplementedError();
-  }
 
 }
