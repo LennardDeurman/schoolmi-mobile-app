@@ -27,7 +27,7 @@ class MembersRequestParams extends ListRequestParams {
 
   Map<String, String> get queryMap {
     Map<String, String> queryMap = super.queryMap;
-    queryMap[Keys().filterMode] = queryParam(EnumUtils.indexOf(filterMode, MembersFilterMode.values));
+    queryMap[Keys().filterMode] = queryParam(EnumUtils.indexOf(filterMode, MembersFilterMode.values) + 1);
     return queryMap;
   }
 
