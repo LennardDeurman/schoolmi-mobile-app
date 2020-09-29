@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:schoolmi/extensions/future_utils.dart';
+import 'package:schoolmi/network/auth/provider.dart';
 import 'package:schoolmi/network/fetcher.dart';
 import 'package:schoolmi/network/fetch_result.dart';
 import 'package:schoolmi/network/cache_protocol.dart';
@@ -183,8 +184,8 @@ class UserService {
 
   Future<CombinedResult<Channel>> loadMyChannels() async {
 
-
     var onlineResult = await FutureUtils.safeLoad(myChannelsFetcher.download());
+
     if (onlineResult != null) {
       myChannelsCacheProtocol.save(
           onlineResult.objects
@@ -218,7 +219,6 @@ class UserService {
   Future<UserResult> loadData(FirebaseUser firebaseUser) async {
 
     try {
-
       CombinedResult<Channel> myChannelsResult = await loadMyChannels();
       CombinedResult<Profile> myProfileResult = await loadMyProfile(firebaseUser);
       //Validate the profile result

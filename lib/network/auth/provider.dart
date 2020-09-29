@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthorizationProvider {
@@ -9,8 +11,19 @@ class AuthorizationProvider {
       return dummyToken;
     }
 
-    var result = await (await FirebaseAuth.instance.currentUser()).getIdToken();
-    return result.token;
+    Completer<String> completer = Completer();
+
+
+    try {
+      var currentUser = await FirebaseAuth.instance.currentUser();
+      var token = await currentUser.getIdToken();
+      completer.complete(token.token);
+    } catch (e) {
+      completer.complete(null);
+    }
+
+
+    return completer.future;
   }
 
   static Future<String> getMyUid() async {
