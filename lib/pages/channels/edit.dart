@@ -274,7 +274,7 @@ class ChannelEditPageState extends State<ChannelEditPage> {
           }
       ));
     }).catchError((e) {
-      showSnackBar(buildContext: context, message: Localization().getValue(Localization().errorUnexpectedShort), isError: true);
+      showSnackBar(scaffoldKey: _scaffoldKey, message: Localization().getValue(Localization().errorUnexpectedShort), isError: true);
     });
 
 

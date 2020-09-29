@@ -40,13 +40,14 @@ class RestRequest<T extends ParsableObject> extends Request with IRest<T>  {
   }
 
   Future<List<T>> postAll(List<T> objectsToPost, { singleObjectFormat = false }) {
+    dynamic postDictionary = this.formatter.toPostData(objectsToPost, singleObjectFormat: singleObjectFormat);
     Completer<List<T>> completer = new Completer();
     executeJsonRequest(Urls.urlForPath(
         path: this.path
     ), completer, (http.Response response) {
       List<T> responseObjects = formatter.parseObjects(jsonObjectResponse(response));
       completer.complete(responseObjects);
-    }, postDictionary: this.formatter.toPostData(objectsToPost, singleObjectFormat: singleObjectFormat));
+    }, postDictionary: postDictionary);
     return completer.future;
   }
 
