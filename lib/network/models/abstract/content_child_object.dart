@@ -21,7 +21,8 @@ class ContentChildObject extends ParsableObject with ContentLinkedObject, Object
     parseProfileLink(dictionary);
     parseContentLink(dictionary);
 
-    member = ParsableObject.parseObject(dictionary[Keys().member], objectCreator: (Map<String, dynamic> dict) {
+
+    member = ParsableObject.parseObject(ParsableObject.dictOrFirst(dictionary[Keys().member]), objectCreator: (Map<String, dynamic> dict) {
       return Member(dict);
     });
   }

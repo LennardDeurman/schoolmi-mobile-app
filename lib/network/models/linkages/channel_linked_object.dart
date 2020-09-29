@@ -11,7 +11,7 @@ class ChannelLinkedObject {
 
   void parseChannelLink(Map<String, dynamic> dictionary) {
     channelId = dictionary[Keys().channelId];
-    Map memberDictionary = dictionary[Keys().member];
+    Map memberDictionary = ParsableObject.dictOrFirst(dictionary[Keys().member]);
     if (memberDictionary != null) {
       member = Member(memberDictionary);
     }

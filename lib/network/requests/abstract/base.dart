@@ -11,7 +11,7 @@ class Request {
   void executeJsonRequest(
       String url, Completer completer,
       Function(http.Response response) handleSuccessAction,
-      { Map<String, dynamic> postDictionary, HttpMethod httpMethod }
+      { postDictionary, HttpMethod httpMethod }
       ) async {
 
     if (httpMethod == null) {

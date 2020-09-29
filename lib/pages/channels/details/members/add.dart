@@ -16,7 +16,7 @@ class AddMembersPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    throw UnimplementedError();
+    return AddMembersPageState();
   }
 
 }
@@ -36,11 +36,15 @@ class AddMembersPageState extends State<AddMembersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      floatingActionButton: ScopedModel<MembersManager>(
-          model: widget.membersManager,
-          child: ScopedModelDescendant<MembersManager>(
+
+
+
+
+    return ScopedModel<MembersManager>(
+        model: widget.membersManager,
+        child: Scaffold(
+          key: scaffoldKey,
+          floatingActionButton: ScopedModelDescendant<MembersManager>(
               builder: (BuildContext context, Widget widget, MembersManager manager) {
                 return FloatingActionButton(
                   child: manager.isLoading ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2,
@@ -48,40 +52,46 @@ class AddMembersPageState extends State<AddMembersPage> {
                   onPressed: saveObjects,
                 );
               }
-          )
-      ),
-      appBar: AppBar(
-        title: TitleLabel(
-          title: Localization().getValue(Localization().addMember),
-          color: Colors.white,
-        ),
-        actions: <Widget>[
-          Visibility(child: FlatButton(
-              child: RegularLabel(
-                title: Localization().getValue(Localization().cancel),
-                color: Colors.white,
-              ),
-              onPressed: () {
-                emailInputFocusNode.unfocus();
-              }
-          ), visible: emailInputFocusNode.hasFocus)
-        ],
-      ),
-      body:  AddMembersListView(
-          channel: widget.membersManager.channel,
-          emails: widget.membersManager.emails,
-          formBuilder: () {
-            return AddMembersForm(
-                onEditingComplete: (String email) {
-                  widget.membersManager.add(email);
-                }
-            );
-          },
-          onRemovePressed: (String email) {
-            widget.membersManager.remove(email);
-          }
-      ),
+          ),
+          appBar: AppBar(
+            title: TitleLabel(
+              title: Localization().getValue(Localization().addMember),
+              color: Colors.white,
+            ),
+            actions: <Widget>[
+              Visibility(child: FlatButton(
+                  child: RegularLabel(
+                    title: Localization().getValue(Localization().cancel),
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    emailInputFocusNode.unfocus();
+                  }
+              ), visible: emailInputFocusNode.hasFocus)
+            ],
+          ),
+          body:  ScopedModelDescendant<MembersManager>(
+            builder: (BuildContext context, Widget widget, MembersManager membersManager) {
+              return AddMembersListView(
+                  channel: this.widget.membersManager.channel,
+                  emails: this.widget.membersManager.emails,
+                  formBuilder: () {
+                    return AddMembersForm(
+                        onEditingComplete: (String email) {
+                          this.widget.membersManager.add(email);
+                        }
+                    );
+                  },
+                  onRemovePressed: (String email) {
+                    this.widget.membersManager.remove(email);
+                  }
+              );
+            },
+          ),
+        )
     );
+
   }
 
 }
+

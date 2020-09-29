@@ -48,12 +48,14 @@ class MembersManager extends BaseManager with UploadInterface<Member> {
         channelId: channel.id
     );
     uploadObjects.add(member);
+    notifyListeners();
   }
 
   void remove(String email) {
     uploadObjects.removeWhere((Member member) {
       return member.email == email;
     });
+    notifyListeners();
   }
 
 }

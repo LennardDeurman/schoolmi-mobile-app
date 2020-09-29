@@ -71,7 +71,7 @@ class UserEventsHandler {
 
 abstract class UploadInterface<T extends ParsableObject> {
 
-  List<T> uploadObjects;
+  List<T> uploadObjects = new List();
 
   List<T> pendingObjects = new List();
 

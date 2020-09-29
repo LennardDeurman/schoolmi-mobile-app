@@ -53,6 +53,16 @@ abstract class ParsableObject {
     return null;
   }
 
+  static Map<String, dynamic> dictOrFirst(value) {
+    if (value is List) {
+      if (value.length > 0)
+        return value.first;
+    } else if (value is Map) {
+      return value;
+    }
+    return null;
+  }
+
   Map<String, dynamic> toDictionary();
 
 }
