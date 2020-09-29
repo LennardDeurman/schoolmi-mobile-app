@@ -118,7 +118,10 @@ class SuggestedChannelsListViewState extends FetcherListViewState<SuggestedChann
     listState.alwaysDisableLoadMore = true;
     _fetcher = Fetcher(
       RestRequest<Channel>(
-        GlobalRoute().publicChannels
+        GlobalRoute().publicChannels,
+        objectCreator: (Map<String, dynamic> map) {
+          return Channel(map);
+        }
       )
     );
     super.initState();

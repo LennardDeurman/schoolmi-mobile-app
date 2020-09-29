@@ -16,16 +16,16 @@ class ChannelDetailsRequest extends Request {
 
   Future<Member> join() {
     Completer<Member> completer = Completer();
-    executeJsonRequest(route.join, completer, (response) {
+    executeJsonRequest(Urls.urlForPath(path: route.join), completer, (response) {
       var jsonResponse = jsonObjectResponse(response);
       completer.complete(Member(jsonResponse));
-    });
+    }, httpMethod: HttpMethod.post);
     return completer.future;
   }
 
   Future leave() {
     Completer completer = Completer();
-    executeJsonRequest(route.leave, completer, (response) => completer.complete());
+    executeJsonRequest(Urls.urlForPath(path: route.leave), completer, (response) => completer.complete());
     return completer.future;
   }
 
