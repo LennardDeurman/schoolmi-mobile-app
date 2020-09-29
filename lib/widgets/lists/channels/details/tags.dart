@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:schoolmi/constants/asset_paths.dart';
+import 'package:schoolmi/widgets/extensions/backgrounds.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:schoolmi/constants/brand_colors.dart';
 import 'package:schoolmi/widgets/lists/base/search.dart';
@@ -85,7 +88,9 @@ class TagsTableViewProvider extends FetcherTableViewProvider<Tag> {
   TagsTableViewProvider (this.manager, ListState<Tag> listState, { Function builder, this.onNewTagPressed }) : super(listState, builder: builder);
 
   bool shouldShowCreate(Tag newTag) {
-    return manager.channel.canAddTags && !listState.fetchResult.objects.contains(newTag) && listState.listRequestParams.hasSearch;
+    bool isAuthorized = (manager.channel.canAddTags || manager.channel.isCurrentUserAdmin);
+    bool doesNotContain = !listState.fetchResult.objects.contains(newTag);
+    return isAuthorized && doesNotContain;
   }
 
   @override
@@ -168,10 +173,19 @@ class TagsListViewState extends SearchListViewState<TagsListView, Tag> {
   @override
   Widget buildBackground() {
     if (listState.fetchResult != null && listState.fetchResult.objects.length == 0) {
-      return Container(); //Show an empty container instead of default, when no results are returned
+      if (!listState.listRequestParams.hasSearch) {
+        return MessageContainer(
+          topWidget: SvgPicture.asset(AssetPaths.tag, width: 80),
+          title: Localization().getValue(Localization().noTagsYet),
+          subtitle:  Localization().getValue(Localization().createNewTagHint),
+        );
+      }
+      //Show an empty container instead of default, when no results are returned
     } else {
       return super.buildBackground();
     }
+
+    return Container();
   }
 
   @override
@@ -180,8 +194,10 @@ class TagsListViewState extends SearchListViewState<TagsListView, Tag> {
   }
 
   @override
-  void onSubmittedSearchField(String value) {
+  void onChangedSearchField(String value) {
     performSearch(value);
   }
+
+
 
 }

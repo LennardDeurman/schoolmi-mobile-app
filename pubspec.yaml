@@ -64,6 +64,7 @@ flutter:
   assets:
     - assets/vectors/user.png
     - assets/vectors/tags.svg
+    - assets/vectors/tag.svg
     - assets/vectors/buildings_bg.svg
     - assets/vectors/logo.svg
     - assets/vectors/fb.svg

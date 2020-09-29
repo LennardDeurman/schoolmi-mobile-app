@@ -6,7 +6,7 @@ class ChannelsLocalization {
   final LocalizationObject publicChannelsDetail = LocalizationObject({ Languages.NL: "Word lid van een bestaand openbaar netwerk" });
   final LocalizationObject startWithChannel = LocalizationObject({ Languages.NL: "Start met een netwerk"});
   final LocalizationObject startWithChannelDescription = LocalizationObject( {
-    Languages.NL: "In SchoolMi, vindt alles plaats in een netwerk. Een channel is waar jij met je medeleerlingen of met je school kan verzamelen om lastige onderwerpen en vragen te tackelen. "
+    Languages.NL: "In SchoolMi, vindt alles plaats in een netwerk. Een netwerk is een plaats waar jij met je medeleerlingen of met je school kan verzamelen om lastige onderwerpen en vragen te tackelen. "
   });
   final LocalizationObject findYourChannels = LocalizationObject({ Languages.NL: "Vind je SchoolMi netwerken"});
   final LocalizationObject findYourChannelsDetail = LocalizationObject({ Languages.NL: "Neem deel aan een bestaand netwerk"});
@@ -49,5 +49,8 @@ class ChannelsLocalization {
   final LocalizationObject selectAChannel = LocalizationObject({ Languages.NL: "Selecteer een netwerk" });
   final LocalizationObject selectAChannelSubtitle = LocalizationObject({ Languages.NL: "Om vragen te kunnen bekijken moet eerst een netwerk geselecteerd zijn. \n\n Maak een nieuw netwerk aan, word lid van een openbaar netwerk of accepteer een ontvangen uitnodigingslink." });
   final LocalizationObject anonymous = LocalizationObject({ Languages.NL: "Anoniem" });
+
+  final LocalizationObject createNewTagHint = LocalizationObject({ Languages.NL: "Maak nu een nieuwe tag aan door te typen in de zoekbalk!" });
+  final LocalizationObject noTagsYet = LocalizationObject({ Languages.NL: "Nog geen tags..." });
 
 }

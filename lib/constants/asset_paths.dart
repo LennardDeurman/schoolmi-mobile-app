@@ -31,4 +31,5 @@ class AssetPaths {
   static const String classRoom = "assets/vectors/classroom.svg";
   static const String paperPlane = "assets/vectors/paper-plane.svg";
   static const String document = "assets/vectors/document.svg";
+  static const String tagLabel = "assets/vectors/tag.svg";
 }
