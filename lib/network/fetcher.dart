@@ -42,13 +42,14 @@ class Fetcher<T extends ParsableObject>  {
     return completer.future;
   }
 
-  Future<FetchResult<T>> download( { ListRequestParams params, CacheProtocol cacheProtocol } ) {
+  Future<FetchResult<T>> download( { ListRequestParams params } ) {
     Completer<FetchResult<T>> completer = new Completer();
     if (this.singleMode) {
       return downloadSingle(restRequest.getSingle(downloadStatusListener: downloadStatusInfo), completer);
     } else {
       return downloadAll(restRequest.getAll(params: params, downloadStatusListener: downloadStatusInfo), completer);
     }
+
   }
 
 

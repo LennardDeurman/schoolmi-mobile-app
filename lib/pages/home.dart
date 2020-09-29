@@ -293,7 +293,9 @@ class HomePageState extends State<HomePage> {
                                   onEditChannelPressed: () {
                                     _presenter.showChannelEdit(
                                         channel: UserService().userResult.activeChannel,
-                                        onChannelEdit: _homeManager.switchToChannel
+                                        onChannelEdit: (Channel channel) {
+                                          _homeManager.onChannelChange(channel);
+                                        }
                                     );
                                   },
                                   onInvitePressed: () {

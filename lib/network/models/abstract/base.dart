@@ -6,6 +6,7 @@ import 'package:schoolmi/network/models/extensions/object_with_default_props.dar
 
 abstract class ParsableObject {
 
+
   void parse(Map<String, dynamic> dictionary);
 
   static List<T> parseObjectsList<T extends ParsableObject>(Map<String, dynamic> dictionary, String key, {ParsableObject objectCreator (Map<String, dynamic> map)}) {
@@ -72,6 +73,8 @@ abstract class BaseObject with ParsableObject, ObjectWithDefaultProps  {
   int id;
 
   final Map<String, dynamic> dictionary;
+
+
 
   BaseObject (this.dictionary)  {
     parse(this.dictionary);

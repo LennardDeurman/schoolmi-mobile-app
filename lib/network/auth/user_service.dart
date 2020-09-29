@@ -5,6 +5,7 @@ import 'package:schoolmi/extensions/future_utils.dart';
 import 'package:schoolmi/network/fetcher.dart';
 import 'package:schoolmi/network/fetch_result.dart';
 import 'package:schoolmi/network/cache_protocol.dart';
+import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/models/profile.dart';
 import 'package:schoolmi/network/models/channel.dart';
 import 'package:schoolmi/network/requests/profile.dart';
@@ -152,6 +153,8 @@ class UserService {
       _userResultStreamController.close();
     };
 
+    profileFetcher.restRequest.formatter.postConfig.skipKeys.add(Keys().colorIndex);
+
   }
 
   void initializeAuthListener() { //Not to be called in unit tests
@@ -181,9 +184,13 @@ class UserService {
   Future<CombinedResult<Channel>> loadMyChannels() async {
 
 
-    var onlineResult = await FutureUtils.safeLoad(myChannelsFetcher.download(
-        cacheProtocol: myChannelsCacheProtocol
-    ));
+    var onlineResult = await FutureUtils.safeLoad(myChannelsFetcher.download());
+    if (onlineResult != null) {
+      myChannelsCacheProtocol.save(
+          onlineResult.objects
+      );
+    }
+
 
     var offlineResult = await myChannelsCacheProtocol.load();
 
@@ -198,6 +205,9 @@ class UserService {
       return FetchResult([e]);
     });
     var onlineResult = await FutureUtils.safeLoad(profileLoadFuture);
+    if (onlineResult != null) {
+      profileCacheProtocol.save(onlineResult.objects);
+    }
 
     return CombinedResult<Profile>(
       onlineResult: onlineResult,
@@ -227,9 +237,7 @@ class UserService {
   }
 
   Future<Profile> createProfile(FirebaseUser firebaseUser) async {
-    FetchResult<Profile> fetchResult = await profileFetcher.download(
-      cacheProtocol: profileCacheProtocol
-    );
+    FetchResult<Profile> fetchResult = await profileFetcher.download();
     Profile profile = fetchResult.object;
     if (profile == null) {
       var cachedProfile = await Profile.cachedProfile();
@@ -249,9 +257,9 @@ class UserService {
     var firebaseUser = result.user;
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
 
-    FetchResult<Channel> myChannelsResult = await myChannelsFetcher.download(
-      cacheProtocol: myChannelsCacheProtocol
-    );
+    FetchResult<Channel> myChannelsResult = await myChannelsFetcher.download();
+    myChannelsCacheProtocol.save(myChannelsResult.objects);
+
     return _sendResult(
         UserResult(
             myChannelsResult: CombinedResult<Channel>(
@@ -272,9 +280,9 @@ class UserService {
 
     FetchResult<Profile> profileResult =  FetchResult<Profile>([await createProfile(firebaseUser)]);
 
-    FetchResult myChannelsResult = await myChannelsFetcher.download(
-        cacheProtocol: myChannelsCacheProtocol
-    );
+    FetchResult myChannelsResult = await myChannelsFetcher.download();
+    myChannelsCacheProtocol.save(myChannelsResult.objects);
+
     return _sendResult(
         UserResult(
             myChannelsResult: CombinedResult<Channel>(

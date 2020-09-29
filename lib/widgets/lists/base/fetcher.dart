@@ -26,6 +26,23 @@ class FetchResultBar extends StatelessWidget {
     return dateFormat.format(dateTime);
   }
 
+  Widget label() {
+    if (this.listState.fetchResult.dateTime != null) {
+      return Text(
+        Localization().buildWithParams(Localization().resultsRetrievedAt, [formatDate(listState.fetchResult.dateTime)]),
+        style: TextStyle(
+            fontSize: 12
+        ),
+      );
+    } else {
+      return Text(
+        Localization().getValue(Localization().offlineResultsShown)
+      );
+    }
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(child: Row(
@@ -37,12 +54,7 @@ class FetchResultBar extends StatelessWidget {
         Visibility(child: SizedBox(
           width: 10,
         ), visible: listState.isLoading),
-        Visibility(child: Text(
-          Localization().buildWithParams(Localization().resultsRetrievedAt, [formatDate(listState.fetchResult.dateTime)]),
-          style: TextStyle(
-              fontSize: 12
-          ),
-        ), visible: listState.fetchResult != null)
+        Visibility(child: label(), visible: listState.fetchResult != null)
       ],
     ), padding: EdgeInsets.symmetric(vertical: 8), color: BrandColors.blueGrey);
   }
@@ -176,6 +188,11 @@ class ListState<T extends ParsableObject> extends Model {
   }
 
   void complete(FetchResult<T> fetchResult) {
+    if (_fetchResult != null) {
+      if (fetchResult != null && fetchResult.dateTime == null) {
+        fetchResult.dateTime = _fetchResult.dateTime;
+      }
+    }
     _fetchResult = fetchResult;
     notifyListeners();
   }

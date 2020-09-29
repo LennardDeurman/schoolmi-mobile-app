@@ -38,6 +38,11 @@ class HomeManager extends BaseManager {
     }
   }
 
+  void onChannelChange(Channel editedChannel) {
+    UserService().userResult.activeChannel.parse(editedChannel.dictionary);
+    notifyListeners();
+  }
+
   InitializationResult initialize()  {
     initializeChannelManagers();
     bool hasActiveChannel = UserService().userResult.activeChannel != null;

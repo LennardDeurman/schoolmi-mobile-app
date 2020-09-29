@@ -193,8 +193,8 @@ class ChannelEditPageState extends State<ChannelEditPage> {
                                           onPressed: () {
 
                                             FileSelector fileSelector = FileSelector(onFilesSelected: (List<File> files) {
-                                              _channelEditManager.avatarImageUploadManager.upload(file: files.first).then((_) {
-                                                _channelEditManager.uploadObject.imageUrl = _channelEditManager.avatarImageUploadManager.presentingUrl;
+                                              _channelEditManager.avatarImageUploadManager.upload(file: files.first).then((upload) {
+                                                _channelEditManager.uploadObject.imageUrl = upload.uploadUrl;
                                               }).catchError((e) {
                                                 showSnackBar(message: Localization().getValue(Localization().imageUploadError), scaffoldKey: _scaffoldKey, isError: true);
                                               });

@@ -51,7 +51,6 @@ void main() {
     final Fetcher<Profile> profileFetcher = Fetcher<Profile>(ProfileRequest(), singleMode: true);
     final ProfileCacheProtocol profileCacheProtocol = ProfileCacheProtocol();
     FetchResult<Profile> fetchResult = await profileFetcher.download(
-        cacheProtocol: profileCacheProtocol
     );
     print(fetchResult.object.toDictionary());
   });

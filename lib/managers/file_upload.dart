@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:schoolmi/managers/abstract.dart';
 import 'package:schoolmi/network/models/attachment.dart';
 import 'package:schoolmi/network/requests/upload.dart';
@@ -20,10 +22,15 @@ class FileUploadManager extends BaseManager {
     return initialUrl;
   }
 
-  Future upload({ File file, UploadRequestParams params }) async {
+  Future<Upload> upload({ File file, UploadRequestParams params }) async {
+    Completer<Upload> completer = Completer();
     executeAsync(uploadRequest.upload(file: file, uploadRequestParams: params).then((Upload upload) {
       this._uploadObject = upload;
-    }));
+      completer.complete(upload);
+    })).catchError((e) {
+      completer.completeError(e);
+    });
+    return completer.future;
   }
 
 
