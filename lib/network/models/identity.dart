@@ -16,11 +16,11 @@ class Identity extends ParsableObject {
 
   @override
   void parse(Map<String, dynamic> dictionary) {
-    member = ParsableObject.parseObject(dictionary[Keys().member], objectCreator: (Map<String, dynamic> dict) {
+    member = ParsableObject.parseObject(ParsableObject.dictOrFirst(dictionary[Keys().member]), objectCreator: (Map<String, dynamic> dict) {
       return Member(dict);
     });
 
-    profile = ParsableObject.parseObject(dictionary[Keys().profile], objectCreator: (Map<String, dynamic> dict) {
+    profile = ParsableObject.parseObject(ParsableObject.dictOrFirst(dictionary[Keys().profile]), objectCreator: (Map<String, dynamic> dict) {
       return Profile(dict);
     });
   }

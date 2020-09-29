@@ -9,7 +9,7 @@ class ProfileLinkedObject {
 
     void parseProfileLink(Map<String, dynamic> dictionary) {
       firebaseUid = dictionary[Keys().firebaseUid];
-      Map profileDictionary = dictionary[Keys().profile];
+      Map profileDictionary = ParsableObject.dictOrFirst(dictionary[Keys().profile]);
       if (profileDictionary != null) {
           profile = Profile(profileDictionary);
       }
