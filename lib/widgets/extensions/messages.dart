@@ -18,7 +18,7 @@ ScaffoldFeatureController showSnackBar({
   }
 
   if (buildContext != null) {
-    Scaffold.of(buildContext).showSnackBar(
+    return Scaffold.of(buildContext).showSnackBar(
         SnackBar(
             content: Text(message),
             backgroundColor: isError ? BrandColors.red : BrandColors.green)

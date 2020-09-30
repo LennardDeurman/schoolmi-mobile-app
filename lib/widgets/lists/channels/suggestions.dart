@@ -150,7 +150,9 @@ class SuggestedChannelsListViewState extends FetcherListViewState<SuggestedChann
       onPressedJoin: (Channel channel) {
 
         int indexOf = listState.resolveIndexAndRemove(channel);
-        widget.joinChannelFutureBuilder(channel).catchError((e) {
+        widget.joinChannelFutureBuilder(channel).then((v) {
+          showSnackBar(message: Localization().getValue(Localization().youAreMember), isError: false, buildContext: context);
+        }).catchError((e) {
           listState.restoreObjectAtIndex(indexOf, channel);
           showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
         });

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:schoolmi/network/keys.dart';
 import 'package:schoolmi/network/requests/abstract/base.dart';
 import 'package:schoolmi/network/models/member.dart';
 import 'package:schoolmi/network/routes/channel.dart';
@@ -14,12 +15,14 @@ class ChannelDetailsRequest extends Request {
     this.route = ChannelRoute(channelId: channelId);
   }
 
-  Future<Member> join() {
+  Future<Member> join({ String joinCode }) {
     Completer<Member> completer = Completer();
     executeJsonRequest(Urls.urlForPath(path: route.join), completer, (response) {
       var jsonResponse = jsonObjectResponse(response);
       completer.complete(Member(jsonResponse));
-    }, httpMethod: HttpMethod.post);
+    }, httpMethod: HttpMethod.post, postDictionary: {
+      Keys().joinCode: joinCode
+    });
     return completer.future;
   }
 

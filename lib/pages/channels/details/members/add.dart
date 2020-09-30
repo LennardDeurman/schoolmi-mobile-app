@@ -11,8 +11,9 @@ import 'package:schoolmi/localization/localization.dart';
 class AddMembersPage extends StatefulWidget {
 
   final MembersManager membersManager;
+  final Function onFinish;
 
-  AddMembersPage (this.membersManager);
+  AddMembersPage (this.membersManager, { this.onFinish });
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +28,9 @@ class AddMembersPageState extends State<AddMembersPage> {
   final FocusNode emailInputFocusNode = FocusNode();
 
   void saveObjects() {
-    widget.membersManager.saveUploadObjects().then((_) {
+    widget.membersManager.saveUploadObjects().then((values) {
+      if (widget.onFinish != null)
+        widget.onFinish();
       Navigator.pop(context);
     }).catchError((e) {
       showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, scaffoldKey: scaffoldKey);

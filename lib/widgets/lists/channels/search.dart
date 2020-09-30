@@ -33,7 +33,10 @@ class SearchChannelsListViewState extends SearchListViewState<SearchChannelsList
   Fetcher<Channel> fetcher() {
     return Fetcher<Channel>(
       RestRequest<Channel>(
-        GlobalRoute().publicChannels
+        GlobalRoute().publicChannels,
+        objectCreator: (Map<String, dynamic> map) {
+          return Channel(map);
+        }
       )
     );
   }
@@ -45,7 +48,9 @@ class SearchChannelsListViewState extends SearchListViewState<SearchChannelsList
       onPressedJoin: (Channel channel) {
 
         int indexOf = listState.resolveIndexAndRemove(channel);
-        widget.joinChannelFutureBuilder(channel).catchError((e) {
+        widget.joinChannelFutureBuilder(channel).then((v) {
+          showSnackBar(message: Localization().getValue(Localization().youAreMember), isError: false, buildContext: context);
+        }).catchError((e) {
           listState.restoreObjectAtIndex(indexOf, channel);
           showSnackBar(message: Localization().getValue(Localization().errorUnexpected), isError: true, buildContext: context);
         });

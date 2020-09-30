@@ -319,9 +319,7 @@ class HomePageState extends State<HomePage> {
                                 _presenter.showNewChannel(
                                     onChannelEdit: _homeManager.switchToChannel,
                                     joinChannelFutureBuilder: (Channel channel) {
-                                      return _homeManager.joinChannel(channel).then((channel) {
-                                        showSnackBar(message: Localization().getValue(Localization().youAreMember), isError: true, buildContext: context);
-                                      });
+                                      return _homeManager.joinChannel(channel);
                                     }
                                 );
                               },

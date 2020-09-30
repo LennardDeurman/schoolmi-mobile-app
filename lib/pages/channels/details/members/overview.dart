@@ -34,7 +34,9 @@ class MembersPageState extends State<MembersPage> {
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(
                 builder: (BuildContext context) {
-                  return AddMembersPage(widget.membersManager);
+                  return AddMembersPage(widget.membersManager, onFinish: () {
+                   _listViewKey.currentState.refreshIndicatorKey.currentState.show();
+                  });
                 }
             ));
           }

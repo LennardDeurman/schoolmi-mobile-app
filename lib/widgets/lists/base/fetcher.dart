@@ -180,11 +180,13 @@ class ListState<T extends ParsableObject> extends Model {
   int resolveIndexAndRemove(T object) {
     int indexOf = _fetchResult.objects.indexOf(object);
     _fetchResult.objects.removeAt(indexOf);
+    notifyListeners();
     return indexOf;
   }
 
   void restoreObjectAtIndex(int index, T object) {
     _fetchResult.objects.insert(index, object);
+    notifyListeners();
   }
 
   void complete(FetchResult<T> fetchResult) {
@@ -373,8 +375,12 @@ abstract class FetcherListViewState<T extends FetcherListView, Z extends Parsabl
   }
 
   Widget buildBackground() {
-    if (listState.fetchResult != null && listState.fetchResult.objects.length == 0) {
-      return ListBackgrounds.buildNoResultsBackground();
+    if (listState.fetchResult != null) {
+      if (listState.fetchResult.objects.length == 0) {
+        return ListBackgrounds.buildNoResultsBackground();
+      } else {
+        return Container();
+      }
     } else if (listState.isLoading) {
       return ListBackgrounds.buildLoadingBackground();
     } else if (listState.exception != null) {

@@ -12,8 +12,6 @@ abstract class SearchListViewState<T extends FetcherListView<Z>, Z extends Parsa
   Fetcher<Z> _fetcher;
 
 
-
-
   String get searchHint {
     return Localization().getValue(Localization().search);
   }

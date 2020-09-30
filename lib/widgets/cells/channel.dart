@@ -126,10 +126,6 @@ class PublicChannelCell extends StatelessWidget {
 
   Widget _buildTrailing() {
 
-    if (UserService().userResult.isAuthorizedChannel(channel)) {
-      return Container();
-    }
-
     return Container(
       padding: EdgeInsets.all(10),
       child: FlatButton(
