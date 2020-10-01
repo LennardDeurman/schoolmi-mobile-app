@@ -211,6 +211,21 @@ class ListState<T extends ParsableObject> extends Model {
     notifyListeners();
   }
 
+  void modifyObjects(List<T> objects) {
+    _fetchResult.objects.forEach((object) {
+      int indexOf = objects.indexOf(object);
+      if (indexOf > 0) {
+        T modifiedObject = objects[indexOf];
+        if (modifiedObject is BaseObject && object is BaseObject) {
+          BaseObject modifiedBaseObject = modifiedObject;
+          BaseObject baseObject = object;
+          baseObject.parse(modifiedBaseObject.dictionary);
+        }
+      }
+    });
+    notifyListeners();
+  }
+
   void failWithError(e) {
     _exception = e;
     notifyListeners();

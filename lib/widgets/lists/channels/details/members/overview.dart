@@ -31,14 +31,21 @@ class MembersListViewState extends SearchListViewState<MembersListView, Member> 
   bool shouldRemoveMember(Member member) {
 
     MembersRequestParams params = listState.listRequestParams;
-    MembersFilterMode mode = params.filterMode;
+    MembersFilterMode mode = params.filterMode ?? MembersFilterMode.showActive;
 
-    return (mode == MembersFilterMode.showActive && (member.isDeleted || member.blocked))
-        ||
-        (mode == MembersFilterMode.showDeleted && !member.isDeleted)
-        ||
-        (mode == MembersFilterMode.showBlocked && !member.blocked);
+    switch (mode) {
+      case MembersFilterMode.showActive:
+        return (member.isDeleted || member.blocked);
+        break;
+      case MembersFilterMode.showDeleted:
+        return !member.isDeleted;
+        break;
+      case MembersFilterMode.showBlocked:
+        return !member.blocked;
+        break;
+    }
 
+    return false;
   }
 
   @override
@@ -68,11 +75,12 @@ class MembersListViewState extends SearchListViewState<MembersListView, Member> 
         onPressed: (Member member) {
           if (widget.membersManager.channel.isCurrentUserAdmin) {
             MembersEditingDialog(member: member, manager: widget.membersManager, scaffoldKey: widget.scaffoldKey, onModified: (Member member){
-              setState(() {
-                if (shouldRemoveMember(member)) {
-                  listState.removeObjects([member]);
-                }
-              });
+              var shouldRemove = shouldRemoveMember(member);
+              if (shouldRemove) {
+                listState.removeObjects([member]);
+              } else {
+                listState.modifyObjects([member]);
+              }
             }).show(context);
           }
         }

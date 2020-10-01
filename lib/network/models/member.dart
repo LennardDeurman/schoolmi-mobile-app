@@ -83,11 +83,23 @@ class Member extends BaseObject with ObjectWithAvatar, ObjectWithColor, ChannelL
     superDict[Keys().channelId] = channelId;
     superDict[Keys().isAdmin] = isAdmin;
     superDict[Keys().blocked] = blocked;
-    superDict[Keys().roleId] = roleId;
+    superDict[Keys().roleId] = role != null ? role.id : roleId;
     superDict[Keys().role] = ParsableObject.tryGetDict(role);
     superDict.addAll(channelLinkDictionary());
     superDict.addAll(profileLinkDictionary());
     superDict.addAll(avatarDictionary());
     return superDict;
+  }
+
+  @override
+  int get hashCode => super.hashCode;
+
+  @override
+  bool operator ==(other) {
+    if (other is Member) {
+      Member member = other;
+      return member.email == this.email;
+    }
+    return super == other;
   }
 }

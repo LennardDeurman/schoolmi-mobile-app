@@ -19,6 +19,17 @@ class RolesManager extends BaseManager with UploadInterface<Role> {
   }
 
   @override
+  Future<List<Role>> saveUploadObjects() {
+    return executeAsync(
+        performMultiUpload(
+            uploadFutureBuilder: (List<Role> roles) {
+              return _rolesRequest.postAll(roles);
+            }
+        )
+    );
+  }
+
+  @override
   Future<Role> saveUploadObject() {
     return executeAsync(
         performSingleUpload(
