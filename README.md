@@ -6,3 +6,4 @@ Built in Flutter and Dart using the Scoped Model.
 
 Students can add questions to the database and view questions within their channel. 
 
+Server can be found at: https://github.com/LennardDeurman/schoolmi-api-server
